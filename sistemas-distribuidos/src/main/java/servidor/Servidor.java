@@ -21,7 +21,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import org.json.JSONObject;
+
 import cliente.ClientInfo;
+import view.LoginView;
 
 public class Servidor extends JFrame {
 
@@ -73,9 +76,9 @@ public class Servidor extends JFrame {
         			iniciarBtn.setEnabled(false);
         			
         			StringBuilder content = new StringBuilder();
-        	        content.append("Servidor iniciado na porta 12345\n");
+        	    content.append("Servidor iniciado na porta 12345\n");
         	       
-        	        textArea.setText(content.toString());
+              textArea.setText(content.toString());
         		}
         	}
         });
@@ -102,6 +105,7 @@ public class Servidor extends JFrame {
                     ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
 
                     String clientMessage = (String) inputStream.readObject();
+                    handleOperation(clientMessage);
                     
                     ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
                             clientSocket.getPort());
@@ -110,7 +114,7 @@ public class Servidor extends JFrame {
                     StringBuilder content = new StringBuilder();
 
         	        content.append(">> " + client.getIpAddress() + " " + client.getPort() + 
-                    		": " + clientMessage + "\n");
+                    		": " + "\n");
         	        
         	        textArea.append(content.toString());
                     textArea.setCaretPosition(textArea.getDocument().getLength()); 
@@ -142,6 +146,16 @@ public class Servidor extends JFrame {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void handleOperation(String clientMessage) {
+        JSONObject jsonMessage = new JSONObject(clientMessage);
+        String operation = jsonMessage.getString("operation");
+        
+        System.out.println(operation);
+        if (operation.equals("LOGIN_CANDIDATE")) {
+            new LoginView(jsonMessage);
+        } 
     }
 
     private void updateConnectedUsersList() {

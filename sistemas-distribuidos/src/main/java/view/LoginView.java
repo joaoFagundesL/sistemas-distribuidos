@@ -21,9 +21,11 @@ import controller.CandidatoController;
 import modelo.Candidato;
 import javax.swing.UIManager;
 
+import org.json.JSONObject;
+
 public class LoginView {
 
-	
+	JSONObject jsonMessage = new JSONObject();
 	JPanel panelCont = new JPanel();
 	JPanel panelFirst = new JPanel();
 	JButton btnVoltar = new JButton("Voltar");
@@ -36,7 +38,8 @@ public class LoginView {
 
 	JFrame frame = new JFrame("Sistema");
 	
-	public LoginView() {
+	public LoginView(JSONObject jsonMessage) {
+		this.jsonMessage = jsonMessage;
 		initComponents(frame);
 		frame.setBounds(100, 100, 435, 345);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -45,6 +48,8 @@ public class LoginView {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void initComponents(JFrame frame) {
+		JSONObject data = jsonMessage.getJSONObject("data");
+
 		panelFirst.setLayout(null);
 		panelFirst.setBackground(new Color(240, 240, 240));
 		panelCont.setLayout(cl);
@@ -58,6 +63,7 @@ public class LoginView {
 		textField.setBounds(118, 64, 186, 21);
 		panelFirst.add(textField);
 		textField.setColumns(10);
+		textField.setText(data.getString("email"));
 		
 		JLabel lblUsuario = new JLabel("User");
 		lblUsuario.setBounds(118, 47, 60, 17);
@@ -66,6 +72,7 @@ public class LoginView {
 		JLabel lblSenha = new JLabel("Senha");
 		lblSenha.setBounds(118, 94, 60, 17);
 		panelFirst.add(lblSenha);
+
 		
 		JLabel lblEntrarComo = new JLabel("Entrar como");
 		lblEntrarComo.setBounds(117, 138, 83, 17);
@@ -74,6 +81,7 @@ public class LoginView {
 		passwordField = new JPasswordField();
 		passwordField.setBounds(118, 110, 186, 21);
 		panelFirst.add(passwordField);
+		passwordField.setText(data.getString("password"));
 		
 		JButton btnNewButton_1 = new JButton("Login");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -146,14 +154,5 @@ public class LoginView {
 	public void erroSelecao() {
 		JFrame frame = new JFrame("Erro");
 		JOptionPane.showMessageDialog(frame, "É preciso selecionar uma opção!");
-	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new LoginView();
-			}
-		});
 	}
 }

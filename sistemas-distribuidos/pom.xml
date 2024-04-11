@@ -24,6 +24,12 @@
 	    <version>0.4</version> <!-- or the latest version -->
 	</dependency>
 
+	<dependency>
+		<groupId>org.json</groupId>
+		<artifactId>json</artifactId>
+		<version>20240303</version>
+	</dependency>
+
 	<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 	<dependency>
 		<groupId>mysql</groupId>
