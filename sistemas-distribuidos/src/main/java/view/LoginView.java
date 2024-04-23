@@ -26,6 +26,8 @@ import org.json.JSONObject;
 
 public class LoginView {
 
+  private boolean isLogout = false;
+
 	JSONObject jsonMessage = new JSONObject();
   JSONObject response = new JSONObject();
 	JPanel panelCont = new JPanel();
@@ -87,6 +89,7 @@ public class LoginView {
 		passwordField.setBounds(118, 110, 186, 21);
 		panelFirst.add(passwordField);
 		passwordField.setText(data.getString("password"));
+
 		
 		JButton btnNewButton_1 = new JButton("Login");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -127,6 +130,14 @@ public class LoginView {
 		frame.getContentPane().add(panelCont);
 		
 	}
+
+    public boolean isLogout() {
+        return isLogout;
+    }
+
+    public void setLogout(boolean logout) {
+        isLogout = logout;
+    }
 	
 	public void logarCandidato() {
 		CandidatoController fController = new CandidatoController();
@@ -157,16 +168,12 @@ public class LoginView {
       buildJson(response, "SUCCESS");
       callback.onLoginCompleted(response);
 
-      new MainViewCandidato(frame, fController.getCandidadoLogin(userName));
+      new MainViewCandidato(this, fController.getCandidadoLogin(userName));
     }
   }
 
   public interface LoginCallback {
     void onLoginCompleted(JSONObject response);
-  }
-
-  public JSONObject getResponse() {
-    return response;
   }
 
   public JSONObject buildJson(JSONObject res, String status) {

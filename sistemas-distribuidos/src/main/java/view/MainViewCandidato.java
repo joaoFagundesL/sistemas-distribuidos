@@ -6,12 +6,17 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+
+import org.json.JSONObject;
 
 import modelo.Candidato;
 
@@ -21,15 +26,17 @@ public class MainViewCandidato {
 	JButton btnVoltar = new JButton("Voltar");
 	CardLayout cl = new CardLayout();
 
-	public MainViewCandidato(JFrame loginFrame, Candidato c) {
+  JSONObject response = new JSONObject();
+
+	public MainViewCandidato(LoginView loginClass, Candidato c) {
 		JFrame frame = new JFrame("Sistema");
-		initComponents(frame, loginFrame, c);
+		initComponents(frame, loginClass, c);
 		frame.setBounds(100, 100, 670, 485);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 	}
 
-	public void initComponents(JFrame frame, JFrame loginFrame, Candidato c) {
+	public void initComponents(JFrame frame, LoginView loginClass, Candidato c) {
 		final CandidatoViewTeste clienteView = new CandidatoViewTeste(c);
 
 		final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -38,6 +45,7 @@ public class MainViewCandidato {
 		panelCont.setLayout(cl);
 		panelCont.add(panelFirst, "1");
 		
+    
 		tabbedPane.setBounds(219, -88, 573, 656);
 		panelFirst.add(tabbedPane);
 		
@@ -97,21 +105,20 @@ public class MainViewCandidato {
 		lblSistemaFaculdade.setForeground(Color.WHITE);
 		lblSistemaFaculdade.setBounds(33, 12, 161, 46);
 		panel_2.add(lblSistemaFaculdade);
-		
+
 		JButton btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loginFrame.setVisible(true);
-				frame.dispose();
-			}
-		});
-		btnLogout.setForeground(Color.WHITE);
-		btnLogout.setBackground(Color.DARK_GRAY);
-		btnLogout.setBounds(23, 319, 171, 27);
-		panel_2.add(btnLogout);
-		
-		frame.getContentPane().add(panelCont);
-		
-	}
+        loginClass.frame.setVisible(true);
+        frame.dispose();
+      }
+    });
+    btnLogout.setForeground(Color.WHITE);
+    btnLogout.setBackground(Color.DARK_GRAY);
+    btnLogout.setBounds(23, 319, 171, 27);
+    panel_2.add(btnLogout);
+
+    frame.getContentPane().add(panelCont);
+  }
 
 }

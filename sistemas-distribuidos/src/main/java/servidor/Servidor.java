@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import cliente.ClientInfo;
 import view.LoginView;
+import view.MainViewCandidato;
 
 public class Servidor extends JFrame {
 
@@ -95,69 +96,54 @@ public class Servidor extends JFrame {
 
   private void startServer(int port) {
     new Thread(() -> {
-      try {
-        ServerSocket serverSocket =  new ServerSocket(port);
-        System.out.println("Servidor iniciado na porta " + port + "\n");
+      try (ServerSocket serverSocket = new ServerSocket(port)) {
         while (true) {
-
           Socket clientSocket = serverSocket.accept();
-          ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-          ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
-
-          String clientMessage = (String) inputStream.readObject();
-
-          ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
-          clientSocket.getPort());
-
-          /* text area */
-          StringBuilder content = new StringBuilder();
-
-          content.append(">> " + client.getIpAddress() + " " + client.getPort() + 
-            ": " + "\n");
-
-          textArea.append(content.toString());
-          textArea.setCaretPosition(textArea.getDocument().getLength()); 
-
-          /* adiciona cliente no hash */
-          connectedClients.add(client);
-          updateConnectedUsersList();
-
-          handleOperation(clientMessage, outputStream);
-
-          /* escrevendo o set no object, caso eu quisesse escrever mais coisas é só criar
-                     * uma classe, reuno as informacoes, chamo o construtor e depois escrevo out.writeObject(dataWrapper);
-                     *  class DataWrapper implements Serializable {
-                private Set<String> stringSet;
-                private String message;
-                public DataWrapper(Set<String> stringSet, String message) {
-                    this.stringSet = stringSet;
-                    this.message = message; }
-                public Set<String> getStringSet() { return stringSet;}
-                public String getMessage() {return message;}
-            }  
-                     *  */
-          // outputStream.writeObject(connectedClients);
-          // outputStream.flush();
-
-          // outputStream.close();
-          // inputStream.close();
-          // clientSocket.close();
+          new Thread(() -> handleClient(clientSocket)).start();
         }
-      } catch (IOException | ClassNotFoundException e) {
+      } catch (IOException e) {
         e.printStackTrace();
       }
     }).start();
   }
 
-  private JSONObject handleOperation(String clientMessage, ObjectOutputStream outputStream) {
+  private void handleClient(Socket clientSocket) {
+    try (
+    ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+    ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream())
+  ) {
+      while (true) {
+          String clientMessage = (String) inputStream.readObject();
+          System.out.println("Received from client: " + clientMessage);
+
+          ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
+            clientSocket.getPort());
+
+          SwingUtilities.invokeLater(() -> {
+            textArea.append(">> " + client.getIpAddress() + " " + client.getPort() + ": \n");
+          });
+
+          connectedClients.add(client);
+          updateConnectedUsersList();
+
+          handleOperation(clientMessage, outputStream);
+      }
+    } catch (IOException | ClassNotFoundException e) {
+      System.out.println("FIM");
+      // e.printStackTrace();
+    }
+  } 
+
+  @SuppressWarnings("null")
+private JSONObject handleOperation(String clientMessage, ObjectOutputStream outputStream) {
     JSONObject jsonMessage = new JSONObject(clientMessage);
     String operation = jsonMessage.getString("operation");
 
     JSONObject jsonResponse = null;
+    LoginView lv = null;
 
-    System.out.println(operation);
     if (operation.equals("LOGIN_CANDIDATE")) {
-      new LoginView(jsonMessage, new LoginView.LoginCallback() {
+      lv = new LoginView(jsonMessage, new LoginView.LoginCallback() {
         public void onLoginCompleted(JSONObject response) {
           System.out.println("JSON RESPONSE: " + response);
           try {
@@ -168,9 +154,30 @@ public class Servidor extends JFrame {
           }
         }
       });
+
+    }else if (operation.equals("LOGOUT_CANDIDATE")) {
+      if (lv.isLogout()) {
+      System.out.println("ENTROU");
+        jsonResponse = buildLogoutJson();
+        System.out.println(jsonResponse);
+        try {
+          outputStream.writeObject(jsonResponse.toString());
+          outputStream.flush();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      } 
     } 
 
     return jsonResponse;
+  }
+
+  private JSONObject buildLogoutJson() {
+    JSONObject json = new JSONObject();
+    json.put("operation", "LOGOUT_CANDIDATE");
+    JSONObject data = new JSONObject();
+    json.put("data", data);
+    return json;
   }
 
   private void updateConnectedUsersList() {
