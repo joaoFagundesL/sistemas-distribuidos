@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ObjectOutputStream;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -26,20 +27,24 @@ import org.json.JSONObject;
 public class LoginView {
 
 	JSONObject jsonMessage = new JSONObject();
+  JSONObject response = new JSONObject();
 	JPanel panelCont = new JPanel();
 	JPanel panelFirst = new JPanel();
 	JButton btnVoltar = new JButton("Voltar");
 	CardLayout cl = new CardLayout();
 	private JTextField textField;
 	private JPasswordField passwordField;
+
+  private LoginCallback callback;
 	
 	@SuppressWarnings("rawtypes")
 	JComboBox comboBox = new JComboBox();
 
 	JFrame frame = new JFrame("Sistema");
 	
-	public LoginView(JSONObject jsonMessage) {
+	public LoginView(JSONObject jsonMessage, LoginCallback callback) {
 		this.jsonMessage = jsonMessage;
+    this.callback = callback;
 		initComponents(frame);
 		frame.setBounds(100, 100, 435, 345);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -129,13 +134,36 @@ public class LoginView {
 		Candidato c = fController.validarLogin(textField.getText(), String.valueOf(passwordField.getPassword()));
 		if(c == null) {
 			JFrame frame = new JFrame("Erro");
+
+      buildJson(response, "FAILURE");
+
 			JOptionPane.showMessageDialog(frame, "Login ou Senha inválidos!");
 		} else {				
 			frame.setVisible(false);
+
+      buildJson(response, "SUCCESS");
+      callback.onLoginCompleted(response); // Chama o callback com o JSON de resposta
+
 			System.out.println(c.getUsuario().getNome());
-			 new MainViewCandidato(frame, c);
+			new MainViewCandidato(frame, c);
 		}
 	}
+
+  public interface LoginCallback {
+    void onLoginCompleted(JSONObject response);
+  }
+
+  public JSONObject getResponse() {
+    return response;
+  }
+
+  public JSONObject buildJson(JSONObject res, String status) {
+    res.put("operation", "LOGIN_CANDIDATE");
+    res.put("status", status);
+    JSONObject data = new JSONObject();
+    res.put("data", data);
+    return res;
+  }
 	
 //	public void logarFuncionario() {
 //		ProfessorController adController = new ProfessorController();
