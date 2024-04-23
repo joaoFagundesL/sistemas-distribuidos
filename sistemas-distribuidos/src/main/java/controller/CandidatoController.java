@@ -5,23 +5,30 @@ import modelo.Usuario;
 
 public class CandidatoController {
 	CandidatoDAO dao = new CandidatoDAO();
-	
-	public Candidato validarLogin(String usuario, String senha) {
+
+  public Boolean isUserValid(String usuario) {
 		Candidato c = dao.consultarPeloUser(usuario);
-		if(c == null) {
-			return null;
-		} else {
-			String passHash = c.getUsuario().getSenha();
-			System.out.println(passHash + " " + senha);
-			if(senha.equals(passHash)){
-				System.out.println("valid!");
-				return c;
-			} else {
-				System.out.println("not valid!");
-				return null;
-			}
-		}
-	}
+
+    if(c == null) {
+      return false;
+    }
+    return true;
+  }
+
+  public Boolean isPasswordValid(String usuario, String senha) {
+		Candidato c = dao.consultarPeloUser(usuario);
+
+    String passHash = c.getUsuario().getSenha();
+    if(!senha.equals(passHash)) {
+      return false;
+    }
+    return true;
+  }
+
+  public Candidato getCandidadoLogin(String usuario) {
+		Candidato c = dao.consultarPeloUser(usuario);
+    return c;
+  }
 	
 	public Candidato insert(Usuario u) {
 		CandidatoDAO cdao = new CandidatoDAO();

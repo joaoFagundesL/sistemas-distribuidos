@@ -96,19 +96,18 @@ public class Servidor extends JFrame {
   private void startServer(int port) {
     new Thread(() -> {
       try {
-        ServerSocket serverSocket = new ServerSocket(port);
+        ServerSocket serverSocket =  new ServerSocket(port);
         System.out.println("Servidor iniciado na porta " + port + "\n");
-
         while (true) {
+
           Socket clientSocket = serverSocket.accept();
           ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
           ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
 
           String clientMessage = (String) inputStream.readObject();
-          handleOperation(clientMessage);
 
           ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
-            clientSocket.getPort());
+          clientSocket.getPort());
 
           /* text area */
           StringBuilder content = new StringBuilder();
@@ -123,6 +122,8 @@ public class Servidor extends JFrame {
           connectedClients.add(client);
           updateConnectedUsersList();
 
+          handleOperation(clientMessage, outputStream);
+
           /* escrevendo o set no object, caso eu quisesse escrever mais coisas é só criar
                      * uma classe, reuno as informacoes, chamo o construtor e depois escrevo out.writeObject(dataWrapper);
                      *  class DataWrapper implements Serializable {
@@ -135,12 +136,12 @@ public class Servidor extends JFrame {
                 public String getMessage() {return message;}
             }  
                      *  */
-          outputStream.writeObject(connectedClients);
-          outputStream.flush();
+          // outputStream.writeObject(connectedClients);
+          // outputStream.flush();
 
-          outputStream.close();
-          inputStream.close();
-          clientSocket.close();
+          // outputStream.close();
+          // inputStream.close();
+          // clientSocket.close();
         }
       } catch (IOException | ClassNotFoundException e) {
         e.printStackTrace();
@@ -148,21 +149,28 @@ public class Servidor extends JFrame {
     }).start();
   }
 
-  private void handleOperation(String clientMessage) {
+  private JSONObject handleOperation(String clientMessage, ObjectOutputStream outputStream) {
     JSONObject jsonMessage = new JSONObject(clientMessage);
     String operation = jsonMessage.getString("operation");
-    
-    JSONObject jsonResponse = new JSONObject();
+
+    JSONObject jsonResponse = null;
 
     System.out.println(operation);
     if (operation.equals("LOGIN_CANDIDATE")) {
-      LoginView lv = new LoginView(jsonMessage, new LoginView.LoginCallback() {
+      new LoginView(jsonMessage, new LoginView.LoginCallback() {
         public void onLoginCompleted(JSONObject response) {
           System.out.println("JSON RESPONSE: " + response);
+          try {
+            outputStream.writeObject(response.toString());
+            outputStream.flush();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         }
       });
-      jsonResponse = lv.getResponse();
     } 
+
+    return jsonResponse;
   }
 
   private void updateConnectedUsersList() {

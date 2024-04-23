@@ -130,24 +130,36 @@ public class LoginView {
 	
 	public void logarCandidato() {
 		CandidatoController fController = new CandidatoController();
-		System.out.println( String.valueOf(passwordField.getPassword()));
-		Candidato c = fController.validarLogin(textField.getText(), String.valueOf(passwordField.getPassword()));
-		if(c == null) {
-			JFrame frame = new JFrame("Erro");
+  
+    String userName = textField.getText();
+    String senha = String.valueOf(passwordField.getPassword());
 
-      buildJson(response, "FAILURE");
 
-			JOptionPane.showMessageDialog(frame, "Login ou Senha inválidos!");
-		} else {				
-			frame.setVisible(false);
+    if (!fController.isUserValid(userName)) {
+			JFrame frame = new JFrame("Invalid User!");
+      buildJson(response, "USER_NOT_FOUND");
+      callback.onLoginCompleted(response);
+
+			JOptionPane.showMessageDialog(frame, "User Inválido!");
+    }
+
+    else if (!fController.isPasswordValid(userName, senha)) {
+			JFrame frame = new JFrame("Invalid password!");
+      buildJson(response, "INVALID_PASSWORD");
+      callback.onLoginCompleted(response);
+
+			JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+    }
+
+    else {				
+      frame.setVisible(false);
 
       buildJson(response, "SUCCESS");
-      callback.onLoginCompleted(response); // Chama o callback com o JSON de resposta
+      callback.onLoginCompleted(response);
 
-			System.out.println(c.getUsuario().getNome());
-			new MainViewCandidato(frame, c);
-		}
-	}
+      new MainViewCandidato(frame, fController.getCandidadoLogin(userName));
+    }
+  }
 
   public interface LoginCallback {
     void onLoginCompleted(JSONObject response);

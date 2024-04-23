@@ -5,12 +5,16 @@
 	<persistence-unit name="jpa-project" transaction-type="RESOURCE_LOCAL">
 		<properties>
 			<property name="javax.persistence.jdbc.url"
-				value="jdbc:mysql://localhost:3306/db_sd?useSSL=FALSE&amp;serverTimezone=UTC" />
+				value="jdbc:mysql://localhost:3306/db_sistemas?useSSL=FALSE&amp;serverTimezone=UTC" />
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.user" value="juca" />
 			<property name="javax.persistence.jdbc.password" value="hack09exe" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
+			
+			<!--No linux tava dando erro quando usava outra propriedade que nao fosse
+			none. Aqui precisa estar com o banco criado, da para mudar aqui para create e depois
+			usar o none uma vez criado. Com update nao da certo (linux) -->
+			<property name="hibernate.hbm2ddl.auto" value="none" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
 		</properties>
 	</persistence-unit>
 </persistence>
