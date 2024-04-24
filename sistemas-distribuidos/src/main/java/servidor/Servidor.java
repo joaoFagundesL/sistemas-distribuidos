@@ -16,10 +16,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.DefaultCaret;
 
 import org.json.JSONObject;
 
@@ -89,7 +91,10 @@ public class Servidor extends JFrame {
     textArea = new JTextArea();
     textArea.setEditable(false); 
     textArea.setBounds(20, 108, 280, 198);
-    contentPane.add(textArea);
+
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    scrollPane.setBounds(20, 108, 280, 198);
+    contentPane.add(scrollPane); 
 
     connectedClients = new HashSet<>();
   }
@@ -113,27 +118,34 @@ public class Servidor extends JFrame {
     ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream())
   ) {
       while (true) {
-          String clientMessage = (String) inputStream.readObject();
-          System.out.println("Received from client: " + clientMessage);
+        String clientMessage = (String) inputStream.readObject();
+        // System.out.println("Received from client: " + clientMessage);
 
-          ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
-            clientSocket.getPort());
+        JSONObject jsonMessage = new JSONObject(clientMessage);
+        String formattedMessage = jsonMessage.toString(4);
 
-          SwingUtilities.invokeLater(() -> {
-            textArea.append(">> " + client.getIpAddress() + " " + client.getPort() + ": \n");
-          });
+        ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
+          clientSocket.getPort());
 
-          connectedClients.add(client);
-          updateConnectedUsersList();
 
-          handleOperation(clientMessage, outputStream);
+        SwingUtilities.invokeLater(() -> {
+          textArea.append(">> " + client.getIpAddress() + " " + client.getPort() + ": \n");
+          textArea.append(formattedMessage + "\n\n"); 
+          DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+          caret.setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
+        });
+
+        connectedClients.add(client);
+        updateConnectedUsersList();
+
+        handleOperation(clientMessage, outputStream);
       }
     } catch (IOException | ClassNotFoundException e) {
       System.out.println("FIM");
     }
   } 
 
-private JSONObject handleOperation(String clientMessage, ObjectOutputStream outputStream) {
+  private JSONObject handleOperation(String clientMessage, ObjectOutputStream outputStream) {
     JSONObject jsonMessage = new JSONObject(clientMessage);
     String operation = jsonMessage.getString("operation");
 
