@@ -130,20 +130,17 @@ public class Servidor extends JFrame {
       }
     } catch (IOException | ClassNotFoundException e) {
       System.out.println("FIM");
-      // e.printStackTrace();
     }
   } 
 
-  @SuppressWarnings("null")
 private JSONObject handleOperation(String clientMessage, ObjectOutputStream outputStream) {
     JSONObject jsonMessage = new JSONObject(clientMessage);
     String operation = jsonMessage.getString("operation");
 
     JSONObject jsonResponse = null;
-    LoginView lv = null;
 
     if (operation.equals("LOGIN_CANDIDATE")) {
-      lv = new LoginView(jsonMessage, new LoginView.LoginCallback() {
+      new LoginView(jsonMessage, new LoginView.LoginCallback() {
         public void onLoginCompleted(JSONObject response) {
           System.out.println("JSON RESPONSE: " + response);
           try {
@@ -155,18 +152,26 @@ private JSONObject handleOperation(String clientMessage, ObjectOutputStream outp
         }
       });
 
-    }else if (operation.equals("LOGOUT_CANDIDATE")) {
-      if (lv.isLogout()) {
-      System.out.println("ENTROU");
-        jsonResponse = buildLogoutJson();
-        System.out.println(jsonResponse);
+    } else if (operation.equals("LOGOUT_CANDIDATE")) {
+      jsonResponse = buildLogoutJson();
+      System.out.println(jsonResponse);
+
+      // esperar o usuario fazer o logout, verifica a cada 0.1s
+      while (!MainViewCandidato.getInstance().getLogout()) {
         try {
-          outputStream.writeObject(jsonResponse.toString());
-          outputStream.flush();
-        } catch (IOException e) {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
           e.printStackTrace();
         }
-      } 
+      }
+
+      // depois que o logout foi feito entao pode enviar a mensagem para o cliente
+      try {
+        outputStream.writeObject(jsonResponse.toString());
+        outputStream.flush();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     } 
 
     return jsonResponse;

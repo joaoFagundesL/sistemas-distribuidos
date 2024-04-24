@@ -1,14 +1,10 @@
 package view;
-
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,6 +17,17 @@ import org.json.JSONObject;
 import modelo.Candidato;
 
 public class MainViewCandidato {
+  
+  /*
+   * SINGLETON TEST
+   * */
+
+
+  private static MainViewCandidato instance = null;
+
+
+  /* -------------------------------- */
+  
 	JPanel panelCont = new JPanel();
 	JPanel panelFirst = new JPanel();
 	JButton btnVoltar = new JButton("Voltar");
@@ -28,16 +35,35 @@ public class MainViewCandidato {
 
   JSONObject response = new JSONObject();
 
-	public MainViewCandidato(LoginView loginClass, Candidato c) {
-		JFrame frame = new JFrame("Sistema");
-		initComponents(frame, loginClass, c);
-		frame.setBounds(100, 100, 670, 485);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setVisible(true);
+  JFrame frame;
+
+  Boolean isLogout = false;
+
+	public MainViewCandidato() {
 	}
 
-	public void initComponents(JFrame frame, LoginView loginClass, Candidato c) {
+  public static MainViewCandidato getInstance() {
+    if (instance == null) {
+      instance = new MainViewCandidato();
+    }
+    return instance;
+  }
+
+  public Boolean getLogout() {
+    return isLogout;
+  }
+
+	public void initComponents(LoginView loginClass, Candidato c) {
 		final CandidatoViewTeste clienteView = new CandidatoViewTeste(c);
+
+
+    if (frame == null || !frame.isVisible()) {
+      isLogout = false;
+      frame = new JFrame("Sistema");
+      frame.setBounds(100, 100, 670, 485);
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setVisible(true);
+    }
 
 		final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		panelFirst.setLayout(null);
@@ -111,6 +137,7 @@ public class MainViewCandidato {
 			public void actionPerformed(ActionEvent e) {
         loginClass.frame.setVisible(true);
         frame.dispose();
+        isLogout = true;
       }
     });
     btnLogout.setForeground(Color.WHITE);

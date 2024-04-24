@@ -26,8 +26,6 @@ import org.json.JSONObject;
 
 public class LoginView {
 
-  private boolean isLogout = false;
-
 	JSONObject jsonMessage = new JSONObject();
   JSONObject response = new JSONObject();
 	JPanel panelCont = new JPanel();
@@ -108,58 +106,50 @@ public class LoginView {
 				
 				else {
 					erroSelecao();
-				}	
-			}
-		});
-		btnNewButton_1.setForeground(Color.BLACK);
-		btnNewButton_1.setBackground(UIManager.getColor("Button.background"));
-		btnNewButton_1.setBounds(118, 192, 186, 27);
-		panelFirst.add(btnNewButton_1);
-		
-		JButton btnNewButton = new JButton("Cadastrar");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CadastrarView cv = new CadastrarView();
-				cv.setVisible(true);
-			}
-		});
-		btnNewButton.setBackground(UIManager.getColor("Button.background"));
-		btnNewButton.setForeground(Color.BLACK);
-		btnNewButton.setBounds(118, 230, 186, 27);
-		panelFirst.add(btnNewButton);
-		frame.getContentPane().add(panelCont);
-		
-	}
+        }	
+      }
+    });
+    btnNewButton_1.setForeground(Color.BLACK);
+    btnNewButton_1.setBackground(UIManager.getColor("Button.background"));
+    btnNewButton_1.setBounds(118, 192, 186, 27);
+    panelFirst.add(btnNewButton_1);
 
-    public boolean isLogout() {
-        return isLogout;
-    }
+    JButton btnNewButton = new JButton("Cadastrar");
+    btnNewButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        CadastrarView cv = new CadastrarView();
+        cv.setVisible(true);
+      }
+    });
+    btnNewButton.setBackground(UIManager.getColor("Button.background"));
+    btnNewButton.setForeground(Color.BLACK);
+    btnNewButton.setBounds(118, 230, 186, 27);
+    panelFirst.add(btnNewButton);
+    frame.getContentPane().add(panelCont);
 
-    public void setLogout(boolean logout) {
-        isLogout = logout;
-    }
-	
-	public void logarCandidato() {
-		CandidatoController fController = new CandidatoController();
-  
+  }
+
+  public void logarCandidato() {
+    CandidatoController fController = new CandidatoController();
+
     String userName = textField.getText();
     String senha = String.valueOf(passwordField.getPassword());
 
 
     if (!fController.isUserValid(userName)) {
-			JFrame frame = new JFrame("Invalid User!");
+      JFrame frame = new JFrame("Invalid User!");
       buildJson(response, "USER_NOT_FOUND");
       callback.onLoginCompleted(response);
 
-			JOptionPane.showMessageDialog(frame, "User Inválido!");
+      JOptionPane.showMessageDialog(frame, "User Inválido!");
     }
 
     else if (!fController.isPasswordValid(userName, senha)) {
-			JFrame frame = new JFrame("Invalid password!");
+      JFrame frame = new JFrame("Invalid password!");
       buildJson(response, "INVALID_PASSWORD");
       callback.onLoginCompleted(response);
 
-			JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+      JOptionPane.showMessageDialog(frame, "Senha Inválida!");
     }
 
     else {				
@@ -168,7 +158,9 @@ public class LoginView {
       buildJson(response, "SUCCESS");
       callback.onLoginCompleted(response);
 
-      new MainViewCandidato(this, fController.getCandidadoLogin(userName));
+      // new MainViewCandidato(this, fController.getCandidadoLogin(userName));
+
+      MainViewCandidato.getInstance().initComponents(this, fController.getCandidadoLogin(userName));
     }
   }
 
@@ -183,23 +175,23 @@ public class LoginView {
     res.put("data", data);
     return res;
   }
-	
-//	public void logarFuncionario() {
-//		ProfessorController adController = new ProfessorController();
-//		Professor p = adController.validarLogin(textField.getText(), String.valueOf(passwordField.getPassword()));
-//		
-//		if(p == null) {
-//			JFrame frame = new JFrame("Erro");
-//			JOptionPane.showMessageDialog(frame, "Login ou Senha inválidos!");
-//		} else {				
-//			frame.dispose();
-//			frame.setVisible(false);
-//			new ProfessorMainView(p);
-//		}
-//	}
-	
-	public void erroSelecao() {
-		JFrame frame = new JFrame("Erro");
-		JOptionPane.showMessageDialog(frame, "É preciso selecionar uma opção!");
-	}
+
+  //	public void logarFuncionario() {
+  //		ProfessorController adController = new ProfessorController();
+  //		Professor p = adController.validarLogin(textField.getText(), String.valueOf(passwordField.getPassword()));
+  //		
+  //		if(p == null) {
+  //			JFrame frame = new JFrame("Erro");
+  //			JOptionPane.showMessageDialog(frame, "Login ou Senha inválidos!");
+  //		} else {				
+  //			frame.dispose();
+  //			frame.setVisible(false);
+  //			new ProfessorMainView(p);
+  //		}
+  //	}
+
+  public void erroSelecao() {
+    JFrame frame = new JFrame("Erro");
+    JOptionPane.showMessageDialog(frame, "É preciso selecionar uma opção!");
+  }
 }
