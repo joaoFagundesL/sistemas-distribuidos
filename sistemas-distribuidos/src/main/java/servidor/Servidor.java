@@ -30,6 +30,7 @@ import controller.CandidatoController;
 import controller.UsuarioController;
 import dao.UsuarioDAO;
 import modelo.Usuario;
+import utitlity.EmailValidator;
 
 public class Servidor extends JFrame {
 
@@ -186,7 +187,10 @@ public class Servidor extends JFrame {
       String senha = data.getString("password");
       String nome = data.getString("name");
 
-      if (dao.consultarPeloEmail(email) == null) {
+      EmailValidator emailValidator = new EmailValidator();
+      if (!emailValidator.isValidEmail(email)) {
+        buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL");
+      } else if (dao.consultarPeloEmail(email) == null) {
         UsuarioController ucontroller = new UsuarioController();
         Usuario u = ucontroller.insert(nome, email, "teste", senha);
 

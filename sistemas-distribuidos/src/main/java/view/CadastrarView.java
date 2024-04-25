@@ -15,10 +15,6 @@ import javax.swing.border.EmptyBorder;
 import org.json.JSONObject;
 
 import cliente.Client;
-import controller.CandidatoController;
-import controller.UsuarioController;
-import dao.UsuarioDAO;
-import modelo.Usuario;
 //import utitlity.SenhaHash;
 
 public class CadastrarView extends JFrame {
@@ -76,6 +72,7 @@ public class CadastrarView extends JFrame {
 				String email = emailField.getText();
         Integer control = Integer.parseInt(controlField.getText());
 
+
         JSONObject request = new JSONObject();
         JSONObject response = new JSONObject();
 
@@ -97,6 +94,7 @@ public class CadastrarView extends JFrame {
           } else {
             JFrame frame = new JFrame("Success!");
             JOptionPane.showMessageDialog(frame, "Cadastro realizado!");
+            dispose();
           }
 
         } catch(IOException err) {
