@@ -27,9 +27,11 @@ import org.json.JSONObject;
 
 import cliente.ClientInfo;
 import controller.CandidatoController;
+import controller.EmpresaController;
 import controller.UsuarioController;
 import dao.UsuarioDAO;
 import modelo.Usuario;
+import modelo.Empresa;
 import utitlity.EmailValidator;
 
 public class Servidor extends JFrame {
@@ -153,54 +155,13 @@ public class Servidor extends JFrame {
     JSONObject jsonResponse = new JSONObject();
 
     if (operation.equals("LOGIN_CANDIDATE")) {
-      CandidatoController fController = new CandidatoController();
-      JSONObject data = jsonMessage.getJSONObject("data");
-
-      String email = data.getString("email");
-      String senha = data.getString("password");
-
-      if (!fController.isUserValid(email)) {
-        buildJsonLogin(jsonResponse, "USER_NOT_FOUND");
-      }
-
-      else if (!fController.isPasswordValid(email, senha)) {
-        buildJsonLogin(jsonResponse, "INVALID_PASSWORD");
-      }
-
-      else {				
-        buildJsonLogin(jsonResponse, "SUCCESS");
-        // new MainViewCandidato(this, fController.getCandidadoLogin(userName));
-      } 
-    }
-
-    else if (operation.equals("LOGOUT_CANDIDATE")) {
+      loginCandidato(jsonMessage, jsonResponse); 
+    } else if (operation.equals("LOGOUT_CANDIDATE")) {
       buildLogoutJson(jsonResponse);
-    }
-
-    else if (operation.equals("SIGNUP_CANDIDATE")) {
-
-      UsuarioDAO dao = new UsuarioDAO();
-
-      JSONObject data = jsonMessage.getJSONObject("data");
-
-      String email = data.getString("email");
-      String senha = data.getString("password");
-      String nome = data.getString("name");
-
-      EmailValidator emailValidator = new EmailValidator();
-      if (!emailValidator.isValidEmail(email)) {
-        buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL");
-      } else if (dao.consultarPeloEmail(email) == null) {
-        UsuarioController ucontroller = new UsuarioController();
-        Usuario u = ucontroller.insert(nome, email, senha);
-
-        CandidatoController ccontroller = new CandidatoController();
-        ccontroller.insert(u);
-
-        buildJsonSignupCandidate(jsonResponse, "SUCCESS");
-      } else {
-        buildJsonSignupCandidate(jsonResponse, "USER_EXISTS");
-      }
+    } else if (operation.equals("SIGNUP_CANDIDATE")) {
+      signupCandidato(jsonMessage, jsonResponse);
+    } else if (operation.equals("SIGNUP_RECRUITER")) {
+      signupRecruiter(jsonMessage, jsonResponse);
 
     } else {
       buildInvalidOperation(jsonResponse, operation);
@@ -214,10 +175,91 @@ public class Servidor extends JFrame {
     }
   }
 
+
+  private void loginCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
+    CandidatoController fController = new CandidatoController();
+    JSONObject data = jsonMessage.getJSONObject("data");
+
+    String email = data.getString("email");
+    String senha = data.getString("password");
+
+    if (!fController.isUserValid(email)) {
+      buildJsonLogin(jsonResponse, "USER_NOT_FOUND");
+    }
+
+    else if (!fController.isPasswordValid(email, senha)) {
+      buildJsonLogin(jsonResponse, "INVALID_PASSWORD");
+    } 
+
+    else {				
+      buildJsonLogin(jsonResponse, "SUCCESS");
+    } 
+  }
+
+  private void signupCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
+    EmailValidator emailValidator = new EmailValidator();
+    UsuarioDAO dao = new UsuarioDAO();
+    JSONObject data = jsonMessage.getJSONObject("data");
+
+    String email = data.getString("email");
+    String senha = data.getString("password");
+    String nome = data.getString("name");
+
+    if (!emailValidator.isValidEmail(email)) {
+      buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL");
+    } else if (dao.consultarPeloEmail(email) == null) {
+      UsuarioController ucontroller = new UsuarioController();
+      Usuario u = ucontroller.insert(nome, email, senha);
+
+      CandidatoController ccontroller = new CandidatoController();
+      ccontroller.insert(u);
+
+      buildJsonSignupCandidate(jsonResponse, "SUCCESS");
+    } else {
+      buildJsonSignupCandidate(jsonResponse, "USER_EXISTS");
+    }
+
+  }
+
+  private void signupRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
+    EmailValidator emailValidator = new EmailValidator();
+    UsuarioDAO dao = new UsuarioDAO();
+    JSONObject data = jsonMessage.getJSONObject("data");
+
+    String email = data.getString("email");
+    String senha = data.getString("password");
+    String nome = data.getString("name");
+    String branch = data.getString("branch");
+    String descricao = data.getString("description");
+
+    if (!emailValidator.isValidEmail(email)) {
+      buildJsonSignupRecruiter(jsonResponse, "INVALID_EMAIL");
+
+    } else if (dao.consultarPeloEmail(email) == null) {
+      UsuarioController ucontroller = new UsuarioController();
+      Usuario u = ucontroller.insert(nome, email, senha);
+      EmpresaController econtroller = new EmpresaController();
+      Empresa e = econtroller.insert(u, descricao, branch);
+      buildJsonSignupRecruiter(jsonResponse, "SUCCESS");
+
+    } else {
+      buildJsonSignupRecruiter(jsonResponse, "USER_EXISTS");
+    }
+  }
+
   private JSONObject buildJsonLogin(JSONObject res, String status) {
     res.put("operation", "LOGIN_CANDIDATE");
     res.put("status", status);
     JSONObject data = new JSONObject();
+    res.put("data", data);
+    return res;
+  }
+
+  private JSONObject buildJsonSignupRecruiter(JSONObject res, String status) {
+    res.put("operation", "SIGNUP_RECRUITER");
+    res.put("status", status);
+    JSONObject data = new JSONObject();
+    data.put("", "");
     res.put("data", data);
     return res;
   }

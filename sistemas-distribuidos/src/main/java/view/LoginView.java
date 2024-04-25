@@ -42,7 +42,7 @@ public class LoginView {
     // this.callback = callback;
     initComponents(frame);
     // this.client = client;
-    frame.setBounds(100, 100, 435, 345);
+    frame.setBounds(100, 100, 438, 345);
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.setVisible(true);
   }
@@ -105,10 +105,10 @@ public class LoginView {
     btnNewButton_1.setBounds(118, 192, 186, 27);
     panelFirst.add(btnNewButton_1);
 
-    JButton btnNewButton = new JButton("Cadastrar");
+    JButton btnNewButton = new JButton("SignUp Candidato");
     btnNewButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        CadastrarView cv = new CadastrarView();
+        CadastrarViewCandidato cv = new CadastrarViewCandidato();
         cv.setVisible(true);
       }
     });
@@ -116,6 +116,18 @@ public class LoginView {
     btnNewButton.setForeground(Color.BLACK);
     btnNewButton.setBounds(118, 230, 186, 27);
     panelFirst.add(btnNewButton);
+    
+    JButton btnSignupEmpresa = new JButton("SignUp Empresa");
+    btnSignupEmpresa.addActionListener(new ActionListener() {
+    	public void actionPerformed(ActionEvent e) {
+        CadastrarViewEmpresa ce = new CadastrarViewEmpresa();
+        ce.setVisible(true);
+    	}
+    });
+    btnSignupEmpresa.setForeground(Color.BLACK);
+    btnSignupEmpresa.setBackground(UIManager.getColor("Button.background"));
+    btnSignupEmpresa.setBounds(118, 269, 186, 27);
+    panelFirst.add(btnSignupEmpresa);
     frame.getContentPane().add(panelCont);
 
   }

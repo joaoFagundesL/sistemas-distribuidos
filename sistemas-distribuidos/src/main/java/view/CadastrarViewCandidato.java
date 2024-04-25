@@ -17,19 +17,17 @@ import org.json.JSONObject;
 import cliente.Client;
 //import utitlity.SenhaHash;
 
-public class CadastrarView extends JFrame {
+public class CadastrarViewCandidato extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField nomeField;
 	private JTextField emailField;
 	private JTextField senhaField;
-	private JTextField usuarioField;
-	private JTextField controlField;
 
-	public CadastrarView() {
+	public CadastrarViewCandidato() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 312, 316);
+		setBounds(100, 100, 281, 231);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -37,29 +35,29 @@ public class CadastrarView extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Nome");
-		lblNewLabel.setBounds(47, 50, 46, 14);
+		lblNewLabel.setBounds(33, 50, 46, 14);
 		contentPane.add(lblNewLabel);
 		
 		nomeField = new JTextField();
-		nomeField.setBounds(99, 47, 161, 20);
+		nomeField.setBounds(78, 47, 161, 20);
 		contentPane.add(nomeField);
 		nomeField.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Email");
-		lblNewLabel_1.setBounds(47, 81, 46, 14);
+		lblNewLabel_1.setBounds(33, 81, 46, 14);
 		contentPane.add(lblNewLabel_1);
 		
 		emailField = new JTextField();
-		emailField.setBounds(99, 78, 161, 20);
+		emailField.setBounds(78, 76, 161, 20);
 		contentPane.add(emailField);
 		emailField.setColumns(10);
 		
 		JLabel lblNewLabel_2 = new JLabel("Senha");
-		lblNewLabel_2.setBounds(47, 143, 46, 14);
+		lblNewLabel_2.setBounds(33, 113, 46, 14);
 		contentPane.add(lblNewLabel_2);
 		
 		senhaField = new JTextField();
-		senhaField.setBounds(99, 140, 161, 20);
+		senhaField.setBounds(78, 110, 161, 20);
 		contentPane.add(senhaField);
 		senhaField.setColumns(10);
 		
@@ -99,7 +97,7 @@ public class CadastrarView extends JFrame {
         }
       }
     });
-    btnNewButton.setBounds(47, 223, 89, 23);
+    btnNewButton.setBounds(47, 182, 89, 23);
     contentPane.add(btnNewButton);
 
     JButton btnNewButton_1 = new JButton("Cancelar");
@@ -108,18 +106,8 @@ public class CadastrarView extends JFrame {
         dispose();
       }
     });
-    btnNewButton_1.setBounds(146, 223, 89, 23);
+    btnNewButton_1.setBounds(148, 182, 89, 23);
     contentPane.add(btnNewButton_1);
-
-    usuarioField = new JTextField();
-    usuarioField.setBounds(99, 109, 161, 20);
-    contentPane.add(usuarioField);
-    usuarioField.setColumns(10);
-
-    controlField = new JTextField();
-    controlField.setBounds(176, 171, 84, 20);
-    contentPane.add(controlField);
-    controlField.setColumns(10);
   }
 
   private JSONObject buildSignupCandidate(JSONObject request, String email, String nome, String senha) {

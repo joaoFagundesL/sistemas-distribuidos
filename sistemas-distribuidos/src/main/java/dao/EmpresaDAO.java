@@ -44,12 +44,15 @@ public class EmpresaDAO extends GenericoDAO<Empresa> {
 	public void insertWithQuery(Empresa e) throws Exception {
 		EntityManager em = getEM();
 		
-		Query query = em.createNativeQuery("INSERT INTO Candidato (branch, descricao, usuario_id)"
+		Query query = em.createNativeQuery("INSERT INTO Empresa (branch, descricao, usuario_id)"
 										+ " VALUES (?, ?, ?)");
+
 		em.getTransaction().begin();
 		query.setParameter(1, e.getBranch());
 		query.setParameter(2, e.getDescricao());
 		query.setParameter(3, e.getUsuario().getId());
+
+		System.out.println("BRANCH = " + e.getBranch());
 		
 		query.executeUpdate();
 		em.getTransaction().commit();
