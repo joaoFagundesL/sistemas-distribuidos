@@ -26,6 +26,7 @@ import javax.swing.text.DefaultCaret;
 import org.json.JSONObject;
 
 import cliente.ClientInfo;
+import controller.CandidatoController;
 import view.LoginView;
 import view.MainViewCandidato;
 
@@ -119,14 +120,13 @@ public class Servidor extends JFrame {
   ) {
       while (true) {
         String clientMessage = (String) inputStream.readObject();
-        // System.out.println("Received from client: " + clientMessage);
+        System.out.println("Received from client: " + clientMessage);
 
         JSONObject jsonMessage = new JSONObject(clientMessage);
         String formattedMessage = jsonMessage.toString(4);
 
         ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
           clientSocket.getPort());
-
 
         SwingUtilities.invokeLater(() -> {
           textArea.append(">> " + client.getIpAddress() + " " + client.getPort() + ": \n");
@@ -145,48 +145,78 @@ public class Servidor extends JFrame {
     }
   } 
 
-  private JSONObject handleOperation(String clientMessage, ObjectOutputStream outputStream) {
+  private void handleOperation(String clientMessage, ObjectOutputStream outputStream) {
     JSONObject jsonMessage = new JSONObject(clientMessage);
     String operation = jsonMessage.getString("operation");
-
-    JSONObject jsonResponse = null;
+    JSONObject jsonResponse = new JSONObject();
 
     if (operation.equals("LOGIN_CANDIDATE")) {
-      new LoginView(jsonMessage, new LoginView.LoginCallback() {
-        public void onLoginCompleted(JSONObject response) {
-          System.out.println("JSON RESPONSE: " + response);
-          try {
-            outputStream.writeObject(response.toString());
-            outputStream.flush();
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
-      });
+      CandidatoController fController = new CandidatoController();
+      JSONObject data = jsonMessage.getJSONObject("data");
 
-    } else if (operation.equals("LOGOUT_CANDIDATE")) {
-      jsonResponse = buildLogoutJson();
-      System.out.println(jsonResponse);
+      String email = data.getString("email");
+      String senha = data.getString("password");
 
-      // esperar o usuario fazer o logout, verifica a cada 0.1s
-      while (!MainViewCandidato.getInstance().getLogout()) {
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
+      if (!fController.isUserValid(email)) {
+        // JFrame frame = new JFrame("Invalid User!");
+        buildJsonLogin(jsonResponse, "USER_NOT_FOUND");
+
+        // JOptionPane.showMessageDialog(frame, "User Inválido!");
       }
 
-      // depois que o logout foi feito entao pode enviar a mensagem para o cliente
-      try {
-        outputStream.writeObject(jsonResponse.toString());
-        outputStream.flush();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    } 
+      else if (!fController.isPasswordValid(email, senha)) {
+        // JFrame frame = new JFrame("Invalid password!");
+        buildJsonLogin(jsonResponse, "INVALID_PASSWORD");
 
-    return jsonResponse;
+        // JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+      }
+
+      else {				
+        // frame.setVisible(false);
+
+        buildJsonLogin(jsonResponse, "SUCCESS");
+
+        // new MainViewCandidato(this, fController.getCandidadoLogin(userName));
+      } 
+
+      // else if (operation.equals("LOGOUT_CANDIDATE")) {
+      //   jsonResponse = buildLogoutJson();
+      //   System.out.println(jsonResponse);
+      //
+      //   // esperar o usuario fazer o logout, verifica a cada 0.1s
+      //   while (!MainViewCandidato.getInstance().getLogout()) {
+      //     try {
+      //       Thread.sleep(100);
+      //     } catch (InterruptedException e) {
+      //       e.printStackTrace();
+      //     }
+      //   }
+      //
+      //   // depois que o logout foi feito entao pode enviar a mensagem para o cliente
+      //   try {
+      //     outputStream.writeObject(jsonResponse.toString());
+      //     outputStream.flush();
+      //   } catch (IOException e) {
+      //     e.printStackTrace();
+      //   }
+      // } 
+      //
+    }
+
+    try {
+      outputStream.writeObject(jsonResponse.toString());
+      outputStream.flush();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private JSONObject buildJsonLogin(JSONObject res, String status) {
+    res.put("operation", "LOGIN_CANDIDATE");
+    res.put("status", status);
+    JSONObject data = new JSONObject();
+    res.put("data", data);
+    return res;
   }
 
   private JSONObject buildLogoutJson() {
