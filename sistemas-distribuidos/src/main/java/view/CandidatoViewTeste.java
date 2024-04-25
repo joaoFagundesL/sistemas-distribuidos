@@ -26,19 +26,25 @@ public class CandidatoViewTeste extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	Candidato c;
+	// Candidato c;
 	private JTextField nomeCandidatoField;
 	private JTextField senhaField;
 	private JTextField emailField;
 	private JTable table;
 	private JTextField usuarioTextField;
 	
-	public CandidatoViewTeste(final Candidato c) {
-		this.c = c;
-		initComponents(c);
+	public CandidatoViewTeste(
+    // final Candidato c
+  ) {
+		// this.c = c;
+		initComponents(
+      // c
+    );
 	}
 	
-	public void initComponents(final Candidato c) {
+	public void initComponents(
+    // final Candidato c
+  ) {
 		setLayout(null);
 		setBackground(SystemColor.control);
 		
@@ -106,15 +112,15 @@ public class CandidatoViewTeste extends JPanel {
 				CandidatoController ccontroller = new CandidatoController();
 				UsuarioController ucontroller = new UsuarioController();
 
-				ccontroller.remover(Candidato.class, c.getId());
-				ucontroller.remover(Usuario.class, c.getUsuario().getId());
+				// ccontroller.remover(Candidato.class, c.getId());
+				// ucontroller.remover(Usuario.class, c.getUsuario().getId());
 				
 				JFrame frame = new JFrame("JOptionPane exemplo");
 				JOptionPane.showMessageDialog(frame, "Registro Excluído!");
 				
 				limparTela();
 				
-				setCandidato(c);
+				// setCandidato(c);
 			}
 		});
 		btnRemover_1.setBounds(53, 281, 94, 27);
@@ -139,16 +145,16 @@ public class CandidatoViewTeste extends JPanel {
 				String usuario = usuarioTextField.getText();
 				
 				UsuarioController ucontroller = new UsuarioController();
-				ucontroller.update(c, nome, email, usuario, senha);
+				// ucontroller.update(c, nome, email, usuario, senha);
 				
 				CandidatoDAO cdao = new CandidatoDAO();
-				cdao.update(c, nome, email, usuario, senha);
+				// cdao.update(c, nome, email, usuario, senha);
 				
 				
 				JFrame frame = new JFrame("Mensagem");
 				JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
 
-				setCandidato(c);	
+				// setCandidato(c);	
 			}
 		});
 		btnAtualizar_1.setBounds(157, 281, 98, 27);
@@ -176,8 +182,10 @@ public class CandidatoViewTeste extends JPanel {
 		usuarioTextField.setText("");
 	}
 	
-	public void setCandidato(Candidato c) {
-        this.c = c;
+	public void setCandidato(
+    // Candidato c
+  ) {
+        // this.c = c;
 //        System.out.println(c.getUsuario().getUser());
         popularTabelaCandidato();
     }
@@ -185,23 +193,22 @@ public class CandidatoViewTeste extends JPanel {
 	public void popularTabelaCandidato() {
 		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 		
-		CandidatoDAO cdao = new CandidatoDAO();
-		Candidato can = cdao.consultarPorId(Candidato.class, c.getId());
+		// CandidatoDAO cdao = new CandidatoDAO();
+		// Candidato can = cdao.consultarPorId(Candidato.class, c.getId());
 		
-		
-		if (modelo.getRowCount() > 0) {
-			modelo.setRowCount(0);
-		}
-		
-		if (can == null)
-			return;
-		
-		Object[] arr = new Object[4];
-		arr[0] = can.getUsuario().getNome();
-		arr[1] = can.getUsuario().getEmail();
-		arr[2] = can.getUsuario().getUser();
-		arr[3] = can.getUsuario().getSenha();
-		
-		modelo.addRow(arr);		
+		// if (modelo.getRowCount() > 0) {
+		// 	modelo.setRowCount(0);
+		// }
+		// 
+		// if (can == null)
+			// return;
+		// 
+		// Object[] arr = new Object[4];
+		// arr[0] = can.getUsuario().getNome();
+		// arr[1] = can.getUsuario().getEmail();
+		// arr[2] = can.getUsuario().getUser();
+		// arr[3] = can.getUsuario().getSenha();
+		// 
+		// modelo.addRow(arr);		
 	}
 }

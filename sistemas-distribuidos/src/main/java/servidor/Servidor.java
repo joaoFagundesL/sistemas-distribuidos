@@ -27,8 +27,6 @@ import org.json.JSONObject;
 
 import cliente.ClientInfo;
 import controller.CandidatoController;
-import view.LoginView;
-import view.MainViewCandidato;
 
 public class Servidor extends JFrame {
 
@@ -158,50 +156,23 @@ public class Servidor extends JFrame {
       String senha = data.getString("password");
 
       if (!fController.isUserValid(email)) {
-        // JFrame frame = new JFrame("Invalid User!");
         buildJsonLogin(jsonResponse, "USER_NOT_FOUND");
-
-        // JOptionPane.showMessageDialog(frame, "User Inválido!");
       }
 
       else if (!fController.isPasswordValid(email, senha)) {
-        // JFrame frame = new JFrame("Invalid password!");
         buildJsonLogin(jsonResponse, "INVALID_PASSWORD");
-
-        // JOptionPane.showMessageDialog(frame, "Senha Inválida!");
       }
 
       else {				
-        // frame.setVisible(false);
-
         buildJsonLogin(jsonResponse, "SUCCESS");
-
         // new MainViewCandidato(this, fController.getCandidadoLogin(userName));
       } 
-
-      // else if (operation.equals("LOGOUT_CANDIDATE")) {
-      //   jsonResponse = buildLogoutJson();
-      //   System.out.println(jsonResponse);
-      //
-      //   // esperar o usuario fazer o logout, verifica a cada 0.1s
-      //   while (!MainViewCandidato.getInstance().getLogout()) {
-      //     try {
-      //       Thread.sleep(100);
-      //     } catch (InterruptedException e) {
-      //       e.printStackTrace();
-      //     }
-      //   }
-      //
-      //   // depois que o logout foi feito entao pode enviar a mensagem para o cliente
-      //   try {
-      //     outputStream.writeObject(jsonResponse.toString());
-      //     outputStream.flush();
-      //   } catch (IOException e) {
-      //     e.printStackTrace();
-      //   }
-      // } 
-      //
     }
+
+    else if (operation.equals("LOGOUT_CANDIDATE")) {
+      buildLogoutJson(jsonResponse);
+    } 
+
 
     try {
       outputStream.writeObject(jsonResponse.toString());
@@ -219,8 +190,7 @@ public class Servidor extends JFrame {
     return res;
   }
 
-  private JSONObject buildLogoutJson() {
-    JSONObject json = new JSONObject();
+  private JSONObject buildLogoutJson(JSONObject json) {
     json.put("operation", "LOGOUT_CANDIDATE");
     JSONObject data = new JSONObject();
     json.put("data", data);

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,19 +15,12 @@ import javax.swing.JTabbedPane;
 
 import org.json.JSONObject;
 
+import cliente.Client;
 import modelo.Candidato;
 
 public class MainViewCandidato {
-  
-  /*
-   * SINGLETON TEST
-   * */
-
 
   private static MainViewCandidato instance = null;
-
-
-  /* -------------------------------- */
   
 	JPanel panelCont = new JPanel();
 	JPanel panelFirst = new JPanel();
@@ -53,9 +47,12 @@ public class MainViewCandidato {
     return isLogout;
   }
 
-	public void initComponents(LoginView loginClass, Candidato c) {
-		final CandidatoViewTeste clienteView = new CandidatoViewTeste(c);
-
+	public void initComponents(LoginView loginClass
+    // , Candidato c
+  ) {
+		final CandidatoViewTeste clienteView = new CandidatoViewTeste(
+      // c
+    );
 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;
@@ -82,9 +79,9 @@ public class MainViewCandidato {
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.RED);
 		tabbedPane.addTab("New tab", null, clienteView, null);
-		tabbedPane.addTab("New tab", null, new CandidatoViewTeste(c), null);
-		CandidatoViewTeste clienteView_1 = new CandidatoViewTeste(c);
-		clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
+		// tabbedPane.addTab("New tab", null, new CandidatoViewTeste(c), null);
+		// CandidatoViewTeste clienteView_1 = new CandidatoViewTeste(c);
+		// clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(SystemColor.inactiveCaption);
@@ -136,6 +133,14 @@ public class MainViewCandidato {
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
         loginClass.frame.setVisible(true);
+        JSONObject request = new JSONObject();
+        buildLogoutJson(request);
+        try {
+          JSONObject response = Client.getInstance().sendRequest(request);
+        }catch(IOException err) {
+          err.printStackTrace();
+        }
+
         frame.dispose();
         isLogout = true;
       }
@@ -148,4 +153,10 @@ public class MainViewCandidato {
     frame.getContentPane().add(panelCont);
   }
 
+  private JSONObject buildLogoutJson(JSONObject json) {
+    json.put("operation", "LOGOUT_CANDIDATE");
+    JSONObject data = new JSONObject();
+    json.put("data", data);
+    return json;
+  }
 }

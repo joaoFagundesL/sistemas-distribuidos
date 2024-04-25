@@ -6,8 +6,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,20 +15,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
-import controller.CandidatoController;
-import modelo.Candidato;
 import javax.swing.UIManager;
-
 import org.json.JSONObject;
-
 import cliente.Client;
 
 public class LoginView {
-
-  // JSONObject jsonMessage = new JSONObject();
-  // JSONObject response = new JSONObject();
   JPanel panelCont = new JPanel();
   JPanel panelFirst = new JPanel();
   JButton btnVoltar = new JButton("Voltar");
@@ -38,18 +28,20 @@ public class LoginView {
   private JTextField textField;
   private JPasswordField passwordField;
 
-  Client client;
+  // Client client;
 
   @SuppressWarnings("rawtypes")
   JComboBox comboBox = new JComboBox();
 
   JFrame frame = new JFrame("Sistema");
 
-  public LoginView(Client client) {
+  public LoginView(
+    // Client client
+  ) {
     // this.jsonMessage = jsonMessage;
     // this.callback = callback;
     initComponents(frame);
-    this.client = client;
+    // this.client = client;
     frame.setBounds(100, 100, 435, 345);
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.setVisible(true);
@@ -57,8 +49,6 @@ public class LoginView {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void initComponents(JFrame frame) {
-    // JSONObject data = jsonMessage.getJSONObject("data");
-
     panelFirst.setLayout(null);
     panelFirst.setBackground(new Color(240, 240, 240));
     panelCont.setLayout(cl);
@@ -72,7 +62,6 @@ public class LoginView {
     textField.setBounds(118, 64, 186, 21);
     panelFirst.add(textField);
     textField.setColumns(10);
-    // textField.setText(data.getString("email"));
 
     JLabel lblUsuario = new JLabel("User");
     lblUsuario.setBounds(118, 47, 60, 17);
@@ -90,13 +79,11 @@ public class LoginView {
     passwordField = new JPasswordField();
     passwordField.setBounds(118, 110, 186, 21);
     panelFirst.add(passwordField);
-    // passwordField.setText(data.getString("password"));
-
 
     JButton btnNewButton_1 = new JButton("Login");
     btnNewButton_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        frame.setVisible(false);
+        // frame.setVisible(false);
         // new MainView(frame);
 
         String op = (String) comboBox.getSelectedItem();
@@ -136,45 +123,28 @@ public class LoginView {
   public void logarCandidato() {
     JSONObject request = buildJson();
     JSONObject serverResponse = new JSONObject();
+
     try {
-      serverResponse = client.sendRequest(request);
-      System.out.println("APOS LOGAR, RECEBO" + serverResponse);
+      serverResponse = Client.getInstance().sendRequest(request);
+      String status = (String) serverResponse.get("status");
+
+      if (status.equals("USER_NOT_FOUND")) {
+        JFrame frame = new JFrame("Invalid User!");
+        JOptionPane.showMessageDialog(frame, "User Inválido!");
+      } else if (status.equals("INVALID_PASSWORD")) {
+        JFrame frame = new JFrame("Invalid password!");
+        JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+      } else {
+        frame.setVisible(false);
+        MainViewCandidato.getInstance().initComponents(this);
+      }
+
     } catch(IOException e) {
       e.printStackTrace();
     } 
 
-
-    // CandidatoController fController = new CandidatoController();
-
-    // String userName = textField.getText();
-    // String senha = String.valueOf(passwordField.getPassword());
-    //
-    //
-    // if (!fController.isUserValid(userName)) {
-    //   JFrame frame = new JFrame("Invalid User!");
-    //   // buildJson(response, "USER_NOT_FOUND");
-    //
-    //   JOptionPane.showMessageDialog(frame, "User Inválido!");
-    // }
-    //
-    // else if (!fController.isPasswordValid(userName, senha)) {
-    //   JFrame frame = new JFrame("Invalid password!");
-    //   // buildJson(response, "INVALID_PASSWORD");
-    //
-    //   JOptionPane.showMessageDialog(frame, "Senha Inválida!");
-    // }
-    //
-    // else {				
-    //   frame.setVisible(false);
-    //
-    //   // buildJson(response, "SUCCESS");
-    //
-    //   // new MainViewCandidato(this, fController.getCandidadoLogin(userName));
-    //
-    //   MainViewCandidato.getInstance().initComponents(this, fController.getCandidadoLogin(userName));
   }
- public JSONObject buildJson() {
-
+  public JSONObject buildJson() {
     String userName = textField.getText();
     String senha = String.valueOf(passwordField.getPassword());
 

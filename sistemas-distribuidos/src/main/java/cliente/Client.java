@@ -17,6 +17,9 @@ public class Client {
   private ObjectOutputStream outputStream ;
   private ObjectInputStream inputStream ;
 
+
+  private static Client instance = null;
+
   // private static Client instance = null;
 
   private Client() {
@@ -30,8 +33,7 @@ public class Client {
   }
 
   public static void main(String[] args) {
-    Client client = new Client();
-    LoginView loginView = new LoginView(client);
+    LoginView loginView = new LoginView();
 
     // JSONObject loginRequest = createLoginRequest("joao@gmail.com", "joao");
     // sendRequest(outputStream, loginRequest);
@@ -68,6 +70,14 @@ public class Client {
   public JSONObject processResponse() throws IOException, ClassNotFoundException {
     String response = (String) inputStream.readObject();
     JSONObject jsonResponse = new JSONObject(response);
+    System.out.println("Received from server" + response);
     return jsonResponse;
+  }
+
+  public static Client getInstance() {
+    if (instance == null) {
+      instance = new Client();
+    }
+    return instance;
   }
 }
