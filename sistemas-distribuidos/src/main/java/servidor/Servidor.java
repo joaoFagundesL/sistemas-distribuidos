@@ -27,6 +27,9 @@ import org.json.JSONObject;
 
 import cliente.ClientInfo;
 import controller.CandidatoController;
+import controller.UsuarioController;
+import dao.UsuarioDAO;
+import modelo.Usuario;
 
 public class Servidor extends JFrame {
 
@@ -171,8 +174,30 @@ public class Servidor extends JFrame {
 
     else if (operation.equals("LOGOUT_CANDIDATE")) {
       buildLogoutJson(jsonResponse);
-    } 
+    }
 
+    else if (operation.equals("SIGNUP_CANDIDATE")) {
+
+      UsuarioDAO dao = new UsuarioDAO();
+
+      JSONObject data = jsonMessage.getJSONObject("data");
+
+      String email = data.getString("email");
+      String senha = data.getString("password");
+      String nome = data.getString("name");
+
+      if (dao.consultarPeloEmail(email) == null) {
+        UsuarioController ucontroller = new UsuarioController();
+        Usuario u = ucontroller.insert(nome, email, "teste", senha);
+
+        CandidatoController ccontroller = new CandidatoController();
+        ccontroller.insert(u);
+
+        buildJsonSignupCandidate(jsonResponse, "SUCCESS");
+      } else {
+        buildJsonSignupCandidate(jsonResponse, "USER_EXISTS");
+      }
+    }
 
     try {
       outputStream.writeObject(jsonResponse.toString());
@@ -186,6 +211,15 @@ public class Servidor extends JFrame {
     res.put("operation", "LOGIN_CANDIDATE");
     res.put("status", status);
     JSONObject data = new JSONObject();
+    res.put("data", data);
+    return res;
+  }
+
+  private JSONObject buildJsonSignupCandidate(JSONObject res, String status) {
+    res.put("operation", "SIGNUP_CANDIDATE");
+    res.put("status", status);
+    JSONObject data = new JSONObject();
+    data.put("", "");
     res.put("data", data);
     return res;
   }
@@ -219,3 +253,8 @@ public class Servidor extends JFrame {
     });
   }
 }
+
+
+
+
+

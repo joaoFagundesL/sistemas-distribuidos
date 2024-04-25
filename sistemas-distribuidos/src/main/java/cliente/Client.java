@@ -17,10 +17,7 @@ public class Client {
   private ObjectOutputStream outputStream ;
   private ObjectInputStream inputStream ;
 
-
   private static Client instance = null;
-
-  // private static Client instance = null;
 
   private Client() {
     try {
@@ -34,26 +31,8 @@ public class Client {
 
   public static void main(String[] args) {
     LoginView loginView = new LoginView();
-
-    // JSONObject loginRequest = createLoginRequest("joao@gmail.com", "joao");
-    // sendRequest(outputStream, loginRequest);
-    //
-    // processResponse(inputStream);
-    //
-    // JSONObject logoutRequest = createLogoutRequest();
-    // sendRequest(outputStream, logoutRequest);
-    //
-    // processResponse(inputStream);
-    //
   }
 
-  // public static Client getInstance() {
-  //   if (instance == null) {
-  //     instance = new Client();
-  //   }
-  //   return instance;
-  // }
-  //
   public JSONObject sendRequest(JSONObject request) throws IOException {
     JSONObject serverResponse = new JSONObject();
     outputStream.writeObject(request.toString());
