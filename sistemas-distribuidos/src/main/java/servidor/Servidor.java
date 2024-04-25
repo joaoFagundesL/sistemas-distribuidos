@@ -123,14 +123,18 @@ public class Servidor extends JFrame {
     ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream())
   ) {
       while (true) {
+
+        ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
+          clientSocket.getPort());
+
+        connectedClients.add(client);
+        updateConnectedUsersList();
+
         String clientMessage = (String) inputStream.readObject();
         System.out.println("Received from client: " + clientMessage);
 
         JSONObject jsonMessage = new JSONObject(clientMessage);
         String formattedMessage = jsonMessage.toString(4);
-
-        ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
-          clientSocket.getPort());
 
         SwingUtilities.invokeLater(() -> {
           textArea.append(">> " + client.getIpAddress() + " " + client.getPort() + ": \n");
