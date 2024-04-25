@@ -14,8 +14,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 @NamedQueries({
-	@NamedQuery(name = "Usuario.consultarUser",
-            query = "SELECT u FROM Usuario u WHERE u.user = :user"),
+	@NamedQuery(name = "Usuario.consultarName",
+            query = "SELECT u FROM Usuario u WHERE u.name = :name"),
 	
 	@NamedQuery(name = "Usuario.consultarEmail",
     	query = "SELECT u FROM Usuario u WHERE u.email = :email"),
@@ -30,16 +30,23 @@ public class Usuario extends Pessoa implements Entidade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String user;
     private String senha;
     private String email;
+    private String token;
 
-    public Usuario() {
+    public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Usuario() {
     }
 
-    public Usuario(Integer id, String user, String senha) {
+    public Usuario(Integer id, String senha) {
         this.id = id;
-        this.user = user;
         this.senha = senha;
     }
 
@@ -49,14 +56,6 @@ public class Usuario extends Pessoa implements Entidade {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
     }
 
     public String getEmail() {

@@ -15,18 +15,17 @@ public class Pessoa implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-	private String nome;
+	private String name;
 		
-	
 	/* Construtores */
 	public Pessoa() {
 	}
 
-	public Pessoa(Integer id, String nome) {
+	public Pessoa(Integer id, String name) {
 		super();
 		this.id = id;
 		
-		this.nome = nome;
+		this.name = name;
 	}
 	
 	/* Getters e Setters */
@@ -39,11 +38,11 @@ public class Pessoa implements Serializable {
 	}
 
 	public String getNome() {
-		return nome;
+		return name;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setNome(String name) {
+		this.name = name;
 	}
 
 	

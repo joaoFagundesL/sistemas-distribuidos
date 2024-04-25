@@ -11,20 +11,6 @@ import modelo.Usuario;
 
 public class UsuarioDAO extends GenericoDAO<Usuario>{
 	
-	public Usuario consultarPeloUser(String user) {
-		EntityManager em = getEM();
-		Usuario usuario;
-		try {
-			Query query = em.createNamedQuery("Usuario.consultarUser");
-			query.setParameter("user", user);
-			usuario = (Usuario) query.getSingleResult();
-			
-			return usuario;
-		} catch(NoResultException e) {
-			return null;
-		}
-	}
-	
 	public Usuario consultarPeloEmail(String email) {
 		EntityManager em = getEM();
 		Usuario usuario;
@@ -39,7 +25,7 @@ public class UsuarioDAO extends GenericoDAO<Usuario>{
 		}
 	}
 	
-	public void update(Usuario a, String nome, String email, String usuario, String senha) {
+	public void update(Usuario a, String nome, String email, String senha) {
 		EntityManager em = getEM();
 		
 		em.getTransaction().begin();
@@ -54,9 +40,6 @@ public class UsuarioDAO extends GenericoDAO<Usuario>{
         
         if (senha != null && !senha.isEmpty()) 
             a.setSenha(senha);
-        
-        if (usuario != null && !usuario.isEmpty()) 
-            a.setUser(usuario);
 	
 		em.merge(a);
 		em.getTransaction().commit();
@@ -66,20 +49,19 @@ public class UsuarioDAO extends GenericoDAO<Usuario>{
 	public void insertWithQuery(Usuario usuario) throws Exception {
 		EntityManager em = getEM();
 		
-		Query query = em.createNativeQuery("INSERT INTO Usuario (nome, email, user, senha)"
-										+ " VALUES (?, ?, ?, ?)");
+		Query query = em.createNativeQuery("INSERT INTO Usuario (name, email, senha)"
+										+ " VALUES (?, ?, ?)");
 		em.getTransaction().begin();
 		query.setParameter(1, usuario.getNome());
 		query.setParameter(2, usuario.getEmail());
-		query.setParameter(3, usuario.getUser());
-		query.setParameter(4, usuario.getSenha());
+		query.setParameter(3, usuario.getSenha());
 		
 		query.executeUpdate();
 		
 		BigInteger generatedId = (BigInteger) em.createNativeQuery("SELECT LAST_INSERT_ID()").getSingleResult();
 	    
-	    int truncatedId = generatedId.intValue();
-	    usuario.setId(truncatedId);	
+	  int truncatedId = generatedId.intValue();
+	  usuario.setId(truncatedId);	
 	    
 		em.getTransaction().commit();
 	}

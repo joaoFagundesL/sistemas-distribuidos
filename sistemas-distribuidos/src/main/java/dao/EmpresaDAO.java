@@ -9,7 +9,7 @@ import modelo.Usuario;
 
 public class EmpresaDAO extends GenericoDAO<Empresa> {
 	
-	public void update(Empresa e, String nome, String email, String usuario, String senha, String branch, String descricao) {
+	public void update(Empresa e, String nome, String email, String token, String senha, String branch, String descricao) {
 		EntityManager em = getEM();
 		
 		em.getTransaction().begin();
@@ -19,9 +19,9 @@ public class EmpresaDAO extends GenericoDAO<Empresa> {
 		e.setBranch(branch);
 		e.setDescricao(descricao);
 		e.getUsuario().setNome(nome);
+    e.getUsuario().setToken(token);
 		e.getUsuario().setEmail(email);
 		e.getUsuario().setSenha(senha);
-		e.getUsuario().setUser(usuario);
 		
 	    if (e.getUsuario() instanceof Pessoa) {
 	        Pessoa pessoa = (Pessoa) e.getUsuario(); 

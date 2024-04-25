@@ -25,24 +25,13 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
 //		System.out.println(candidatos);
 		return candidatos;
 	}
-	
-	public Candidato consultarPeloCpf(String cpf) {
-		EntityManager em = getEM();
-		Candidato candidato;
-		
-		Query query = em.createNamedQuery("Candidato.consultarPeloCpf");
-		query.setParameter("cpf", cpf);
-		candidato = (Candidato) query.getSingleResult();
-		
-		return candidato;
-	}
-	
-	public Candidato consultarPeloUser(String user) {
+
+	public Candidato consultarPeloEmail(String email) {
 		EntityManager em = getEM();
 		Candidato candidato;
 		try {
-			Query query = em.createNamedQuery("Candidato.consultarUser");
-			query.setParameter("user", user);
+			Query query = em.createNamedQuery("Candidato.consultarEmail");
+			query.setParameter("email", email);
 			candidato = (Candidato) query.getSingleResult();
 			
 			return candidato;
@@ -50,23 +39,21 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
 			return null;
 		}
 	}
-
 	
-	/* Consulta aluno com base no nome */
 	@SuppressWarnings("unchecked")
 	public List<Candidato> consultaPeloNome(String nome) {
 		EntityManager em = getEM();
 		List<Candidato> candidatos;
 		
 		Query query = em.createNamedQuery("Candidato.consultarTodosNome");
-		query.setParameter("nome", nome);
+		query.setParameter("name", nome);
 		
 		candidatos = query.getResultList();
 		return candidatos;
 	}
 	
 	/* Atualiza os registros */
-	public void update(Candidato a, String nome, String email, String usuario, String senha) {
+	public void update(Candidato a, String nome, String email, String senha) {
 		EntityManager em = getEM();
 		
 		em.getTransaction().begin();
@@ -78,8 +65,6 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
 //		a.getUsuario().setSenha(senha);
 //		a.getUsuario().setUser(usuario);
 		a.setUsuario(a.getUsuario());
-		
-		System.out.println("inside " + a.getUsuario().getUser());
 		
 	    if (a.getUsuario() instanceof Pessoa) {
 	        Pessoa pessoa = (Pessoa) a.getUsuario(); 
@@ -104,6 +89,7 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
 		
 		Query query = em.createNativeQuery("INSERT INTO Candidato (usuario_id)"
 										+ " VALUES (?)");
+
 		em.getTransaction().begin();
 		query.setParameter(1, candidato.getUsuario().getId());
 		

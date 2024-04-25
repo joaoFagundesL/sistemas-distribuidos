@@ -44,7 +44,7 @@ public class EmpresaViewTeste extends JPanel {
 			new Object[][] {
 			},
 			new String[] {
-				"Nome", "Email", "Usuario", "Senha", "Ramo", "Descricao"
+				"Nome", "Email", "Senha", "Ramo", "Descricao"
 			}
 		));
 		
@@ -155,11 +155,10 @@ public class EmpresaViewTeste extends JPanel {
 		if (em == null)
 			return;
 		
-		Object[] arr = new Object[4];
+		Object[] arr = new Object[3];
 		arr[0] = em.getUsuario().getNome();
 		arr[1] = em.getUsuario().getEmail();
-		arr[2] = em.getUsuario().getUser();
-		arr[3] = em.getUsuario().getSenha();
+		arr[2] = em.getUsuario().getSenha();
 		
 		modelo.addRow(arr);		
 	}

@@ -18,11 +18,11 @@ import javax.persistence.OneToOne;
     @NamedQuery(name = "Candidato.consultarTodos",
             query = "SELECT c FROM Candidato c"),
  
-	@NamedQuery(name = "Candidato.consultarUser",
-	    query = "SELECT c FROM Candidato c WHERE c.usuario.user = :user"),
+	@NamedQuery(name = "Candidato.consultarEmail",
+	    query = "SELECT c FROM Candidato c WHERE c.usuario.email = :email"),
 	
 	@NamedQuery(name = "Candidato.consultarTodosNome",
-	    query = "SELECT c FROM Candidato c WHERE c.usuario.nome = :nome")
+	    query = "SELECT c FROM Candidato c WHERE c.usuario.name = :name")
 
 })
 public class Candidato implements Entidade {

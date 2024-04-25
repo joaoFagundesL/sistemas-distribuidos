@@ -50,7 +50,7 @@ public class CandidatoView extends JPanel {
 			new Object[][] {
 			},
 			new String[] {
-				"Nome", "Email", "Usuario", "Senha"
+				"Nome", "Email", "Senha"
 			}
 		));
 		
@@ -83,15 +83,13 @@ public class CandidatoView extends JPanel {
 				
 				String nome =  table.getValueAt(table.getSelectedRow(), 0).toString();
 				String email = table.getValueAt(table.getSelectedRow(), 1).toString();
-				String usuario = table.getValueAt(table.getSelectedRow(), 2).toString();
-				String senha = table.getValueAt(table.getSelectedRow(), 3).toString();
+				String senha = table.getValueAt(table.getSelectedRow(), 2).toString();
 
 				limparTela();
 				
 				nomeCandidatoField.setText(nome);
 				emailField.setText(email);
 				senhaField.setText(senha);
-				usuarioTextField.setText(usuario);
 				
 				/* Dizendo para o objeto p que foi o professor que o usuario clicou */
 				CandidatoDAO dao = new CandidatoDAO();
@@ -112,12 +110,10 @@ public class CandidatoView extends JPanel {
 				String nome = nomeCandidatoField.getText();
 				String email = emailField.getText();
 				String senha = senhaField.getText();
-				String usuario = usuarioTextField.getText();
 				
 				Usuario u = new Usuario();
 				UsuarioDAO udao = new UsuarioDAO();
 				u.setSenha(senha);
-				u.setUser(usuario);
 				u.setEmail(email);
 				u.setNome(nome);
 				
@@ -183,11 +179,10 @@ public class CandidatoView extends JPanel {
 				String email = emailField.getText();
 				String nome = nomeCandidatoField.getText();
 				String senha = senhaField.getText();
-				String usuario = usuarioTextField.getText();
 				
 				/* Atualiza */
 				UsuarioDAO udao = new UsuarioDAO();
-				udao.update(c.getUsuario(), nome, email, usuario, senha);
+				udao.update(c.getUsuario(), nome, email, senha);
 				
 				/* Confirmando atualizacao */
 				JFrame frame = new JFrame("Mensagem");
@@ -219,11 +214,6 @@ public class CandidatoView extends JPanel {
 		lblNewLabel_1.setBounds(64, 168, 46, 14);
 		add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("CPF");
-		lblNewLabel_2.setBounds(64, 235, 46, 14);
-		add(lblNewLabel_2);
-		
-		
 		
 	}
 	
@@ -245,11 +235,10 @@ public class CandidatoView extends JPanel {
 		}
 		
 		for(Candidato c : candidatos) {
-			Object[] arr = new Object[4];
+			Object[] arr = new Object[3];
 			arr[0] = c.getUsuario().getNome();
 			arr[1] = c.getUsuario().getEmail();
-			arr[2] = c.getUsuario().getUser();
-			arr[3] = c.getUsuario().getSenha();
+			arr[2] = c.getUsuario().getSenha();
 			modelo.addRow(arr);		
 		}
 	}

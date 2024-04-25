@@ -67,11 +67,8 @@ public class CadastrarView extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String nome = nomeField.getText();
-				String usuario = usuarioField.getText();
 				String senha = senhaField.getText();
 				String email = emailField.getText();
-        Integer control = Integer.parseInt(controlField.getText());
-
 
         JSONObject request = new JSONObject();
         JSONObject response = new JSONObject();
@@ -100,7 +97,6 @@ public class CadastrarView extends JFrame {
         } catch(IOException err) {
           err.printStackTrace();
         }
-
       }
     });
     btnNewButton.setBounds(47, 223, 89, 23);
@@ -115,18 +111,10 @@ public class CadastrarView extends JFrame {
     btnNewButton_1.setBounds(146, 223, 89, 23);
     contentPane.add(btnNewButton_1);
 
-    JLabel lblNewLabel_4 = new JLabel("Usuario");
-    lblNewLabel_4.setBounds(47, 110, 46, 14);
-    contentPane.add(lblNewLabel_4);
-
     usuarioField = new JTextField();
     usuarioField.setBounds(99, 109, 161, 20);
     contentPane.add(usuarioField);
     usuarioField.setColumns(10);
-
-    JLabel lblNewLabel_5 = new JLabel("Funcionario/Cliente (0/1)");
-    lblNewLabel_5.setBounds(47, 174, 141, 14);
-    contentPane.add(lblNewLabel_5);
 
     controlField = new JTextField();
     controlField.setBounds(176, 171, 84, 20);

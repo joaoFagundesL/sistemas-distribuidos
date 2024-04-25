@@ -192,7 +192,7 @@ public class Servidor extends JFrame {
         buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL");
       } else if (dao.consultarPeloEmail(email) == null) {
         UsuarioController ucontroller = new UsuarioController();
-        Usuario u = ucontroller.insert(nome, email, "teste", senha);
+        Usuario u = ucontroller.insert(nome, email, senha);
 
         CandidatoController ccontroller = new CandidatoController();
         ccontroller.insert(u);
@@ -201,6 +201,9 @@ public class Servidor extends JFrame {
       } else {
         buildJsonSignupCandidate(jsonResponse, "USER_EXISTS");
       }
+
+    } else {
+      buildInvalidOperation(jsonResponse, operation);
     }
 
     try {
@@ -219,6 +222,15 @@ public class Servidor extends JFrame {
     return res;
   }
 
+  private JSONObject buildInvalidOperation(JSONObject res, String operation) {
+    res.put("status", "INVALID_OPERATION");
+    res.put("operation", "operation");
+    JSONObject data = new JSONObject();
+    data.put("", "");
+    res.put("data", data);
+    return res;
+  }
+
   private JSONObject buildJsonSignupCandidate(JSONObject res, String status) {
     res.put("operation", "SIGNUP_CANDIDATE");
     res.put("status", status);
@@ -230,6 +242,7 @@ public class Servidor extends JFrame {
 
   private JSONObject buildLogoutJson(JSONObject json) {
     json.put("operation", "LOGOUT_CANDIDATE");
+    json.put("status", "SUCCESS");
     JSONObject data = new JSONObject();
     json.put("data", data);
     return json;

@@ -5,9 +5,9 @@ import modelo.Candidato;
 import modelo.Usuario;
 
 public class UsuarioController {
-	public void update(Candidato c, String nome, String email, String usuario, String senha) {
+	public void update(Candidato c, String nome, String email, String senha) {
 		UsuarioDAO udao = new UsuarioDAO();
-		udao.update(c.getUsuario(), nome, email, usuario, senha);
+		udao.update(c.getUsuario(), nome, email, senha);
 	}
 	
 	public void remover(Class<Usuario> clazz, Integer id) {
@@ -15,10 +15,9 @@ public class UsuarioController {
 		udao.remover(Usuario.class, id);
     }
 	
-	public Usuario insert(String nome, String email, String usuario, String senha) {
+	public Usuario insert(String nome, String email, String senha) {
 		UsuarioDAO dao = new UsuarioDAO();
 		Usuario u = new Usuario();
-		u.setUser(usuario); 
 		u.setSenha(senha);
 		u.setEmail(email);
 		u.setNome(nome);

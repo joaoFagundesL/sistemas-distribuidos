@@ -9,18 +9,18 @@ import modelo.Usuario;
 public class CandidatoController {
 	CandidatoDAO dao = new CandidatoDAO();
 
-  public Boolean isUserValid(String usuario) {
+  public Boolean isUserValid(String email) {
 
-		Candidato c = dao.consultarPeloUser(usuario);
+		Candidato c = dao.consultarPeloEmail(email);
 
-    if(c == null) {
+      if(c == null) {
       return false;
     }
     return true;
   }
 
-  public Boolean isPasswordValid(String usuario, String senha) {
-		Candidato c = dao.consultarPeloUser(usuario);
+  public Boolean isPasswordValid(String email, String senha) {
+		Candidato c = dao.consultarPeloEmail(email);
 
     String passHash = c.getUsuario().getSenha();
     if(!senha.equals(passHash)) {
@@ -29,8 +29,8 @@ public class CandidatoController {
     return true;
   }
 
-  public Candidato getCandidadoLogin(String usuario) {
-		Candidato c = dao.consultarPeloUser(usuario);
+  public Candidato getCandidadoLogin(String email) {
+		Candidato c = dao.consultarPeloEmail(email);
     return c;
   }
 	
