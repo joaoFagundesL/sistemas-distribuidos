@@ -79,9 +79,9 @@ public class MainViewCandidato {
     JPanel panel = new JPanel();
     panel.setBackground(Color.RED);
     tabbedPane.addTab("New tab", null, clienteView, null);
-    // tabbedPane.addTab("New tab", null, new CandidatoViewTeste(c), null);
-    // CandidatoViewTeste clienteView_1 = new CandidatoViewTeste(c);
-    // clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
+    tabbedPane.addTab("New tab", null, new CandidatoViewTeste(), null);
+    CandidatoViewTeste clienteView_1 = new CandidatoViewTeste();
+    clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 
     JPanel panel_2 = new JPanel();
     panel_2.setBackground(SystemColor.inactiveCaption);
@@ -157,7 +157,6 @@ public class MainViewCandidato {
   private JSONObject buildLogoutJson(JSONObject json, String token) {
     json.put("token", token);
     json.put("operation", "LOGOUT_CANDIDATE");
-    System.out.println("AAAAAAAAA");
     JSONObject data = new JSONObject();
     json.put("data", data);
     return json;

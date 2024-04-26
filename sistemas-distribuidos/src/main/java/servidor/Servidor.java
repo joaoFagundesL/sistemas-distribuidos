@@ -29,6 +29,8 @@ import javax.swing.text.DefaultCaret;
 import org.json.JSONObject;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import cliente.Client;
 import cliente.ClientInfo;
@@ -37,6 +39,7 @@ import controller.EmpresaController;
 import controller.UsuarioController;
 import dao.UsuarioDAO;
 import modelo.Usuario;
+import modelo.Candidato;
 import modelo.Empresa;
 import utitlity.EmailValidator;
 import utitlity.JwtUtility;
@@ -179,6 +182,8 @@ public class Servidor extends JFrame {
       loginRecruiter(jsonMessage, jsonResponse);
     } else if(operation.equals("LOGOUT_RECRUITER")) {
       logoutRecruiter(jsonMessage, jsonResponse);
+    } else if (operation.equals("LOOKUP_ACCOUNT_CANDIDATE")) {
+      lookup_candidate(jsonMessage, jsonResponse);
     } else {
       buildInvalidOperation(jsonResponse, operation);
     }
@@ -190,10 +195,46 @@ public class Servidor extends JFrame {
   }
 
 
+  private void lookup_candidate(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+    String token = jsonMessage.getString("token");
+
+    try {
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      CandidatoController cController = new CandidatoController();
+      Candidato c = cController.consultarPorId(id);
+
+      String nome = c.getUsuario().getNome();
+      String email = c.getUsuario().getEmail();
+      String senha = c.getUsuario().getSenha();
+
+      buildLookupCandidate(jsonResponse, "SUCCESS", token, nome, email, senha);    
+    } catch(JWTVerificationException e) {
+      buildLookupCandidate(jsonResponse, "SUCCESS", token, "", "", "");    
+    }
+  }
+
+  private JSONObject buildLookupCandidate(JSONObject jsonResponse, String status, String token,
+                                    String nome, String email, String senha) {
+    jsonResponse.put("operation", "LOOKUP_ACCOUNT_CANDIDATE");
+    jsonResponse.put("token", token);
+    jsonResponse.put("status", status);
+    JSONObject data = new JSONObject();
+    data.put("email", email);
+    data.put("password", senha);
+    data.put("name", nome);
+    jsonResponse.put("data", data);
+    return jsonResponse;
+
+  }
+
   private void logoutRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
     String token = jsonMessage.getString("token");
-    
+
     try {
       jwt.verifyToken(token);
       buildLogoutJsonCandidato(jsonResponse, "SUCCESS", token);
@@ -205,7 +246,7 @@ public class Servidor extends JFrame {
   private void logoutCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
     String token = jsonMessage.getString("token");
-    
+
     try {
       jwt.verifyToken(token);
       buildLogoutJsonCandidato(jsonResponse, "SUCCESS", token);
@@ -363,7 +404,7 @@ public class Servidor extends JFrame {
 
 
   private JSONObject buildJsonSignupRecruiter(JSONObject res, String status, String email, String senha, String nome,
-                                              String branch, String descricao) {
+    String branch, String descricao) {
     res.put("operation", "SIGNUP_RECRUITER");
     res.put("status", status);
     JSONObject data = new JSONObject();

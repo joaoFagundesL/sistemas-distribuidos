@@ -15,63 +15,67 @@ import javax.persistence.OneToOne;
 @Entity
 @NamedQueries({
 
-    @NamedQuery(name = "Candidato.consultarTodos",
-            query = "SELECT c FROM Candidato c"),
- 
-	@NamedQuery(name = "Candidato.consultarEmail",
-	    query = "SELECT c FROM Candidato c WHERE c.usuario.email = :email"),
-	
-	@NamedQuery(name = "Candidato.consultarTodosNome",
-	    query = "SELECT c FROM Candidato c WHERE c.usuario.name = :name"),
+  @NamedQuery(name = "Candidato.consultarTodos",
+    query = "SELECT c FROM Candidato c"),
+
+  @NamedQuery(name = "Candidato.consultarEmail",
+    query = "SELECT c FROM Candidato c WHERE c.usuario.email = :email"),
+
+  @NamedQuery(name = "Candidato.consultarTodosNome",
+    query = "SELECT c FROM Candidato c WHERE c.usuario.name = :name"),
 
   @NamedQuery(name = "Candidato.consultarPeloUsuarioId",
-    query = "SELECT c FROM Candidato c WHERE c.usuario.id = (SELECT u.id FROM Usuario u WHERE u.email = :email)")
+    query = "SELECT c FROM Candidato c WHERE c.usuario.id = (SELECT u.id FROM Usuario u WHERE u.email = :email)"),
 
+  @NamedQuery(
+    name = "Candidato.findByIdWithUser",
+    query = "SELECT c FROM Candidato c JOIN FETCH c.usuario WHERE c.id = :id"
+  )
 })
 public class Candidato implements Entidade {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "usuario_id", referencedColumnName = "id")
-    private Usuario usuario;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-	/* Construtores */
-    public Candidato() {
-    }
+  @OneToOne(cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "usuario_id", referencedColumnName = "id")
+  private Usuario usuario;
 
-    public Candidato(Integer id, Integer anoEntrada) {
-        super();
-        this.id = id;
-    }
+  /* Construtores */
+  public Candidato() {
+  }
 
-    /* Getters e Setters */
-    @Override
-    public Integer getId() {
-        return id;
-    }
-    
-    public Usuario getUsuario() {
-		return usuario;
-	}
+  public Candidato(Integer id, Integer anoEntrada) {
+    super();
+    this.id = id;
+  }
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
+  /* Getters e Setters */
+  @Override
+  public Integer getId() {
+    return id;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public Usuario getUsuario() {
+    return usuario;
+  }
 
-    /* Equals e HashCode */
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  public void setUsuario(Usuario usuario) {
+    this.usuario = usuario;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  /* Equals e HashCode */
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 
 }
 

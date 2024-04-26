@@ -26,19 +26,32 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
 		return candidatos;
 	}
 
-	public Candidato consultarPeloEmail(String email) {
-		EntityManager em = getEM();
-		Candidato candidato;
-		try {
-			Query query = em.createNamedQuery("Candidato.consultarEmail");
-			query.setParameter("email", email);
-			candidato = (Candidato) query.getSingleResult();
-			
-			return candidato;
-		} catch(NoResultException e) {
-			return null;
-		}
-	}
+  public Candidato findByIdWithUser(Integer id) {
+    EntityManager em = getEM();
+    Candidato candidato;
+    try {
+      Query query = em.createNamedQuery("Candidato.findByIdWithUser");
+      query.setParameter("id", id);
+      candidato = (Candidato) query.getSingleResult();
+      return candidato;
+    } catch(NoResultException e) {
+      return null;
+    }
+  }
+
+  public Candidato consultarPeloEmail(String email) {
+    EntityManager em = getEM();
+    Candidato candidato;
+    try {
+      Query query = em.createNamedQuery("Candidato.consultarEmail");
+      query.setParameter("email", email);
+      candidato = (Candidato) query.getSingleResult();
+
+      return candidato;
+    } catch(NoResultException e) {
+      return null;
+    }
+  }
 
   public Candidato consultarPeloUsuarioId(String email) {
     EntityManager em = getEM();

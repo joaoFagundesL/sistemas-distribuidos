@@ -15,6 +15,10 @@ public class CandidatoController {
     return candidato != null; 
   }
 
+  public Candidato consultarPorId(Integer id) {
+    return dao.consultarPorId(Candidato.class, id);
+  }
+
   public Boolean isPasswordValid(String email, String senha) {
     Candidato c = dao.consultarPeloUsuarioId(email);
 

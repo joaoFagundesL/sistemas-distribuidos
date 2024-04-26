@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +17,9 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import org.json.JSONObject;
+
+import cliente.Client;
 import controller.CandidatoController;
 import controller.UsuarioController;
 import dao.CandidatoDAO;
@@ -31,7 +35,6 @@ public class CandidatoViewTeste extends JPanel {
 	private JTextField senhaField;
 	private JTextField emailField;
 	private JTable table;
-	private JTextField usuarioTextField;
 	
 	public CandidatoViewTeste(
     // final Candidato c
@@ -58,12 +61,7 @@ public class CandidatoViewTeste extends JPanel {
 				"Nome", "Email", "Senha"
 			}
 		));
-		
-		usuarioTextField = new JTextField();
-		usuarioTextField.setBounds(142, 192, 213, 20);
-		add(usuarioTextField);
-		usuarioTextField.setColumns(10);
-		
+				
 		emailField = new JTextField();
 		emailField.setBounds(142, 160, 213, 21);
 		add(emailField);
@@ -79,8 +77,6 @@ public class CandidatoViewTeste extends JPanel {
 		add(nomeCandidatoField);
 		nomeCandidatoField.setColumns(10);
 		
-		popularTabelaCandidato();
-		
 		scrollPane.setViewportView(table);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -88,15 +84,13 @@ public class CandidatoViewTeste extends JPanel {
 				
 				String nome =  table.getValueAt(table.getSelectedRow(), 0).toString();
 				String email = table.getValueAt(table.getSelectedRow(), 1).toString();
-				String usuario = table.getValueAt(table.getSelectedRow(), 2).toString();
-				String senha = table.getValueAt(table.getSelectedRow(), 3).toString();
+				String senha = table.getValueAt(table.getSelectedRow(), 2).toString();
 
 				limparTela();
 				
 				nomeCandidatoField.setText(nome);
 				emailField.setText(email);
 				senhaField.setText(senha);
-				usuarioTextField.setText(usuario);
 			}
 		});
 		scrollPane.setBounds(0, 348, 431, 222);
@@ -142,7 +136,6 @@ public class CandidatoViewTeste extends JPanel {
 				String email = emailField.getText();
 				String nome = nomeCandidatoField.getText();
 				String senha = senhaField.getText();
-				String usuario = usuarioTextField.getText();
 				
 				UsuarioController ucontroller = new UsuarioController();
 				// ucontroller.update(c, nome, email, usuario, senha);
@@ -165,63 +158,78 @@ public class CandidatoViewTeste extends JPanel {
 		lblSenha.setBounds(64, 225, 60, 17);
 		add(lblSenha);
 		
-		JLabel lblNewLabel = new JLabel("Email");
-		lblNewLabel.setBounds(64, 162, 60, 17);
-		add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Usuário");
-		lblNewLabel_1.setBounds(64, 195, 46, 14);
-		add(lblNewLabel_1);
-		
-		JButton refreshBtn = new JButton("Refresh");
-		refreshBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//lookup
-			}
-		});
-		refreshBtn.setBounds(142, 294, 98, 27);
-		add(refreshBtn);
-		
-	}
-	
-  public void buildJsonLookup() {
+    JLabel lblNewLabel = new JLabel("Email");
+    lblNewLabel.setBounds(64, 162, 60, 17);
+    add(lblNewLabel);
 
+    JLabel lblNewLabel_1 = new JLabel("Usuário");
+    lblNewLabel_1.setBounds(64, 195, 46, 14);
+    add(lblNewLabel_1);
+
+    JButton refreshBtn = new JButton("Refresh");
+    refreshBtn.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        JSONObject request = new JSONObject();
+        String token = Client.getInstance().getToken();
+        buildJsonLookup(request, token);
+        try {
+          JSONObject response = Client.getInstance().sendRequest(request);
+          JSONObject data = response.getJSONObject("data");
+
+          String nome =  data.getString("name");
+          String email = data.getString("email");
+          String senha = data.getString("password");
+          popularTabelaCandidato(nome, email, senha);
+        } catch(IOException err) {
+          err.printStackTrace();
+        }
+      }
+    });
+    refreshBtn.setBounds(142, 294, 98, 27);
+    add(refreshBtn);
 
   }
-	public void limparTela() {
-		nomeCandidatoField.setText("");
-		emailField.setText("");
-		senhaField.setText("");
-		usuarioTextField.setText("");
-	}
-	
-	public void setCandidato(
+
+  public JSONObject buildJsonLookup(JSONObject json, String token) {
+    json.put("operation", "LOOKUP_ACCOUNT_CANDIDATE");
+    json.put("token", token);
+    JSONObject data = new JSONObject();
+    json.put("data", data);
+    return json;
+  }
+
+  public void limparTela() {
+    nomeCandidatoField.setText("");
+    emailField.setText("");
+    senhaField.setText("");
+  }
+
+  public void setCandidato(
     // Candidato c
   ) {
-        // this.c = c;
-//        System.out.println(c.getUsuario().getUser());
-        popularTabelaCandidato();
+    // this.c = c;
+    //        System.out.println(c.getUsuario().getUser());
+    // popularTabelaCandidato();
+  }
+
+  public void popularTabelaCandidato(String nome, String email, String senha) {
+    DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+
+    // CandidatoDAO cdao = new CandidatoDAO();
+    // Candidato can = cdao.consultarPorId(Candidato.class, c.getId());
+
+    if (modelo.getRowCount() > 0) {
+    	modelo.setRowCount(0);
     }
-	
-	public void popularTabelaCandidato() {
-		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
-		
-		// CandidatoDAO cdao = new CandidatoDAO();
-		// Candidato can = cdao.consultarPorId(Candidato.class, c.getId());
-		
-		// if (modelo.getRowCount() > 0) {
-		// 	modelo.setRowCount(0);
-		// }
-		// 
-		// if (can == null)
-			// return;
-		// 
-		// Object[] arr = new Object[4];
-		// arr[0] = can.getUsuario().getNome();
-		// arr[1] = can.getUsuario().getEmail();
-		// arr[2] = can.getUsuario().getUser();
-		// arr[3] = can.getUsuario().getSenha();
-		// 
-		// modelo.addRow(arr);		
-	}
+
+    // if (can == null)
+    // return;
+    // 
+    Object[] arr = new Object[4];
+    arr[0] = nome;
+    arr[1] = email;
+    arr[2] = senha;
+
+    modelo.addRow(arr);		
+  }
 }
