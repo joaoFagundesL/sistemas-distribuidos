@@ -64,7 +64,7 @@ public class UsuarioDAO extends GenericoDAO<Usuario>{
   public void insertWithQuery(Usuario usuario) throws Exception {
     EntityManager em = getEM();
 
-    Query query = em.createNativeQuery("INSERT INTO Usuario (name, email, senha, )"
+    Query query = em.createNativeQuery("INSERT INTO Usuario (name, email, senha )"
       + " VALUES (?, ?, ?)");
     em.getTransaction().begin();
     query.setParameter(1, usuario.getNome());

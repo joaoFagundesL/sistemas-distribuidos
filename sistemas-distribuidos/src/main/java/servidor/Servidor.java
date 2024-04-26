@@ -2,9 +2,12 @@ package servidor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
@@ -120,9 +123,8 @@ public class Servidor extends JFrame {
 
   private void handleClient(Socket clientSocket) {
     try (
-    ObjectOutputStream outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-    ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream())
-  ) {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)  ) {
       while (true) {
 
         ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
@@ -131,7 +133,7 @@ public class Servidor extends JFrame {
         connectedClients.add(client);
         updateConnectedUsersList();
 
-        String clientMessage = (String) inputStream.readObject();
+        String clientMessage = reader.readLine();
         System.out.println("Received from client: " + clientMessage);
 
         JSONObject jsonMessage = new JSONObject(clientMessage);
@@ -147,14 +149,14 @@ public class Servidor extends JFrame {
         connectedClients.add(client);
         updateConnectedUsersList();
 
-        handleOperation(clientMessage, outputStream);
+        handleOperation(clientMessage, writer);
       }
-    } catch (IOException | ClassNotFoundException e) {
+    } catch (IOException  e) {
       System.out.println("FIM");
     }
   } 
 
-  private void handleOperation(String clientMessage, ObjectOutputStream outputStream) {
+  private void handleOperation(String clientMessage, PrintWriter writer) {
     JSONObject jsonMessage = new JSONObject(clientMessage);
     String operation = jsonMessage.getString("operation");
     JSONObject jsonResponse = new JSONObject();
@@ -172,12 +174,10 @@ public class Servidor extends JFrame {
       buildInvalidOperation(jsonResponse, operation);
     }
 
-    try {
-      outputStream.writeObject(jsonResponse.toString());
-      outputStream.flush();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+      String jsonString = jsonResponse.toString();
+      String messageToSend = jsonString + (char) 0x1C;
+      writer.println(messageToSend.toString());
+      writer.flush();
   }
 
   private void loginCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
