@@ -15,6 +15,9 @@ import javax.persistence.OneToOne;
 @NamedQueries({
   @NamedQuery(name = "Empresa.consultarTodos",
     query = "SELECT e FROM Empresa e"),
+
+  @NamedQuery(name = "Empresa.consultarPeloUsuarioId",
+    query = "SELECT e FROM Empresa e WHERE e.usuario.id = (SELECT u.id FROM Usuario u WHERE u.email = :email)")
 })
 
 public class Empresa implements Entidade{

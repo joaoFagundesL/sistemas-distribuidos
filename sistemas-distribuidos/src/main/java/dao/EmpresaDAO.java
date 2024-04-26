@@ -1,6 +1,7 @@
 package dao;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import modelo.Empresa;
@@ -38,7 +39,22 @@ public class EmpresaDAO extends GenericoDAO<Empresa> {
 		em.merge(e);
 		em.getTransaction().commit();
 	}
-	
+
+	 public Empresa consultarPeloUsuarioId(String email) {
+    EntityManager em = getEM();
+    Empresa empresa;
+    try {
+      Query query = em.createNamedQuery("Empresa.consultarPeloUsuarioId");
+      query.setParameter("email", email);
+      empresa = (Empresa) query.getSingleResult();
+
+      return empresa;
+    } catch(NoResultException e) {
+      return null;
+    }
+  }
+
+
 	
 	@Transactional
 	public void insertWithQuery(Empresa e) throws Exception {

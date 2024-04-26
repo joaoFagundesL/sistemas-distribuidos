@@ -6,7 +6,7 @@ import modelo.Empresa;
 import modelo.Usuario;
 
 public class EmpresaController {
-  UsuarioDAO dao = new UsuarioDAO();
+  EmpresaDAO dao = new EmpresaDAO();
 
 	public Empresa insert(Usuario u, String descricao, String branch) {
 		EmpresaDAO dao = new EmpresaDAO();
@@ -25,9 +25,9 @@ public class EmpresaController {
   }
 
   public Boolean isUserValid(String email) {
-    Usuario u = dao.consultarPeloEmail(email);
+    Empresa e = dao.consultarPeloUsuarioId(email);
 
-    if(u == null) {
+    if(e == null) {
       return false;
     }
     return true;
@@ -35,9 +35,9 @@ public class EmpresaController {
 
 
   public Boolean isPasswordValid(String email, String senha) {
-    Usuario u = dao.consultarPeloEmail(email);
+    Empresa e = dao.consultarPeloUsuarioId(email);
 
-    String passHash = u.getSenha();
+    String passHash = e.getUsuario().getSenha();
     if(!senha.equals(passHash)) {
       return false;
     }
@@ -45,13 +45,13 @@ public class EmpresaController {
   }
 
   public Integer consultarId(String email) {
-    Usuario u = dao.consultarPeloEmail(email);
-    return u.getId();
+    Empresa e = dao.consultarPeloUsuarioId(email);
+    return e.getId();
   }
 
-  public Usuario getCandidadoLogin(String email) {
-    Usuario u = dao.consultarPeloEmail(email);
-    return u;
+  public Empresa getCandidadoLogin(String email) {
+    Empresa e = dao.consultarPeloUsuarioId(email);
+    return e;
   }
 
 
