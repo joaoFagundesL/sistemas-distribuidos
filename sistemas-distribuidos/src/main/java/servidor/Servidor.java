@@ -80,6 +80,7 @@ public class Servidor extends JFrame {
 
     portaField = new JTextField();
     portaField.setBounds(56, 50, 86, 20);
+    portaField.setText("21234");
     contentPane.add(portaField);
     portaField.setColumns(10);
 
@@ -92,7 +93,7 @@ public class Servidor extends JFrame {
           iniciarBtn.setEnabled(false);
 
           StringBuilder content = new StringBuilder();
-          content.append("Servidor iniciado na porta 12345\n");
+          content.append("Servidor iniciado na porta " + port + "\n");
 
           textArea.setText(content.toString());
         }
@@ -129,15 +130,16 @@ public class Servidor extends JFrame {
     try (
     BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)  ) {
-      while (true) {
 
+      String clientMessage;
+      while ((clientMessage = reader.readLine()) != null) {
         ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
           clientSocket.getPort());
 
         connectedClients.add(client);
         updateConnectedUsersList();
 
-        String clientMessage = reader.readLine();
+        // String clientMessage = reader.readLine();
         System.out.println("Received from client: " + clientMessage);
 
         JSONObject jsonMessage = new JSONObject(clientMessage);
@@ -323,8 +325,7 @@ public class Servidor extends JFrame {
 
     if (!emailValidator.isValidEmail(email)) {
       buildJsonSignupRecruiter(jsonResponse, "INVALID_EMAIL", email, senha, nome, branch, descricao);
-      return;
-    } 
+      return; } 
 
     if (dao.consultarPeloEmail(email) != null) {
       buildJsonSignupRecruiter(jsonResponse, "USER_EXISTS", email, senha, nome, branch, descricao);
