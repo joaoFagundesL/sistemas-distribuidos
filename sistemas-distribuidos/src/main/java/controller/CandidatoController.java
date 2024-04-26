@@ -10,7 +10,6 @@ public class CandidatoController {
 	CandidatoDAO dao = new CandidatoDAO();
 
   public Boolean isUserValid(String email) {
-
 		Candidato c = dao.consultarPeloEmail(email);
 
       if(c == null) {

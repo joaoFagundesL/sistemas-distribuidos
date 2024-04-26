@@ -55,7 +55,7 @@ public class CandidatoViewTeste extends JPanel {
 			new Object[][] {
 			},
 			new String[] {
-				"Nome", "Email", "Usuario", "Senha"
+				"Nome", "Email", "Senha"
 			}
 		));
 		

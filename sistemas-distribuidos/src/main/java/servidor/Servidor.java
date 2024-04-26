@@ -164,12 +164,15 @@ public class Servidor extends JFrame {
     if (operation.equals("LOGIN_CANDIDATE")) {
       loginCandidato(jsonMessage, jsonResponse); 
     } else if (operation.equals("LOGOUT_CANDIDATE")) {
-      buildLogoutJson(jsonResponse);
+      buildLogoutJsonCandidato(jsonResponse);
     } else if (operation.equals("SIGNUP_CANDIDATE")) {
       signupCandidato(jsonMessage, jsonResponse);
     } else if (operation.equals("SIGNUP_RECRUITER")) {
       signupRecruiter(jsonMessage, jsonResponse);
-
+    } else if(operation.equals("LOGIN_RECRUITER")) {
+      loginRecruiter(jsonMessage, jsonResponse);
+    } else if(operation.equals("LOGOUT_RECRUITER")) {
+      buildLogoutJsonRecruiter(jsonResponse);
     } else {
       buildInvalidOperation(jsonResponse, operation);
     }
@@ -188,18 +191,44 @@ public class Servidor extends JFrame {
     String senha = data.getString("password");
 
     if (!fController.isUserValid(email)) {
-      buildJsonLogin(jsonResponse, "USER_NOT_FOUND", "");
+      buildJsonLoginCandidato(jsonResponse, "USER_NOT_FOUND", "");
     }
 
     else if (!fController.isPasswordValid(email, senha)) {
-      buildJsonLogin(jsonResponse, "INVALID_PASSWORD", "");
+      buildJsonLoginCandidato(jsonResponse, "INVALID_PASSWORD", "");
     } 
 
     else {				
       Integer id = fController.consultarId(email);
       String idString = String.valueOf(id);
-      String token = JwtUtility.generateToken(idString, "user");
-      buildJsonLogin(jsonResponse, "SUCCESS", token);
+      String token = JwtUtility.generateToken(idString, "candidate");
+      buildJsonLoginCandidato(jsonResponse, "SUCCESS", token);
+    
+      UsuarioController uController = new UsuarioController();
+      uController.inserirToken(id, token);
+    } 
+  }
+
+  private void loginRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
+    EmpresaController eController = new EmpresaController();
+    JSONObject data = jsonMessage.getJSONObject("data");
+
+    String email = data.getString("email");
+    String senha = data.getString("password");
+
+    if (!eController.isUserValid(email)) {
+      buildJsonLoginRecruiter(jsonResponse, "USER_NOT_FOUND", "");
+    }
+
+    else if (!eController.isPasswordValid(email, senha)) {
+      buildJsonLoginRecruiter(jsonResponse, "INVALID_PASSWORD", "");
+    } 
+
+    else {				
+      Integer id = eController.consultarId(email);
+      String idString = String.valueOf(id);
+      String token = JwtUtility.generateToken(idString, "recruiter");
+      buildJsonLoginRecruiter(jsonResponse, "SUCCESS", token);
     
       UsuarioController uController = new UsuarioController();
       uController.inserirToken(id, token);
@@ -257,7 +286,7 @@ public class Servidor extends JFrame {
     }
   }
 
-  private JSONObject buildJsonLogin(JSONObject res, String status, String token) {
+  private JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_CANDIDATE");
     res.put("status", status);
     res.put("token", token);
@@ -265,6 +294,16 @@ public class Servidor extends JFrame {
     res.put("data", data);
     return res;
   }
+
+  private JSONObject buildJsonLoginRecruiter(JSONObject res, String status, String token) {
+    res.put("operation", "LOGIN_RECRUITER");
+    res.put("status", status);
+    res.put("token", token);
+    JSONObject data = new JSONObject();
+    res.put("data", data);
+    return res;
+  }
+
 
   private JSONObject buildJsonSignupRecruiter(JSONObject res, String status) {
     res.put("operation", "SIGNUP_RECRUITER");
@@ -293,7 +332,15 @@ public class Servidor extends JFrame {
     return res;
   }
 
-  private JSONObject buildLogoutJson(JSONObject json) {
+  private JSONObject buildLogoutJsonRecruiter(JSONObject json) {
+    json.put("operation", "LOGOUT_RECRUITER");
+    json.put("status", "SUCCESS");
+    JSONObject data = new JSONObject();
+    json.put("data", data);
+    return json;
+  }
+
+  private JSONObject buildLogoutJsonCandidato(JSONObject json) {
     json.put("operation", "LOGOUT_CANDIDATE");
     json.put("status", "SUCCESS");
     JSONObject data = new JSONObject();
@@ -323,8 +370,3 @@ public class Servidor extends JFrame {
     });
   }
 }
-
-
-
-
-

@@ -21,19 +21,25 @@ public class EmpresaViewTeste extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	Empresa e;
+	// Empresa e;
 	private JTextField nomeCandidatoField;
 	private JTextField senhaField;
 	private JTextField emailField;
 	private JTable table;
 	private JTextField usuarioTextField;
 	
-	public EmpresaViewTeste(final Empresa e) {
-		this.e = e;
-		initComponents(e);
+	public EmpresaViewTeste(
+    // final Empresa e
+  ) {
+		// this.e = e;
+		initComponents(
+      // e
+    );
 	}
 	
-	public void initComponents(final Empresa e) {
+	public void initComponents(
+  // final Empresa e
+  ) {
 		setLayout(null);
 		setBackground(SystemColor.control);
 		
@@ -136,30 +142,30 @@ public class EmpresaViewTeste extends JPanel {
 	}
 	
 	public void setEmpresa(Empresa e) {
-        this.e = e;
+        // this.e = e;
 //        System.out.println(c.getUsuario().getUser());
-        popularTabelaEmpresa();
+        // popularTabelaEmpresa();
     }
 	
 	public void popularTabelaEmpresa() {
-		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+		// DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 		
-		EmpresaDAO edao = new EmpresaDAO();
-		Empresa em = edao.consultarPorId(Empresa.class, e.getId());
+		// EmpresaDAO edao = new EmpresaDAO();
+		// Empresa em = edao.consultarPorId(Empresa.class, e.getId());
 		
 		
-		if (modelo.getRowCount() > 0) {
-			modelo.setRowCount(0);
-		}
+		// if (modelo.getRowCount() > 0) {
+		// 	modelo.setRowCount(0);
+		// }
 		
-		if (em == null)
-			return;
+		// if (em == null)
+		// 	return;
 		
-		Object[] arr = new Object[3];
-		arr[0] = em.getUsuario().getNome();
-		arr[1] = em.getUsuario().getEmail();
-		arr[2] = em.getUsuario().getSenha();
+		// Object[] arr = new Object[3];
+		// arr[0] = em.getUsuario().getNome();
+		// arr[1] = em.getUsuario().getEmail();
+		// arr[2] = em.getUsuario().getSenha();
 		
-		modelo.addRow(arr);		
+		// modelo.addRow(arr);		
 	}
 }

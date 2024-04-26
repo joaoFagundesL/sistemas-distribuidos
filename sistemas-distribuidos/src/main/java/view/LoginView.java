@@ -54,7 +54,7 @@ public class LoginView {
     panelCont.setLayout(cl);
     panelCont.add(panelFirst, "1");
     comboBox.setBackground(UIManager.getColor("Button.background"));
-    comboBox.setModel(new DefaultComboBoxModel(new String[] {"Selecione", "Candidato", "Funcionario"}));
+    comboBox.setModel(new DefaultComboBoxModel(new String[] {"Selecione", "Candidato", "Recruiter"}));
     comboBox.setBounds(118, 156, 186, 21);
     panelFirst.add(comboBox);
 
@@ -83,16 +83,13 @@ public class LoginView {
     JButton btnNewButton_1 = new JButton("Login");
     btnNewButton_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        // frame.setVisible(false);
-        // new MainView(frame);
-
         String op = (String) comboBox.getSelectedItem();
 
         if("Candidato".equals(op)) {
           logarCandidato();
         }		
-        else if(false) {
-
+        else if("Recruiter".equals(op)) {
+          logarRecruiter();
         }
 
         else {
@@ -133,7 +130,7 @@ public class LoginView {
   }
 
   public void logarCandidato() {
-    JSONObject request = buildJson();
+    JSONObject request = buildJsonCandidato();
     JSONObject serverResponse = new JSONObject();
 
     try {
@@ -154,14 +151,52 @@ public class LoginView {
     } catch(IOException e) {
       e.printStackTrace();
     } 
+  }
+
+  public void logarRecruiter() {
+    JSONObject request = buildJsonRecruiter();
+    JSONObject serverResponse = new JSONObject();
+
+    try {
+      serverResponse = Client.getInstance().sendRequest(request);
+      String status = (String) serverResponse.get("status");
+
+      if (status.equals("USER_NOT_FOUND")) {
+        JFrame frame = new JFrame("Invalid User!");
+        JOptionPane.showMessageDialog(frame, "User Inválido!");
+      } else if (status.equals("INVALID_PASSWORD")) {
+        JFrame frame = new JFrame("Invalid password!");
+        JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+      } else {
+        frame.setVisible(false);
+        MainViewEmpresa.getInstance().initComponents(this);
+      }
+
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
 
   }
-  public JSONObject buildJson() {
+
+  public JSONObject buildJsonCandidato() {
     String userName = textField.getText();
     String senha = String.valueOf(passwordField.getPassword());
 
     JSONObject request = new JSONObject();
     request.put("operation", "LOGIN_CANDIDATE");
+    JSONObject data = new JSONObject();
+    data.put("email", userName);
+    data.put("password", senha);
+    request.put("data", data);
+    return request;
+  }  
+
+  public JSONObject buildJsonRecruiter() {
+    String userName = textField.getText();
+    String senha = String.valueOf(passwordField.getPassword());
+
+    JSONObject request = new JSONObject();
+    request.put("operation", "LOGIN_RECRUITER");
     JSONObject data = new JSONObject();
     data.put("email", userName);
     data.put("password", senha);
