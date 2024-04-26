@@ -33,6 +33,7 @@ import dao.UsuarioDAO;
 import modelo.Usuario;
 import modelo.Empresa;
 import utitlity.EmailValidator;
+import utitlity.JwtUtility;
 
 public class Servidor extends JFrame {
 
@@ -179,7 +180,6 @@ public class Servidor extends JFrame {
     }
   }
 
-
   private void loginCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
     CandidatoController fController = new CandidatoController();
     JSONObject data = jsonMessage.getJSONObject("data");
@@ -188,15 +188,21 @@ public class Servidor extends JFrame {
     String senha = data.getString("password");
 
     if (!fController.isUserValid(email)) {
-      buildJsonLogin(jsonResponse, "USER_NOT_FOUND");
+      buildJsonLogin(jsonResponse, "USER_NOT_FOUND", "");
     }
 
     else if (!fController.isPasswordValid(email, senha)) {
-      buildJsonLogin(jsonResponse, "INVALID_PASSWORD");
+      buildJsonLogin(jsonResponse, "INVALID_PASSWORD", "");
     } 
 
     else {				
-      buildJsonLogin(jsonResponse, "SUCCESS");
+      Integer id = fController.consultarId(email);
+      String idString = String.valueOf(id);
+      String token = JwtUtility.generateToken(idString, "user");
+      buildJsonLogin(jsonResponse, "SUCCESS", token);
+    
+      UsuarioController uController = new UsuarioController();
+      uController.inserirToken(id, token);
     } 
   }
 
@@ -251,9 +257,10 @@ public class Servidor extends JFrame {
     }
   }
 
-  private JSONObject buildJsonLogin(JSONObject res, String status) {
+  private JSONObject buildJsonLogin(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_CANDIDATE");
     res.put("status", status);
+    res.put("token", token);
     JSONObject data = new JSONObject();
     res.put("data", data);
     return res;

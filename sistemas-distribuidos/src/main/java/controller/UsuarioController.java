@@ -9,11 +9,23 @@ public class UsuarioController {
 		UsuarioDAO udao = new UsuarioDAO();
 		udao.update(c.getUsuario(), nome, email, senha);
 	}
+
+  public void inserirToken(Integer id, String token) {
+    Usuario u = getUsuario(id);
+
+    UsuarioDAO dao = new UsuarioDAO();
+    dao.updateToken(u, token);
+  }
 	
 	public void remover(Class<Usuario> clazz, Integer id) {
 		UsuarioDAO udao = new UsuarioDAO();
 		udao.remover(Usuario.class, id);
-    }
+  }
+
+  public Usuario getUsuario(Integer id) {
+    UsuarioDAO dao = new UsuarioDAO();
+    return dao.consultarPorId(Usuario.class, id);
+  }
 	
 	public Usuario insert(String nome, String email, String senha) {
 		UsuarioDAO dao = new UsuarioDAO();

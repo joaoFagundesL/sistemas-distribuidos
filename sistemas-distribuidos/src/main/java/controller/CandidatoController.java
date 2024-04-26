@@ -29,6 +29,11 @@ public class CandidatoController {
     return true;
   }
 
+  public Integer consultarId(String email) {
+    Candidato c = dao.consultarPeloEmail(email);
+    return c.getId();
+  }
+
   public Candidato getCandidadoLogin(String email) {
 		Candidato c = dao.consultarPeloEmail(email);
     return c;
