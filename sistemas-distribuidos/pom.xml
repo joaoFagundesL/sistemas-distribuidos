@@ -29,7 +29,7 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20240303</version>
-      </dependency>
+    </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
     <dependency>
