@@ -90,6 +90,9 @@ public class CadastrarViewEmpresa extends JFrame {
           } else if (status.equals("INVALID_PASSWORD")) {
             JFrame frame = new JFrame("Invalid!");
             JOptionPane.showMessageDialog(frame, "Senha inválida!");
+          } else if (status.equals("INVALID_FIELD")) {
+            JFrame frame = new JFrame("Invalid!");
+            JOptionPane.showMessageDialog(frame, "Preencha todos campos!");
           } else {
             JFrame frame = new JFrame("Success!");
             JOptionPane.showMessageDialog(frame, "Cadastro realizado!");

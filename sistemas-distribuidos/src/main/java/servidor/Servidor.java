@@ -123,8 +123,8 @@ public class Servidor extends JFrame {
 
   private void handleClient(Socket clientSocket) {
     try (
-      BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-      PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)  ) {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)  ) {
       while (true) {
 
         ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
@@ -177,10 +177,10 @@ public class Servidor extends JFrame {
       buildInvalidOperation(jsonResponse, operation);
     }
 
-      String jsonString = jsonResponse.toString();
-      String messageToSend = jsonString + (char) 0x1C;
-      writer.println(messageToSend.toString());
-      writer.flush();
+    String jsonString = jsonResponse.toString();
+    String messageToSend = jsonString + (char) 0x1C;
+    writer.println(messageToSend.toString());
+    writer.flush();
   }
 
   private void loginCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
@@ -190,23 +190,28 @@ public class Servidor extends JFrame {
     String email = data.getString("email");
     String senha = data.getString("password");
 
-    if (!fController.isUserValid(email)) {
-      buildJsonLoginCandidato(jsonResponse, "USER_NOT_FOUND", "");
+    if (email.isEmpty() || senha.isEmpty()) {
+      buildJsonLoginCandidato(jsonResponse, "INVALID_FIELD", "");
+      return;
     }
 
-    else if (!fController.isPasswordValid(email, senha)) {
+    if (!fController.isUserValid(email)) {
+      buildJsonLoginCandidato(jsonResponse, "USER_NOT_FOUND", "");
+      return;
+    }
+
+    if (!fController.isPasswordValid(email, senha)) {
       buildJsonLoginCandidato(jsonResponse, "INVALID_PASSWORD", "");
+      return;
     } 
 
-    else {				
-      Integer id = fController.consultarId(email);
-      String idString = String.valueOf(id);
-      String token = JwtUtility.generateToken(idString, "candidate");
-      buildJsonLoginCandidato(jsonResponse, "SUCCESS", token);
-    
-      UsuarioController uController = new UsuarioController();
-      uController.inserirToken(id, token);
-    } 
+    Integer id = fController.consultarId(email);
+    String idString = String.valueOf(id);
+    String token = JwtUtility.generateToken(idString, "candidate");
+    buildJsonLoginCandidato(jsonResponse, "SUCCESS", token);
+
+    UsuarioController uController = new UsuarioController();
+    uController.inserirToken(id, token);
   }
 
   private void loginRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
@@ -216,23 +221,28 @@ public class Servidor extends JFrame {
     String email = data.getString("email");
     String senha = data.getString("password");
 
-    if (!eController.isUserValid(email)) {
-      buildJsonLoginRecruiter(jsonResponse, "USER_NOT_FOUND", "");
+    if (email.isEmpty() || senha.isEmpty()) {
+      buildJsonLoginRecruiter(jsonResponse, "INVALID_FIELD", "");
+      return;
     }
 
-    else if (!eController.isPasswordValid(email, senha)) {
+    if (!eController.isUserValid(email)) {
+      buildJsonLoginRecruiter(jsonResponse, "USER_NOT_FOUND", "");
+      return;
+    }
+
+    if (!eController.isPasswordValid(email, senha)) {
       buildJsonLoginRecruiter(jsonResponse, "INVALID_PASSWORD", "");
+      return;
     } 
 
-    else {				
-      Integer id = eController.consultarId(email);
-      String idString = String.valueOf(id);
-      String token = JwtUtility.generateToken(idString, "recruiter");
-      buildJsonLoginRecruiter(jsonResponse, "SUCCESS", token);
-    
-      UsuarioController uController = new UsuarioController();
-      uController.inserirToken(id, token);
-    } 
+    Integer id = eController.consultarId(email);
+    String idString = String.valueOf(id);
+    String token = JwtUtility.generateToken(idString, "recruiter");
+    buildJsonLoginRecruiter(jsonResponse, "SUCCESS", token);
+
+    UsuarioController uController = new UsuarioController();
+    uController.inserirToken(id, token);
   }
 
   private void signupCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
@@ -244,20 +254,26 @@ public class Servidor extends JFrame {
     String senha = data.getString("password");
     String nome = data.getString("name");
 
-    if (!emailValidator.isValidEmail(email)) {
-      buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL");
-    } else if (dao.consultarPeloEmail(email) == null) {
-      UsuarioController ucontroller = new UsuarioController();
-      Usuario u = ucontroller.insert(nome, email, senha);
-
-      CandidatoController ccontroller = new CandidatoController();
-      ccontroller.insert(u);
-
-      buildJsonSignupCandidate(jsonResponse, "SUCCESS");
-    } else {
-      buildJsonSignupCandidate(jsonResponse, "USER_EXISTS");
+    if (email.isEmpty() || senha.isEmpty() || nome.isEmpty()) {
+      buildJsonSignupCandidate(jsonResponse, "INVALID_FIELD");
+      return; 
     }
 
+    if (!emailValidator.isValidEmail(email)) {
+      buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL");
+      return;
+    } 
+
+    if (dao.consultarPeloEmail(email) != null) {
+      buildJsonSignupCandidate(jsonResponse, "USER_EXISTS");
+      return;
+    } 
+
+    UsuarioController ucontroller = new UsuarioController();
+    Usuario u = ucontroller.insert(nome, email, senha);
+    CandidatoController ccontroller = new CandidatoController();
+    ccontroller.insert(u);
+    buildJsonSignupCandidate(jsonResponse, "SUCCESS");
   }
 
   private void signupRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
@@ -271,19 +287,26 @@ public class Servidor extends JFrame {
     String branch = data.getString("branch");
     String descricao = data.getString("description");
 
+    if (email.isEmpty() || senha.isEmpty() || nome.isEmpty() || branch.isEmpty() || descricao.isEmpty()) {
+      buildJsonSignupRecruiter(jsonResponse, "INVALID_FIELD");
+      return; 
+    }
+
     if (!emailValidator.isValidEmail(email)) {
       buildJsonSignupRecruiter(jsonResponse, "INVALID_EMAIL");
+      return;
+    } 
 
-    } else if (dao.consultarPeloEmail(email) == null) {
-      UsuarioController ucontroller = new UsuarioController();
-      Usuario u = ucontroller.insert(nome, email, senha);
-      EmpresaController econtroller = new EmpresaController();
-      Empresa e = econtroller.insert(u, descricao, branch);
-      buildJsonSignupRecruiter(jsonResponse, "SUCCESS");
-
-    } else {
+    if (dao.consultarPeloEmail(email) != null) {
       buildJsonSignupRecruiter(jsonResponse, "USER_EXISTS");
+      return;
     }
+
+    UsuarioController ucontroller = new UsuarioController();
+    Usuario u = ucontroller.insert(nome, email, senha);
+    EmpresaController econtroller = new EmpresaController();
+    Empresa e = econtroller.insert(u, descricao, branch);
+    buildJsonSignupRecruiter(jsonResponse, "SUCCESS");
   }
 
   private JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token) {

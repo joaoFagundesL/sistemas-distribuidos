@@ -60,13 +60,13 @@ public class CadastrarViewCandidato extends JFrame {
 		senhaField.setBounds(78, 110, 161, 20);
 		contentPane.add(senhaField);
 		senhaField.setColumns(10);
-		
-		JButton btnNewButton = new JButton("Enviar");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String nome = nomeField.getText();
-				String senha = senhaField.getText();
-				String email = emailField.getText();
+
+    JButton btnNewButton = new JButton("Enviar");
+    btnNewButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        String nome = nomeField.getText();
+        String senha = senhaField.getText();
+        String email = emailField.getText();
 
         JSONObject request = new JSONObject();
         JSONObject response = new JSONObject();
@@ -86,6 +86,9 @@ public class CadastrarViewCandidato extends JFrame {
           } else if (status.equals("INVALID_PASSWORD")) {
             JFrame frame = new JFrame("Invalid!");
             JOptionPane.showMessageDialog(frame, "Senha inválida!");
+          } else if (status.equals("INVALID_FIELD")) {
+            JFrame frame = new JFrame("Invalid!");
+            JOptionPane.showMessageDialog(frame, "Preencha todos campos!");
           } else {
             JFrame frame = new JFrame("Success!");
             JOptionPane.showMessageDialog(frame, "Cadastro realizado!");

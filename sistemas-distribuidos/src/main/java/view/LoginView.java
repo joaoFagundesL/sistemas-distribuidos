@@ -143,6 +143,10 @@ public class LoginView {
       } else if (status.equals("INVALID_PASSWORD")) {
         JFrame frame = new JFrame("Invalid password!");
         JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+
+      } else if (status.equals("INVALID_FIELD")) {
+        JFrame frame = new JFrame("Invalid!");
+        JOptionPane.showMessageDialog(frame, "Preencha todos campos!");
       } else {
         frame.setVisible(false);
         MainViewCandidato.getInstance().initComponents(this);
@@ -167,6 +171,9 @@ public class LoginView {
       } else if (status.equals("INVALID_PASSWORD")) {
         JFrame frame = new JFrame("Invalid password!");
         JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+      } else if (status.equals("INVALID_FIELD")) {
+        JFrame frame = new JFrame("Invalid!");
+        JOptionPane.showMessageDialog(frame, "Preencha todos campos!");
       } else {
         frame.setVisible(false);
         MainViewEmpresa.getInstance().initComponents(this);
