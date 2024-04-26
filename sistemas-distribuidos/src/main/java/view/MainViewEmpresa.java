@@ -124,7 +124,8 @@ public class MainViewEmpresa {
       public void actionPerformed(ActionEvent e) {
         loginClass.frame.setVisible(true);
         JSONObject request = new JSONObject();
-        buildLogoutJson(request);
+        String token = Client.getInstance().getToken();
+        buildLogoutJson(request, token);
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
         }catch(IOException err) {
@@ -145,8 +146,9 @@ public class MainViewEmpresa {
 
   }
 
-  private JSONObject buildLogoutJson(JSONObject json) {
+  private JSONObject buildLogoutJson(JSONObject json, String token) {
     json.put("operation", "LOGOUT_RECRUITER");
+    json.put("token", token);
     JSONObject data = new JSONObject();
     json.put("data", data);
     return json;

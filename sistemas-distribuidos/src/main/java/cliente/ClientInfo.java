@@ -7,7 +7,8 @@ public class ClientInfo implements Serializable {
    
 	private static final long serialVersionUID = 1L;
 	private String ipAddress;
-    private int port;
+  private int port;
+
 
     public ClientInfo(String ipAddress, int port) {
         this.ipAddress = ipAddress;

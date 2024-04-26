@@ -17,14 +17,14 @@ public class JwtUtility {
         Date expiresAt = new Date(issuedAt.getTime() + EXPIRATION_TIME_MS);
 
         return JWT.create()
-                .withSubject(userId)  // id do usuario
+                .withClaim("id", userId)  // id do usuario
                 .withClaim("role", role) // se é recruiter ou candidato
                 // .withIssuedAt(issuedAt) 
                 // .withExpiresAt(expiresAt) 
                 .sign(Algorithm.HMAC256(SECRET_KEY)); 
     }
 
-    public static DecodedJWT verifyToken(String token) throws JWTVerificationException {
+    public DecodedJWT verifyToken(String token) throws JWTVerificationException {
         return JWT.require(Algorithm.HMAC256(SECRET_KEY))
                 .build()
                 .verify(token); 

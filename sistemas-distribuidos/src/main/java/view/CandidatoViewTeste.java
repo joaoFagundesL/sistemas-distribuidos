@@ -123,7 +123,7 @@ public class CandidatoViewTeste extends JPanel {
 				// setCandidato(c);
 			}
 		});
-		btnRemover_1.setBounds(53, 281, 94, 27);
+		btnRemover_1.setBounds(142, 255, 94, 27);
 		add(btnRemover_1);
 		
 		JButton btnLimpar_1 = new JButton("Limpar");
@@ -132,7 +132,7 @@ public class CandidatoViewTeste extends JPanel {
 				limparTela();
 			}
 		});
-		btnLimpar_1.setBounds(265, 281, 98, 27);
+		btnLimpar_1.setBounds(248, 294, 98, 27);
 		add(btnLimpar_1);
 		
 		JButton btnAtualizar_1 = new JButton("Atualizar");
@@ -157,7 +157,7 @@ public class CandidatoViewTeste extends JPanel {
 				// setCandidato(c);	
 			}
 		});
-		btnAtualizar_1.setBounds(157, 281, 98, 27);
+		btnAtualizar_1.setBounds(248, 255, 98, 27);
 		add(btnAtualizar_1);
 	
 		
@@ -173,8 +173,21 @@ public class CandidatoViewTeste extends JPanel {
 		lblNewLabel_1.setBounds(64, 195, 46, 14);
 		add(lblNewLabel_1);
 		
+		JButton refreshBtn = new JButton("Refresh");
+		refreshBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//lookup
+			}
+		});
+		refreshBtn.setBounds(142, 294, 98, 27);
+		add(refreshBtn);
+		
 	}
 	
+  public void buildJsonLookup() {
+
+
+  }
 	public void limparTela() {
 		nomeCandidatoField.setText("");
 		emailField.setText("");
