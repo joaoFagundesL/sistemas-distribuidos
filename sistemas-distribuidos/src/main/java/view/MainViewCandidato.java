@@ -50,7 +50,7 @@ public class MainViewCandidato {
   public void initComponents(LoginView loginClass
     // , Candidato c
   ) {
-    final CandidatoViewTeste clienteView = new CandidatoViewTeste(
+    final CandidatoView clienteView = new CandidatoView(
       // c
     );
 
@@ -80,7 +80,7 @@ public class MainViewCandidato {
     panel.setBackground(Color.RED);
     tabbedPane.addTab("New tab", null, clienteView, null);
    // tabbedPane.addTab("New tab", null, new CandidatoViewTeste(), null);
-    CandidatoViewTeste clienteView_1 = new CandidatoViewTeste();
+    CandidatoView clienteView_1 = new CandidatoView();
     clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 
     JPanel panel_2 = new JPanel();

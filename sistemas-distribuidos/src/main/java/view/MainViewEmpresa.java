@@ -41,7 +41,7 @@ public class MainViewEmpresa {
   }
 
   public void initComponents(LoginView loginClass) {
-    final EmpresaViewTeste empresaView = new EmpresaViewTeste(
+    final EmpresaView empresaView = new EmpresaView(
       // e
     );
 
@@ -69,8 +69,8 @@ public class MainViewEmpresa {
     JPanel panel = new JPanel();
     panel.setBackground(Color.RED);
     // tabbedPane.addTab("New tab", null, empresaView, null);
-    // tabbedPane.addTab("New tab", null, new EmpresaViewTeste(e), null);
-    // EmpresaViewTeste clienteView_1 = new EmpresaViewTeste(e);
+    // tabbedPane.addTab("New tab", null, new EmpresaView(e), null);
+    // EmpresaView clienteView_1 = new EmpresaView(e);
     // clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 
     JPanel panel_2 = new JPanel();

@@ -14,7 +14,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import modelo.Empresa;
 
-public class EmpresaViewTeste extends JPanel {
+public class EmpresaView extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -25,7 +25,7 @@ public class EmpresaViewTeste extends JPanel {
 	private JTable table;
 	private JTextField usuarioTextField;
 	
-	public EmpresaViewTeste(
+	public EmpresaView(
     // final Empresa e
   ) {
 		// this.e = e;

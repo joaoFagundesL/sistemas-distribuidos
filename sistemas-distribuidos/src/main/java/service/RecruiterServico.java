@@ -13,8 +13,6 @@ import utitlity.EmailValidator;
 import utitlity.JwtUtility;
 
 public class RecruiterServico {
-
-
   public void logoutRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
     String token = jsonMessage.getString("token");
@@ -119,6 +117,4 @@ public class RecruiterServico {
     json.put("data", data);
     return json;
   }
-
-
 }
