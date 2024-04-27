@@ -74,12 +74,12 @@ public class MainViewCandidato {
 
     JPanel panel_1 = new JPanel();
     panel_1.setBackground(SystemColor.activeCaption);
-    tabbedPane.addTab("New tab", null, panel_1, null);
+   // tabbedPane.addTab("New tab", null, panel_1, null);
 
     JPanel panel = new JPanel();
     panel.setBackground(Color.RED);
     tabbedPane.addTab("New tab", null, clienteView, null);
-    tabbedPane.addTab("New tab", null, new CandidatoViewTeste(), null);
+   // tabbedPane.addTab("New tab", null, new CandidatoViewTeste(), null);
     CandidatoViewTeste clienteView_1 = new CandidatoViewTeste();
     clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 
@@ -136,6 +136,7 @@ public class MainViewCandidato {
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
         buildLogoutJson(request, token);
+        clienteView.limparTable();
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
         }catch(IOException err) {

@@ -113,7 +113,7 @@ public class MainViewEmpresa {
     btnGerenciarDisciplina.setBounds(23, 187, 171, 27);
     panel_2.add(btnGerenciarDisciplina);
 
-    JLabel lblSistemaFaculdade = new JLabel("Candidato");
+    JLabel lblSistemaFaculdade = new JLabel("Recruiter");
     lblSistemaFaculdade.setFont(new Font("Dialog", Font.BOLD, 16));
     lblSistemaFaculdade.setForeground(Color.WHITE);
     lblSistemaFaculdade.setBounds(33, 12, 161, 46);

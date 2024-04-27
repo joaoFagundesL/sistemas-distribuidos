@@ -16,148 +16,145 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-
 import org.json.JSONObject;
-
 import cliente.Client;
 import controller.CandidatoController;
 import controller.UsuarioController;
 import dao.CandidatoDAO;
-import modelo.Candidato;
-import modelo.Usuario;
 
 public class CandidatoViewTeste extends JPanel {
-	
-	private static final long serialVersionUID = 1L;
-	
-	// Candidato c;
-	private JTextField nomeCandidatoField;
-	private JTextField senhaField;
-	private JTextField emailField;
-	private JTable table;
-	
-	public CandidatoViewTeste(
+
+  private static final long serialVersionUID = 1L;
+
+  // Candidato c;
+  private JTextField nomeCandidatoField;
+  private JTextField senhaField;
+  private JTextField emailField;
+  private JTable table;
+
+  public CandidatoViewTeste(
     // final Candidato c
   ) {
-		// this.c = c;
-		initComponents(
+    // this.c = c;
+    initComponents(
       // c
     );
-	}
-	
-	public void initComponents(
+  }
+
+  public void initComponents(
     // final Candidato c
   ) {
-		setLayout(null);
-		setBackground(SystemColor.control);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		table = new JTable();
-		table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Nome", "Email", "Senha"
-			}
-		));
-				
-		emailField = new JTextField();
-		emailField.setBounds(142, 160, 213, 21);
-		add(emailField);
-		emailField.setColumns(10);
-		
-		senhaField = new JTextField();
-		senhaField.setBounds(142, 223, 213, 20);
-		add(senhaField);
-		senhaField.setColumns(10);
-		
-		nomeCandidatoField = new JTextField();
-		nomeCandidatoField.setBounds(142, 129, 213, 20);
-		add(nomeCandidatoField);
-		nomeCandidatoField.setColumns(10);
-		
-		scrollPane.setViewportView(table);
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				String nome =  table.getValueAt(table.getSelectedRow(), 0).toString();
-				String email = table.getValueAt(table.getSelectedRow(), 1).toString();
-				String senha = table.getValueAt(table.getSelectedRow(), 2).toString();
+    setLayout(null);
+    setBackground(SystemColor.control);
 
-				limparTela();
-				
-				nomeCandidatoField.setText(nome);
-				emailField.setText(email);
-				senhaField.setText(senha);
-			}
-		});
-		scrollPane.setBounds(0, 348, 431, 222);
-		add(scrollPane);
-		
-		JLabel nomeLabelProfessor = new JLabel("Nome");
-		nomeLabelProfessor.setBounds(64, 131, 60, 17);
-		add(nomeLabelProfessor);
-		
-		JButton btnRemover_1 = new JButton("Remover");
-		btnRemover_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CandidatoController ccontroller = new CandidatoController();
-				UsuarioController ucontroller = new UsuarioController();
 
-				// ccontroller.remover(Candidato.class, c.getId());
-				// ucontroller.remover(Usuario.class, c.getUsuario().getId());
-				
-				JFrame frame = new JFrame("JOptionPane exemplo");
-				JOptionPane.showMessageDialog(frame, "Registro Excluído!");
-				
-				limparTela();
-				
-				// setCandidato(c);
-			}
-		});
-		btnRemover_1.setBounds(142, 255, 94, 27);
-		add(btnRemover_1);
-		
-		JButton btnLimpar_1 = new JButton("Limpar");
-		btnLimpar_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				limparTela();
-			}
-		});
-		btnLimpar_1.setBounds(248, 294, 98, 27);
-		add(btnLimpar_1);
-		
-		JButton btnAtualizar_1 = new JButton("Atualizar");
-		btnAtualizar_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+    JScrollPane scrollPane = new JScrollPane();
+    table = new JTable();
+    table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+    table.setModel(new DefaultTableModel(
+      new Object[][] {
+      },
+      new String[] {
+        "Nome", "Email", "Senha"
+      }
+    ));
 
-				String email = emailField.getText();
-				String nome = nomeCandidatoField.getText();
-				String senha = senhaField.getText();
-				
-				UsuarioController ucontroller = new UsuarioController();
-				// ucontroller.update(c, nome, email, usuario, senha);
-				
-				CandidatoDAO cdao = new CandidatoDAO();
-				// cdao.update(c, nome, email, usuario, senha);
-				
-				
-				JFrame frame = new JFrame("Mensagem");
-				JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
+    emailField = new JTextField();
+    emailField.setBounds(142, 160, 213, 21);
+    add(emailField);
+    emailField.setColumns(10);
 
-				// setCandidato(c);	
-			}
-		});
-		btnAtualizar_1.setBounds(248, 255, 98, 27);
-		add(btnAtualizar_1);
-	
-		
-		JLabel lblSenha = new JLabel("Senha");
-		lblSenha.setBounds(64, 225, 60, 17);
-		add(lblSenha);
-		
+    senhaField = new JTextField();
+    senhaField.setBounds(142, 223, 213, 20);
+    add(senhaField);
+    senhaField.setColumns(10);
+
+    nomeCandidatoField = new JTextField();
+    nomeCandidatoField.setBounds(142, 129, 213, 20);
+    add(nomeCandidatoField);
+    nomeCandidatoField.setColumns(10);
+
+
+    scrollPane.setViewportView(table);
+    table.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+
+        String nome =  table.getValueAt(table.getSelectedRow(), 0).toString();
+        String email = table.getValueAt(table.getSelectedRow(), 1).toString();
+        String senha = table.getValueAt(table.getSelectedRow(), 2).toString();
+
+        limparTela();
+
+        nomeCandidatoField.setText(nome);
+        emailField.setText(email);
+        senhaField.setText(senha);
+      }
+    });
+    scrollPane.setBounds(0, 348, 431, 222);
+    add(scrollPane);
+
+    JLabel nomeLabelProfessor = new JLabel("Nome");
+    nomeLabelProfessor.setBounds(64, 131, 60, 17);
+    add(nomeLabelProfessor);
+
+    JButton btnRemover_1 = new JButton("Remover");
+    btnRemover_1.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        CandidatoController ccontroller = new CandidatoController();
+        UsuarioController ucontroller = new UsuarioController();
+
+        // ccontroller.remover(Candidato.class, c.getId());
+        // ucontroller.remover(Usuario.class, c.getUsuario().getId());
+
+        JFrame frame = new JFrame("JOptionPane exemplo");
+        JOptionPane.showMessageDialog(frame, "Registro Excluído!");
+
+        limparTela();
+
+        // setCandidato(c);
+      }
+    });
+    btnRemover_1.setBounds(142, 255, 94, 27);
+    add(btnRemover_1);
+
+    JButton btnLimpar_1 = new JButton("Limpar");
+    btnLimpar_1.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        limparTela();
+      }
+    });
+    btnLimpar_1.setBounds(248, 294, 98, 27);
+    add(btnLimpar_1);
+
+    JButton btnAtualizar_1 = new JButton("Atualizar");
+    btnAtualizar_1.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        String email = emailField.getText();
+        String nome = nomeCandidatoField.getText();
+        String senha = senhaField.getText();
+
+        UsuarioController ucontroller = new UsuarioController();
+        // ucontroller.update(c, nome, email, usuario, senha);
+
+        CandidatoDAO cdao = new CandidatoDAO();
+        // cdao.update(c, nome, email, usuario, senha);
+
+
+        JFrame frame = new JFrame("Mensagem");
+        JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
+
+        // setCandidato(c);	
+      }
+    });
+    btnAtualizar_1.setBounds(248, 255, 98, 27);
+    add(btnAtualizar_1);
+
+
+    JLabel lblSenha = new JLabel("Senha");
+    lblSenha.setBounds(64, 225, 60, 17);
+    add(lblSenha);
+
     JLabel lblNewLabel = new JLabel("Email");
     lblNewLabel.setBounds(64, 162, 60, 17);
     add(lblNewLabel);
@@ -204,6 +201,12 @@ public class CandidatoViewTeste extends JPanel {
     senhaField.setText("");
   }
 
+
+  public void limparTable() {
+    DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+    modelo.setNumRows(0);
+  }
+
   public void setCandidato(
     // Candidato c
   ) {
@@ -219,13 +222,13 @@ public class CandidatoViewTeste extends JPanel {
     // Candidato can = cdao.consultarPorId(Candidato.class, c.getId());
 
     if (modelo.getRowCount() > 0) {
-    	modelo.setRowCount(0);
+      modelo.setRowCount(0);
     }
 
     // if (can == null)
     // return;
     // 
-    Object[] arr = new Object[4];
+    Object[] arr = new Object[3];
     arr[0] = nome;
     arr[1] = email;
     arr[2] = senha;
