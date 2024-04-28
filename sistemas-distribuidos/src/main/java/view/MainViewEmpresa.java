@@ -68,10 +68,10 @@ public class MainViewEmpresa {
 
     JPanel panel = new JPanel();
     panel.setBackground(Color.RED);
-    // tabbedPane.addTab("New tab", null, empresaView, null);
-    // tabbedPane.addTab("New tab", null, new EmpresaView(e), null);
-    // EmpresaView clienteView_1 = new EmpresaView(e);
-    // clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
+    tabbedPane.addTab("New tab", null, empresaView, null);
+    tabbedPane.addTab("New tab", null, new EmpresaView(), null);
+    EmpresaView clienteView_1 = new EmpresaView();
+    clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 
     JPanel panel_2 = new JPanel();
     panel_2.setBackground(SystemColor.inactiveCaption);
@@ -126,6 +126,7 @@ public class MainViewEmpresa {
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
         buildLogoutJson(request, token);
+        empresaView.limparTable();
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
         }catch(IOException err) {
@@ -134,7 +135,6 @@ public class MainViewEmpresa {
 
         frame.dispose();
         isLogout = true;
-
       }
     });
     btnLogout.setForeground(Color.WHITE);

@@ -3,6 +3,8 @@ package service;
 import org.json.JSONObject;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import controller.EmpresaController;
 import controller.UsuarioController;
@@ -23,6 +25,45 @@ public class RecruiterServico {
     } catch(JWTVerificationException e) {
       buildLogoutJsonRecruiter(jsonResponse, "INVALID_TOKEN", token);
     }
+  }
+
+ public void lookup_recruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+    String token = jsonMessage.getString("token");
+
+    try {
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      EmpresaController cController = new EmpresaController();
+      Empresa c = cController.consultarPorId(id);
+
+      String nome = c.getUsuario().getNome();
+      String email = c.getUsuario().getEmail();
+      String senha = c.getUsuario().getSenha();
+      String branch = c.getBranch();
+      String descricao = c.getDescricao();
+
+      buildLookupRecruiter(jsonResponse, "SUCCESS", token, nome, email, senha, branch, descricao);    
+    } catch(JWTVerificationException e) {
+      buildLookupRecruiter(jsonResponse, "SUCCESS", token, "", "", "", "", "");    
+    }
+  }
+
+  public JSONObject buildLookupRecruiter(JSONObject jsonResponse, String status, String token,
+    String nome, String email, String senha, String branch, String descricao) {
+    jsonResponse.put("operation", "LOOKUP_ACCOUNT_RECRUITER");
+    jsonResponse.put("token", token);
+    jsonResponse.put("status", status);
+    JSONObject data = new JSONObject();
+    data.put("email", email);
+    data.put("password", senha);
+    data.put("name", nome);
+    data.put("branch", branch);
+    data.put("description", descricao);
+    jsonResponse.put("data", data);
+    return jsonResponse;
   }
 
   public void loginRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {

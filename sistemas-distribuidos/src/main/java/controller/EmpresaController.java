@@ -8,20 +8,24 @@ import modelo.Usuario;
 public class EmpresaController {
   EmpresaDAO dao = new EmpresaDAO();
 
-	public Empresa insert(Usuario u, String descricao, String branch) {
-		EmpresaDAO dao = new EmpresaDAO();
-		Empresa a = new Empresa();
-		a.setUsuario(u);
+  public Empresa insert(Usuario u, String descricao, String branch) {
+    EmpresaDAO dao = new EmpresaDAO();
+    Empresa a = new Empresa();
+    a.setUsuario(u);
     a.setBranch(branch);
     a.setDescricao(descricao);
-		
-		try {
-			dao.insertWithQuery(a);
+
+    try {
+      dao.insertWithQuery(a);
       return a;
     } catch (Exception e1) {
       e1.printStackTrace();
       return null;
     }
+  }
+
+  public Empresa consultarPorId(Integer id) {
+    return dao.consultarPorId(Empresa.class, id);
   }
 
   public Boolean isUserValid(String email) {

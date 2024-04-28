@@ -156,26 +156,45 @@ public class Servidor extends JFrame {
     String operation = jsonMessage.getString("operation");
     JSONObject jsonResponse = new JSONObject();
 
-    if (operation.equals("LOGIN_CANDIDATE")) {
-      candidatoServico.loginCandidato(jsonMessage, jsonResponse); 
-    } else if (operation.equals("LOGOUT_CANDIDATE")) {
+    switch (operation) {
+      case "LOGIN_CANDIDATE":
+      candidatoServico.loginCandidato(jsonMessage, jsonResponse);
+      break;
+
+      case "LOGOUT_CANDIDATE":
       candidatoServico.logoutCandidato(jsonMessage, jsonResponse);
-    } else if (operation.equals("SIGNUP_CANDIDATE")) {
+      break;
+
+      case "SIGNUP_CANDIDATE":
       candidatoServico.signupCandidato(jsonMessage, jsonResponse);
-    } else if (operation.equals("LOOKUP_ACCOUNT_CANDIDATE")) {
+      break;
+
+      case "LOOKUP_ACCOUNT_CANDIDATE":
       candidatoServico.lookup_candidate(jsonMessage, jsonResponse);
-    } else if (operation.equals("SIGNUP_RECRUITER")) {
+      break;
+
+      case "SIGNUP_RECRUITER":
       recruiterServico.signupRecruiter(jsonMessage, jsonResponse);
-    } else if(operation.equals("LOGIN_RECRUITER")) {
+      break;
+
+      case "LOGIN_RECRUITER":
       recruiterServico.loginRecruiter(jsonMessage, jsonResponse);
-    } else if(operation.equals("LOGOUT_RECRUITER")) {
+      break;
+
+      case "LOGOUT_RECRUITER":
       recruiterServico.logoutRecruiter(jsonMessage, jsonResponse);
-    } else {
+      break;
+
+      case "LOOKUP_ACCOUNT_RECRUITER":
+      recruiterServico.lookup_recruiter(jsonMessage, jsonResponse);
+      break;
+
+      default:
       buildInvalidOperation(jsonResponse, operation);
     }
 
     String jsonString = jsonResponse.toString();
-    String messageToSend = jsonString + (char) 0x1C;
+    String messageToSend = jsonString;
     writer.println(messageToSend.toString());
     writer.flush();
   }
