@@ -20,7 +20,6 @@ import org.json.JSONObject;
 import cliente.Client;
 import controller.CandidatoController;
 import controller.UsuarioController;
-import dao.CandidatoDAO;
 
 public class CandidatoView extends JPanel {
 
@@ -134,17 +133,64 @@ public class CandidatoView extends JPanel {
         String nome = nomeCandidatoField.getText();
         String senha = senhaField.getText();
 
-        UsuarioController ucontroller = new UsuarioController();
-        // ucontroller.update(c, nome, email, usuario, senha);
+        JSONObject dataRequest = new JSONObject();  
 
-        CandidatoDAO cdao = new CandidatoDAO();
-        // cdao.update(c, nome, email, usuario, senha);
+        if(!nome.equals("")) {
+          dataRequest.put("name", nome);
+        }
 
+        if (!email.equals("")) {
+          dataRequest.put("email", email);
+        }
 
-        JFrame frame = new JFrame("Mensagem");
-        JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
+        if (!senha.equals("")) {
+          dataRequest.put("password", senha);
+        }
 
-        // setCandidato(c);	
+        JSONObject request = new JSONObject();
+        String token = Client.getInstance().getToken();
+        buildJsonUpdate(request, token, dataRequest);
+        try {
+          DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+          JSONObject response = Client.getInstance().sendRequest(request);
+          JSONObject data = response.getJSONObject("data");
+
+          String nomeResponse = "";
+          String emailResponse = "";
+          String senhaResponse = "";
+
+          if (data.has("name")) {
+            nomeResponse = data.getString("name");
+          } else {
+            nomeResponse = modelo.getValueAt(0, 0).toString();
+          }
+
+          if (data.has("email")) {
+            emailResponse = data.getString("email");
+          } else {
+            emailResponse = modelo.getValueAt(0, 1).toString();
+          }
+
+          if (data.has("password")) {
+            senhaResponse = data.getString("password");
+          } else {
+            senhaResponse = modelo.getValueAt(0, 2).toString();
+          }          
+
+          String status = response.getString("status");
+
+          if (status.equals("SUCCESS")) {
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
+          } else {
+
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Erro!");
+          }
+          popularTabelaCandidato(nomeResponse, emailResponse, senhaResponse);
+        } catch(IOException err) {
+          err.printStackTrace();
+        }
       }
     });
     btnAtualizar_1.setBounds(248, 255, 98, 27);
@@ -192,6 +238,14 @@ public class CandidatoView extends JPanel {
     json.put("token", token);
     JSONObject data = new JSONObject();
     json.put("data", data);
+    return json;
+  }
+
+  public JSONObject buildJsonUpdate(JSONObject json, String token, JSONObject data) {
+    json.put("operation", "UPDATE_ACCOUNT_CANDIDATE");
+    json.put("token", token);
+    json.put("data", data);
+
     return json;
   }
 

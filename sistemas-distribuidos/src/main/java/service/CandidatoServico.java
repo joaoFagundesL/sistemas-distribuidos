@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import controller.CandidatoController;
 import controller.UsuarioController;
+import dao.CandidatoDAO;
 import dao.UsuarioDAO;
 import modelo.Candidato;
 import modelo.Usuario;
@@ -49,6 +50,67 @@ public class CandidatoServico {
     jsonResponse.put("data", data);
     return jsonResponse;
   }
+
+  public void updateCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+    String token = jsonMessage.getString("token");
+
+    JSONObject data = jsonMessage.getJSONObject("data");
+
+    // verifica se algum dos campos é vazio
+    if (data.has("email") && data.getString("email").isEmpty() ||
+        data.has("name") && data.getString("name").isEmpty() ||
+        data.has("password") && data.getString("password").isEmpty() ||
+        data.isEmpty()) {
+      buildUpdateJsonCandidato(jsonResponse, "INVALID_FIELD", token, data);
+      return;
+    }   
+
+    try {
+      jwt.verifyToken(token);
+
+      UsuarioController ucontroller = new UsuarioController();
+
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      CandidatoController cController = new CandidatoController();
+      Candidato c = cController.consultarPorId(id);
+
+      String email = "";  
+      String senha = "";
+      String nome = "";       
+
+      if (data.has("email")) {
+        email = data.getString("email");
+      }
+      if (data.has("password")) {
+        senha = data.getString("password");;
+      }
+      if (data.has("name")) {
+        nome = data.getString("name");
+      }
+
+
+      CandidatoDAO cdao = new CandidatoDAO();
+      cdao.update(c, nome, email, senha);
+      ucontroller.update(c, nome, email, senha);
+
+      buildUpdateJsonCandidato(jsonResponse, "SUCCESS", token, data);
+    } catch(JWTVerificationException e) {
+      buildLogoutJsonCandidato(jsonResponse, "INVALID_TOKEN", token);
+    }
+  }
+
+  public JSONObject buildUpdateJsonCandidato(JSONObject res, String status, String token, JSONObject data) {
+    res.put("operation", "UPDATE_ACCOUNT_CANDIDATE");
+    res.put("status", status);
+    res.put("token", token);
+    res.put("data", data);
+    return res;
+  }
+
 
   public void logoutCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();

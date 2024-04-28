@@ -173,6 +173,10 @@ public class Servidor extends JFrame {
       candidatoServico.lookup_candidate(jsonMessage, jsonResponse);
       break;
 
+      case "UPDATE_ACCOUNT_CANDIDATE":
+      candidatoServico.updateCandidato(jsonMessage, jsonResponse);        
+      break;
+
       case "SIGNUP_RECRUITER":
       recruiterServico.signupRecruiter(jsonMessage, jsonResponse);
       break;
