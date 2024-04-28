@@ -28,7 +28,7 @@ public class Empresa implements Entidade{
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  private String branch;
+  private String industry;
   private String descricao;
 
   @OneToOne(cascade = CascadeType.PERSIST)
@@ -38,12 +38,12 @@ public class Empresa implements Entidade{
   public Empresa() {
   }
 
-  public String getBranch() {
-    return branch;
+  public String getIndustry() {
+    return industry;
   }
 
-  public void setBranch(String branch) {
-    this.branch = branch;
+  public void setIndustry(String industry) {
+    this.industry = industry;
   }
 
   public String getDescricao() {

@@ -54,7 +54,7 @@ public class EmpresaView extends JPanel {
       new Object[][] {
       },
       new String[] {
-        "Nome", "Email", "Senha", "Branch", "Descricao"
+        "Nome", "Email", "Senha", "Industry", "Descricao"
       }
     ));
 
@@ -91,9 +91,9 @@ public class EmpresaView extends JPanel {
           String nome =  data.getString("name");
           String email = data.getString("email");
           String senha = data.getString("password");
-          String branch = data.getString("branch");
+          String industry = data.getString("industry");
           String descricao = data.getString("description");
-          popularTabelaEmpresa(nome, email, senha, branch, descricao);
+          popularTabelaEmpresa(nome, email, senha, industry, descricao);
         } catch(IOException err) {
           err.printStackTrace();
         }
@@ -194,7 +194,7 @@ public class EmpresaView extends JPanel {
   }
 
   public void popularTabelaEmpresa(String nome, String email,
-    String senha, String branch, String descricao) {
+    String senha, String industry, String descricao) {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 
     // EmpresaDAO edao = new EmpresaDAO();
@@ -212,7 +212,7 @@ public class EmpresaView extends JPanel {
     arr[0] = nome;
     arr[1] = email;
     arr[2] = senha;
-    arr[3] = branch;
+    arr[3] = industry;
     arr[4] = descricao;
 
     modelo.addRow(arr);		

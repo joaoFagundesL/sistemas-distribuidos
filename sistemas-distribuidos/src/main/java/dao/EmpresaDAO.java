@@ -10,17 +10,16 @@ import modelo.Usuario;
 
 public class EmpresaDAO extends GenericoDAO<Empresa> {
 	
-	public void update(Empresa e, String nome, String email, String token, String senha, String branch, String descricao) {
+	public void update(Empresa e, String nome, String email, String senha, String industry, String descricao) {
 		EntityManager em = getEM();
 		
 		em.getTransaction().begin();
 		
 		e = consultarPorId(Empresa.class, e.getId());
 		
-		e.setBranch(branch);
+		e.setIndustry(industry);
 		e.setDescricao(descricao);
 		e.getUsuario().setNome(nome);
-    e.getUsuario().setToken(token);
 		e.getUsuario().setEmail(email);
 		e.getUsuario().setSenha(senha);
 		
@@ -60,15 +59,15 @@ public class EmpresaDAO extends GenericoDAO<Empresa> {
 	public void insertWithQuery(Empresa e) throws Exception {
 		EntityManager em = getEM();
 		
-		Query query = em.createNativeQuery("INSERT INTO Empresa (branch, descricao, usuario_id)"
+		Query query = em.createNativeQuery("INSERT INTO Empresa (industry, descricao, usuario_id)"
 										+ " VALUES (?, ?, ?)");
 
 		em.getTransaction().begin();
-		query.setParameter(1, e.getBranch());
+		query.setParameter(1, e.getIndustry());
 		query.setParameter(2, e.getDescricao());
 		query.setParameter(3, e.getUsuario().getId());
 
-		System.out.println("BRANCH = " + e.getBranch());
+		System.out.println("industry = " + e.getIndustry());
 		
 		query.executeUpdate();
 		em.getTransaction().commit();

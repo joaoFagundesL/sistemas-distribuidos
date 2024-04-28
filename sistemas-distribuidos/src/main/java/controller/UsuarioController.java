@@ -10,13 +10,6 @@ public class UsuarioController {
 		udao.update(c.getUsuario(), nome, email, senha);
 	}
 
-  public void inserirToken(Integer id, String token) {
-    Usuario u = getUsuario(id);
-
-    UsuarioDAO dao = new UsuarioDAO();
-    dao.updateToken(u, token);
-  }
-	
 	public void remover(Class<Usuario> clazz, Integer id) {
 		UsuarioDAO udao = new UsuarioDAO();
 		udao.remover(Usuario.class, id);

@@ -8,11 +8,11 @@ import modelo.Usuario;
 public class EmpresaController {
   EmpresaDAO dao = new EmpresaDAO();
 
-  public Empresa insert(Usuario u, String descricao, String branch) {
+  public Empresa insert(Usuario u, String descricao, String industry) {
     EmpresaDAO dao = new EmpresaDAO();
     Empresa a = new Empresa();
     a.setUsuario(u);
-    a.setBranch(branch);
+    a.setIndustry(industry);
     a.setDescricao(descricao);
 
     try {

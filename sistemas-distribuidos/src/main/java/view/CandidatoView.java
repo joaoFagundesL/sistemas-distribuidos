@@ -64,7 +64,7 @@ public class CandidatoView extends JPanel {
     emailField.setColumns(10);
 
     senhaField = new JTextField();
-    senhaField.setBounds(142, 223, 213, 20);
+    senhaField.setBounds(142, 193, 213, 20);
     add(senhaField);
     senhaField.setColumns(10);
 
@@ -200,16 +200,12 @@ public class CandidatoView extends JPanel {
 
 
     JLabel lblSenha = new JLabel("Senha");
-    lblSenha.setBounds(64, 225, 60, 17);
+    lblSenha.setBounds(64, 191, 60, 17);
     add(lblSenha);
 
     JLabel lblNewLabel = new JLabel("Email");
     lblNewLabel.setBounds(64, 162, 60, 17);
     add(lblNewLabel);
-
-    JLabel lblNewLabel_1 = new JLabel("Usuário");
-    lblNewLabel_1.setBounds(64, 195, 46, 14);
-    add(lblNewLabel_1);
 
     JButton refreshBtn = new JButton("Refresh");
     refreshBtn.addActionListener(new ActionListener() {

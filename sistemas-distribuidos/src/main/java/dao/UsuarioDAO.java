@@ -45,21 +45,6 @@ public class UsuarioDAO extends GenericoDAO<Usuario>{
     em.getTransaction().commit();
   }
 
-  public void updateToken(Usuario a, String token) {
-    EntityManager em = getEM();
-
-    em.getTransaction().begin();
-
-    a = consultarPorId(Usuario.class, a.getId());
-
-    a.setToken(token);
-
-    em.merge(a);
-    em.getTransaction().commit();
-  }
-
-
-
   @Transactional
   public void insertWithQuery(Usuario usuario) throws Exception {
     EntityManager em = getEM();

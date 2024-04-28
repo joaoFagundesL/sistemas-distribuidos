@@ -69,13 +69,13 @@ public class CadastrarViewEmpresa extends JFrame {
 				String nome = nomeField.getText();
 				String senha = senhaField.getText();
 				String email = emailField.getText();
-				String branch = branchField.getText();
+				String industry = branchField.getText();
 				String descricao = descricaoField.getText();
 
         JSONObject request = new JSONObject();
         JSONObject response = new JSONObject();
 
-        request = buildSignupEmpresa(request, email, nome, senha, branch, descricao);
+        request = buildSignupEmpresa(request, email, nome, senha, industry, descricao);
 
         try {
           response = Client.getInstance().sendRequest(request);
@@ -136,14 +136,14 @@ public class CadastrarViewEmpresa extends JFrame {
   }
 
   private JSONObject buildSignupEmpresa(JSONObject request, String email, String nome, String senha,
-                      String branch, String descricao) {
+                      String industry, String descricao) {
 
     request.put("operation", "SIGNUP_RECRUITER");
     JSONObject data = new JSONObject();
     data.put("name", nome);
     data.put("email", email);
     data.put("password", senha);
-    data.put("branch", branch);
+    data.put("industry", industry);
     data.put("description",descricao);
     request.put("data", data);
     return request;

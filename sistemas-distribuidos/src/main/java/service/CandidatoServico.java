@@ -188,9 +188,6 @@ public class CandidatoServico {
     String idString = String.valueOf(id);
     String token = JwtUtility.generateToken(idString, "candidate");
     buildJsonLoginCandidato(jsonResponse, "SUCCESS", token, email, senha);
-
-    UsuarioController uController = new UsuarioController();
-    uController.inserirToken(id, token);
   }
 
   public JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token, String email, String senha) {
