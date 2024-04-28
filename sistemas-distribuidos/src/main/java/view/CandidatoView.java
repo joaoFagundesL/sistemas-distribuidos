@@ -182,8 +182,10 @@ public class CandidatoView extends JPanel {
           if (status.equals("SUCCESS")) {
             JFrame frame = new JFrame("Mensagem");
             JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
+          } else if(status.equals("INVALID_EMAIL")){
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Email em uso!");
           } else {
-
             JFrame frame = new JFrame("Mensagem");
             JOptionPane.showMessageDialog(frame, "Erro!");
           }

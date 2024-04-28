@@ -70,6 +70,7 @@ public class CandidatoServico {
       jwt.verifyToken(token);
 
       UsuarioController ucontroller = new UsuarioController();
+      UsuarioDAO dao = new UsuarioDAO();
 
       DecodedJWT decodedJWT = jwt.verifyToken(token);
       Claim idClaim = decodedJWT.getClaim("id");
@@ -84,6 +85,12 @@ public class CandidatoServico {
 
       if (data.has("email")) {
         email = data.getString("email");
+
+        if (dao.consultarPeloEmail(email) != null) {
+          buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL", email, senha, nome);
+          return;
+        } 
+
       }
       if (data.has("password")) {
         senha = data.getString("password");;
