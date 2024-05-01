@@ -122,13 +122,14 @@ public class Servidor extends JFrame {
     PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)  ) {
 
       String clientMessage;
+
+      ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
+        clientSocket.getPort());
+
+      connectedClients.add(client);
+      updateConnectedUsersList();
+
       while ((clientMessage = reader.readLine()) != null) {
-        ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
-          clientSocket.getPort());
-
-        connectedClients.add(client);
-        updateConnectedUsersList();
-
         System.out.println("Received from client: " + clientMessage);
 
         JSONObject jsonMessage = new JSONObject(clientMessage);

@@ -154,19 +154,19 @@ public class CandidatoView extends JPanel {
           if (data.has("name")) {
             nomeResponse = data.getString("name");
           } else {
-            nomeResponse = modelo.getValueAt(0, 0).toString();
+           // nomeResponse = modelo.getValueAt(0, 0).toString();
           }
 
           if (data.has("email")) {
             emailResponse = data.getString("email");
           } else {
-            emailResponse = modelo.getValueAt(0, 1).toString();
+            //emailResponse = modelo.getValueAt(0, 1).toString();
           }
 
           if (data.has("password")) {
             senhaResponse = data.getString("password");
           } else {
-            senhaResponse = modelo.getValueAt(0, 2).toString();
+            //senhaResponse = modelo.getValueAt(0, 2).toString();
           }          
 
           String status = response.getString("status");
@@ -181,7 +181,7 @@ public class CandidatoView extends JPanel {
             JFrame frame = new JFrame("Mensagem");
             JOptionPane.showMessageDialog(frame, "Erro!");
           }
-          popularTabelaCandidato(nomeResponse, emailResponse, senhaResponse);
+          //popularTabelaCandidato(nomeResponse, emailResponse, senhaResponse);
         } catch(IOException err) {
           err.printStackTrace();
         }

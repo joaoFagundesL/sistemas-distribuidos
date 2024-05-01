@@ -93,11 +93,11 @@ public class CandidatoServico {
         email = data.getString("email");
 
         if (dao.consultarPeloEmail(email) != null) {
-          buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL", email, senha, nome);
+          buildUpdateJsonCandidato(jsonResponse, "INVALID_EMAIL", token, data);
           return;
         } 
-
       }
+
       if (data.has("password")) {
         senha = data.getString("password");;
       }
@@ -112,7 +112,7 @@ public class CandidatoServico {
 
       buildUpdateJsonCandidato(jsonResponse, "SUCCESS", token, data);
     } catch(JWTVerificationException e) {
-      buildLogoutJsonCandidato(jsonResponse, "INVALID_TOKEN", token);
+      buildInvalidToken(jsonResponse, "UPDATE_ACCOUNT_CANDIDATE");
     }
   }
 
@@ -120,6 +120,14 @@ public class CandidatoServico {
     res.put("operation", "UPDATE_ACCOUNT_CANDIDATE");
     res.put("status", status);
     data.put("token", token);
+    res.put("data", data);
+    return res;
+  }
+
+  public JSONObject buildInvalidToken(JSONObject res, String operation) {
+    res.put("operation", operation);
+    res.put("status", "INVALID_TOKEN");
+    JSONObject data = new JSONObject();
     res.put("data", data);
     return res;
   }
@@ -133,7 +141,7 @@ public class CandidatoServico {
       jwt.verifyToken(token);
       buildLogoutJsonCandidato(jsonResponse, "SUCCESS", token);
     } catch(JWTVerificationException e) {
-      buildLogoutJsonCandidato(jsonResponse, "INVALID_TOKEN", token);
+      buildInvalidToken(jsonResponse, "LOGOUT_CANDIDATE");
     }
   }
 
@@ -220,7 +228,7 @@ public class CandidatoServico {
       buildJsonDeleteCandidate(jsonResponse, "SUCCESS");
 
     } catch(JWTVerificationException e) {
-      e.printStackTrace();
+      buildInvalidToken(jsonResponse, "DELETE_ACCOUNT_CANDIDATE");
     }
 
   }
