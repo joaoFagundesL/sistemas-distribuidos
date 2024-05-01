@@ -17,7 +17,8 @@ import utitlity.JwtUtility;
 public class RecruiterServico {
   public void logoutRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    String token = jsonMessage.getString("token");
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = data.getString("token");
 
     try {
       jwt.verifyToken(token);
@@ -29,7 +30,8 @@ public class RecruiterServico {
 
  public void lookup_recruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    String token = jsonMessage.getString("token");
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = data.getString("token");
 
     try {
       DecodedJWT decodedJWT = jwt.verifyToken(token);
@@ -54,9 +56,9 @@ public class RecruiterServico {
   public JSONObject buildLookupRecruiter(JSONObject jsonResponse, String status, String token,
     String nome, String email, String senha, String industry, String descricao) {
     jsonResponse.put("operation", "LOOKUP_ACCOUNT_RECRUITER");
-    jsonResponse.put("token", token);
-    jsonResponse.put("status", status);
     JSONObject data = new JSONObject();
+    data.put("token", token);
+    data.put("status", status);
     data.put("email", email);
     data.put("password", senha);
     data.put("name", nome);
@@ -78,13 +80,17 @@ public class RecruiterServico {
       return;
     }
 
+    // decidiram mudar para apenas invalid_login, caso mudem de novo a logica ja 
+    // esta pronta, é so descomentar a linha
     if (!eController.isUserValid(email)) {
-      buildJsonLoginRecruiter(jsonResponse, "USER_NOT_FOUND", "", email, senha);
+      // buildJsonLoginRecruiter(jsonResponse, "USER_NOT_FOUND", "", email, senha);
+      buildJsonLoginRecruiter(jsonResponse, "INVALID_LOGIN", "", email, senha);
       return;
     }
 
     if (!eController.isPasswordValid(email, senha)) {
-      buildJsonLoginRecruiter(jsonResponse, "INVALID_PASSWORD", "", email, senha);
+      // buildJsonLoginRecruiter(jsonResponse, "INVALID_PASSWORD", "", email, senha);
+      buildJsonLoginRecruiter(jsonResponse, "INVALID_LOGIN", "", email, senha);
       return;
     } 
 
@@ -129,8 +135,8 @@ public class RecruiterServico {
   public JSONObject buildJsonLoginRecruiter(JSONObject res, String status, String token, String email, String senha) {
     res.put("operation", "LOGIN_RECRUITER");
     res.put("status", status);
-    res.put("token", token);
     JSONObject data = new JSONObject();
+    data.put("token", token);
     data.put("email", email);
     data.put("senha", senha);
     res.put("data", data);
@@ -151,7 +157,7 @@ public class RecruiterServico {
     json.put("operation", "LOGOUT_RECRUITER");
     json.put("status", status);
     JSONObject data = new JSONObject();
-    json.put("token", token);
+    data.put("token", token);
     json.put("data", data);
     return json;
   }

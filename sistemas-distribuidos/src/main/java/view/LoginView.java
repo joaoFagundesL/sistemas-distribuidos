@@ -1,6 +1,5 @@
 package view;
 
-
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -15,7 +14,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import javax.swing.UIManager;
 import org.json.JSONObject;
 import cliente.Client;
@@ -28,20 +26,13 @@ public class LoginView {
   private JTextField textField;
   private JPasswordField passwordField;
 
-  // Client client;
-
   @SuppressWarnings("rawtypes")
   JComboBox comboBox = new JComboBox();
 
   JFrame frame = new JFrame("Sistema");
 
-  public LoginView(
-    // Client client
-  ) {
-    // this.jsonMessage = jsonMessage;
-    // this.callback = callback;
+  public LoginView() {
     initComponents(frame);
-    // this.client = client;
     frame.setBounds(100, 100, 438, 345);
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.setVisible(true);
@@ -137,13 +128,16 @@ public class LoginView {
       serverResponse = Client.getInstance().sendRequest(request);
       String status = (String) serverResponse.get("status");
 
-      if (status.equals("USER_NOT_FOUND")) {
-        JFrame frame = new JFrame("Invalid User!");
-        JOptionPane.showMessageDialog(frame, "User Inválido!");
-      } else if (status.equals("INVALID_PASSWORD")) {
-        JFrame frame = new JFrame("Invalid password!");
-        JOptionPane.showMessageDialog(frame, "Senha Inválida!");
-
+      // if (status.equals("USER_NOT_FOUND")) {
+      //   JFrame frame = new JFrame("Invalid User!");
+      //   JOptionPane.showMessageDialog(frame, "User Inválido!");
+      // } else if (status.equals("INVALID_PASSWORD")) {
+      //   JFrame frame = new JFrame("Invalid password!");
+      //   JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+      
+      if (status.equals("INVALID_LOGIN")) {
+        JFrame frame = new JFrame("Invalid Login!");
+        JOptionPane.showMessageDialog(frame, "Credencias Inválidas!");
       } else if (status.equals("INVALID_FIELD")) {
         JFrame frame = new JFrame("Invalid!");
         JOptionPane.showMessageDialog(frame, "Preencha todos campos!");
@@ -165,12 +159,16 @@ public class LoginView {
       serverResponse = Client.getInstance().sendRequest(request);
       String status = (String) serverResponse.get("status");
 
-      if (status.equals("USER_NOT_FOUND")) {
-        JFrame frame = new JFrame("Invalid User!");
-        JOptionPane.showMessageDialog(frame, "User Inválido!");
-      } else if (status.equals("INVALID_PASSWORD")) {
-        JFrame frame = new JFrame("Invalid password!");
-        JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+      // if (status.equals("USER_NOT_FOUND")) {
+      //   JFrame frame = new JFrame("Invalid User!");
+      //   JOptionPane.showMessageDialog(frame, "User Inválido!");
+      // } else if (status.equals("INVALID_PASSWORD")) {
+      //   JFrame frame = new JFrame("Invalid password!");
+      //   JOptionPane.showMessageDialog(frame, "Senha Inválida!");
+
+      if (status.equals("INVALID_LOGIN")) {
+        JFrame frame = new JFrame("Invalid Login!");
+        JOptionPane.showMessageDialog(frame, "Credenciais Inválidas");
       } else if (status.equals("INVALID_FIELD")) {
         JFrame frame = new JFrame("Invalid!");
         JOptionPane.showMessageDialog(frame, "Preencha todos campos!");
@@ -182,7 +180,6 @@ public class LoginView {
     } catch(IOException e) {
       e.printStackTrace();
     }
-
   }
 
   public JSONObject buildJsonCandidato() {
@@ -209,28 +206,7 @@ public class LoginView {
     data.put("password", senha);
     request.put("data", data);
     return request;
-  }  
-  // public JSONObject buildJson(JSONObject res, String status) {
-  //   res.put("operation", "LOGIN_CANDIDATE");
-  //   res.put("status", status);
-  //   JSONObject data = new JSONObject();
-  //   res.put("data", data);
-  //   return res;
-  // }
-
-  //	public void logarFuncionario() {
-  //		ProfessorController adController = new ProfessorController();
-  //		Professor p = adController.validarLogin(textField.getText(), String.valueOf(passwordField.getPassword()));
-  //		
-  //		if(p == null) {
-  //			JFrame frame = new JFrame("Erro");
-  //			JOptionPane.showMessageDialog(frame, "Login ou Senha inválidos!");
-  //		} else {				
-  //			frame.dispose();
-  //			frame.setVisible(false);
-  //			new ProfessorMainView(p);
-  //		}
-  //	}
+  }    
 
   public void erroSelecao() {
     JFrame frame = new JFrame("Erro");

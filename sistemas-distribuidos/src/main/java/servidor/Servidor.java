@@ -177,6 +177,10 @@ public class Servidor extends JFrame {
       candidatoServico.updateCandidato(jsonMessage, jsonResponse);        
       break;
 
+      case "DELETE_ACCOUNT_CANDIDATE":
+      candidatoServico.deleteAccount(jsonMessage, jsonResponse);
+      break;
+
       case "SIGNUP_RECRUITER":
       recruiterServico.signupRecruiter(jsonMessage, jsonResponse);
       break;

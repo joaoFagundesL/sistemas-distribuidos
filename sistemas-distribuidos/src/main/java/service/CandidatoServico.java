@@ -18,7 +18,8 @@ import utitlity.JwtUtility;
 public class CandidatoServico {
   public void lookup_candidate(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    String token = jsonMessage.getString("token");
+    JSONObject dataJson = jsonMessage.getJSONObject("data");
+    String token = dataJson.getString("token");
 
     try {
       DecodedJWT decodedJWT = jwt.verifyToken(token);
@@ -34,37 +35,42 @@ public class CandidatoServico {
 
       buildLookupCandidate(jsonResponse, "SUCCESS", token, nome, email, senha);    
     } catch(JWTVerificationException e) {
-      buildLookupCandidate(jsonResponse, "SUCCESS", token, "", "", "");    
+      e.printStackTrace();
+      // buildLookupCandidate(jsonResponse, "SUCCESS", token, "", "", "");    
     }
   }
 
   public JSONObject buildLookupCandidate(JSONObject jsonResponse, String status, String token,
     String nome, String email, String senha) {
     jsonResponse.put("operation", "LOOKUP_ACCOUNT_CANDIDATE");
-    jsonResponse.put("token", token);
     jsonResponse.put("status", status);
     JSONObject data = new JSONObject();
     data.put("email", email);
     data.put("password", senha);
     data.put("name", nome);
+    data.put("token", token);
     jsonResponse.put("data", data);
     return jsonResponse;
   }
 
   public void updateCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    String token = jsonMessage.getString("token");
 
     JSONObject data = jsonMessage.getJSONObject("data");
+    String token = data.getString("token");
 
     // verifica se algum dos campos é vazio
     if (data.has("email") && data.getString("email").isEmpty() ||
         data.has("name") && data.getString("name").isEmpty() ||
-        data.has("password") && data.getString("password").isEmpty() ||
-        data.isEmpty()) {
+        data.has("password") && data.getString("password").isEmpty()) {
       buildUpdateJsonCandidato(jsonResponse, "INVALID_FIELD", token, data);
       return;
     }   
+
+    if (!data.has("email") && !data.has("password") && !data.has("name")) {
+      buildUpdateJsonCandidato(jsonResponse, "INVALID_FIELD", token, data);
+      return;
+    }
 
     try {
       jwt.verifyToken(token);
@@ -113,15 +119,15 @@ public class CandidatoServico {
   public JSONObject buildUpdateJsonCandidato(JSONObject res, String status, String token, JSONObject data) {
     res.put("operation", "UPDATE_ACCOUNT_CANDIDATE");
     res.put("status", status);
-    res.put("token", token);
+    data.put("token", token);
     res.put("data", data);
     return res;
   }
 
-
   public void logoutCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    String token = jsonMessage.getString("token");
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = data.getString("token");
 
     try {
       jwt.verifyToken(token);
@@ -175,12 +181,14 @@ public class CandidatoServico {
     }
 
     if (!fController.isUserValid(email)) {
-      buildJsonLoginCandidato(jsonResponse, "USER_NOT_FOUND", "", email, senha);
+      // buildJsonLoginCandidato(jsonResponse, "USER_NOT_FOUND", "", email, senha);
+      buildJsonLoginCandidato(jsonResponse, "INVALID_LOGIN", "", email, senha);
       return;
     }
 
     if (!fController.isPasswordValid(email, senha)) {
-      buildJsonLoginCandidato(jsonResponse, "INVALID_PASSWORD", "", email, senha);
+      // buildJsonLoginCandidato(jsonResponse, "INVALID_PASSWORD", "", email, senha);
+      buildJsonLoginCandidato(jsonResponse, "INVALID_LOGIN", "", email, senha);
       return;
     } 
 
@@ -190,13 +198,49 @@ public class CandidatoServico {
     buildJsonLoginCandidato(jsonResponse, "SUCCESS", token, email, senha);
   }
 
+  public void deleteAccount(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = data.getString("token");
+
+    try {
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      CandidatoController cController = new CandidatoController();
+      Candidato c = cController.consultarPorId(id);
+
+      System.out.println("ENTROUUUU DELETE");
+      UsuarioController ucontroller = new UsuarioController();
+
+      cController.remover(Candidato.class, c.getId());
+      ucontroller.remover(Usuario.class, c.getUsuario().getId());
+
+      buildJsonDeleteCandidate(jsonResponse, "SUCCESS");
+
+    } catch(JWTVerificationException e) {
+      e.printStackTrace();
+    }
+
+  }
+
   public JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token, String email, String senha) {
     res.put("operation", "LOGIN_CANDIDATE");
     res.put("status", status);
-    res.put("token", token);
     JSONObject data = new JSONObject();
+    data.put("token", token);
     data.put("email", email);
     data.put("senha", senha);
+    res.put("data", data);
+    return res;
+  }
+
+  public JSONObject buildJsonDeleteCandidate(JSONObject res, String status) {
+    res.put("operation", "DELETE_ACCOUNT_CANDIDATE");
+    res.put("status", status);
+    JSONObject data = new JSONObject();
+    data.put("", "");
     res.put("data", data);
     return res;
   }
@@ -214,7 +258,7 @@ public class CandidatoServico {
     json.put("operation", "LOGOUT_CANDIDATE");
     json.put("status", status);
     JSONObject data = new JSONObject();
-    json.put("token", token);
+    data.put("token", token);
     json.put("data", data);
     return json;
   }

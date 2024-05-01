@@ -63,9 +63,10 @@ public class Client {
     JSONObject jsonResponse = new JSONObject(response);
 
     String status = jsonResponse.getString("status");
+    JSONObject dataJson = jsonResponse.getJSONObject("data");
 
-    if (jsonResponse.has("token")) {
-      String token = jsonResponse.getString("token");
+    if (dataJson.has("token")) {
+      String token = dataJson.getString("token");
       if (status.equals("SUCCESS")) {
         setToken(token);
       }

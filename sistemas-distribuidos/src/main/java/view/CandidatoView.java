@@ -25,24 +25,16 @@ public class CandidatoView extends JPanel {
 
   private static final long serialVersionUID = 1L;
 
-  // Candidato c;
   private JTextField nomeCandidatoField;
   private JTextField senhaField;
   private JTextField emailField;
   private JTable table;
 
-  public CandidatoView(
-    // final Candidato c
-  ) {
-    // this.c = c;
-    initComponents(
-      // c
-    );
+  public CandidatoView() {
+    initComponents();
   }
 
-  public void initComponents(
-    // final Candidato c
-  ) {
+  public void initComponents() {
     setLayout(null);
     setBackground(SystemColor.control);
 
@@ -100,18 +92,18 @@ public class CandidatoView extends JPanel {
     JButton btnRemover_1 = new JButton("Remover");
     btnRemover_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        CandidatoController ccontroller = new CandidatoController();
-        UsuarioController ucontroller = new UsuarioController();
-
-        // ccontroller.remover(Candidato.class, c.getId());
-        // ucontroller.remover(Usuario.class, c.getUsuario().getId());
+        JSONObject request = new JSONObject();
+        String token = Client.getInstance().getToken();
+        buildJsonDelete(request, token);
+        try {
+          JSONObject response = Client.getInstance().sendRequest(request);
+        } catch(IOException err) {
+          err.printStackTrace();
+        }
 
         JFrame frame = new JFrame("JOptionPane exemplo");
         JOptionPane.showMessageDialog(frame, "Registro Excluído!");
 
-        limparTela();
-
-        // setCandidato(c);
       }
     });
     btnRemover_1.setBounds(142, 255, 94, 27);
@@ -233,15 +225,23 @@ public class CandidatoView extends JPanel {
 
   public JSONObject buildJsonLookup(JSONObject json, String token) {
     json.put("operation", "LOOKUP_ACCOUNT_CANDIDATE");
-    json.put("token", token);
     JSONObject data = new JSONObject();
+    data.put("token", token);
+    json.put("data", data);
+    return json;
+  }
+
+  public JSONObject buildJsonDelete(JSONObject json, String token) {
+    json.put("operation", "DELETE_ACCOUNT_CANDIDATE");
+    JSONObject data = new JSONObject();
+    data.put("token", token);
     json.put("data", data);
     return json;
   }
 
   public JSONObject buildJsonUpdate(JSONObject json, String token, JSONObject data) {
     json.put("operation", "UPDATE_ACCOUNT_CANDIDATE");
-    json.put("token", token);
+    data.put("token", token);
     json.put("data", data);
 
     return json;
@@ -260,11 +260,7 @@ public class CandidatoView extends JPanel {
   }
 
   public void setCandidato(
-    // Candidato c
   ) {
-    // this.c = c;
-    //        System.out.println(c.getUsuario().getUser());
-    // popularTabelaCandidato();
   }
 
   public void popularTabelaCandidato(String nome, String email, String senha) {

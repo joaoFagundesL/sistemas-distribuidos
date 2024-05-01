@@ -148,11 +148,10 @@ public class MainViewEmpresa {
 
   private JSONObject buildLogoutJson(JSONObject json, String token) {
     json.put("operation", "LOGOUT_RECRUITER");
-    json.put("token", token);
     JSONObject data = new JSONObject();
+    data.put("token", token);
     json.put("data", data);
     return json;
   }
-
 
 }
