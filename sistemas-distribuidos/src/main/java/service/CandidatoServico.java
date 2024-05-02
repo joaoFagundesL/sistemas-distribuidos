@@ -29,14 +29,18 @@ public class CandidatoServico {
       CandidatoController cController = new CandidatoController();
       Candidato c = cController.consultarPorId(id);
 
+      if (c == null) {
+        buildLookupCandidate(jsonResponse, "USER_NOT_FOUND", token, "", "", "");    
+        return;
+      }
+
       String nome = c.getUsuario().getNome();
       String email = c.getUsuario().getEmail();
       String senha = c.getUsuario().getSenha();
-
       buildLookupCandidate(jsonResponse, "SUCCESS", token, nome, email, senha);    
+
     } catch(JWTVerificationException e) {
-      e.printStackTrace();
-      // buildLookupCandidate(jsonResponse, "SUCCESS", token, "", "", "");    
+      buildInvalidToken(jsonResponse, "LOOKUP_ACCOUNT_CANDIDATE");
     }
   }
 
@@ -61,8 +65,8 @@ public class CandidatoServico {
 
     // verifica se algum dos campos é vazio
     if (data.has("email") && data.getString("email").isEmpty() ||
-        data.has("name") && data.getString("name").isEmpty() ||
-        data.has("password") && data.getString("password").isEmpty()) {
+    data.has("name") && data.getString("name").isEmpty() ||
+    data.has("password") && data.getString("password").isEmpty()) {
       buildUpdateJsonCandidato(jsonResponse, "INVALID_FIELD", token, data);
       return;
     }   
@@ -85,6 +89,11 @@ public class CandidatoServico {
       CandidatoController cController = new CandidatoController();
       Candidato c = cController.consultarPorId(id);
 
+      if (c == null) {
+        buildUpdateJsonCandidato(jsonResponse, "USER_NOT_FOUND", token, data);
+        return;
+      }
+
       String email = "";  
       String senha = "";
       String nome = "";       
@@ -101,10 +110,10 @@ public class CandidatoServico {
       if (data.has("password")) {
         senha = data.getString("password");;
       }
+
       if (data.has("name")) {
         nome = data.getString("name");
       }
-
 
       CandidatoDAO cdao = new CandidatoDAO();
       cdao.update(c, nome, email, senha);
@@ -219,13 +228,18 @@ public class CandidatoServico {
       CandidatoController cController = new CandidatoController();
       Candidato c = cController.consultarPorId(id);
 
-      System.out.println("ENTROUUUU DELETE");
+      if (c == null) {
+        buildJsonDeleteCandidate(jsonResponse, "USER_NOT_FOUND");
+        return;
+      }
+
       UsuarioController ucontroller = new UsuarioController();
 
       cController.remover(Candidato.class, c.getId());
       ucontroller.remover(Usuario.class, c.getUsuario().getId());
 
       buildJsonDeleteCandidate(jsonResponse, "SUCCESS");
+
 
     } catch(JWTVerificationException e) {
       buildInvalidToken(jsonResponse, "DELETE_ACCOUNT_CANDIDATE");

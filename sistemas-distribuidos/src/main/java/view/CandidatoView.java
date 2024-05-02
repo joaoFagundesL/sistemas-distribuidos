@@ -97,13 +97,19 @@ public class CandidatoView extends JPanel {
         buildJsonDelete(request, token);
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
+
+          String status = response.getString("status");
+
+          if (status.equals("SUCCESS")) {
+            JFrame frame = new JFrame("JOptionPane exemplo");
+            JOptionPane.showMessageDialog(frame, "Registro Excluído!");
+          } else {
+            JFrame frame = new JFrame("JOptionPane exemplo");
+            JOptionPane.showMessageDialog(frame, "Usuario ja removido!");
+          }
         } catch(IOException err) {
           err.printStackTrace();
         }
-
-        JFrame frame = new JFrame("JOptionPane exemplo");
-        JOptionPane.showMessageDialog(frame, "Registro Excluído!");
-
       }
     });
     btnRemover_1.setBounds(142, 255, 94, 27);
@@ -154,7 +160,7 @@ public class CandidatoView extends JPanel {
           if (data.has("name")) {
             nomeResponse = data.getString("name");
           } else {
-           // nomeResponse = modelo.getValueAt(0, 0).toString();
+            // nomeResponse = modelo.getValueAt(0, 0).toString();
           }
 
           if (data.has("email")) {
