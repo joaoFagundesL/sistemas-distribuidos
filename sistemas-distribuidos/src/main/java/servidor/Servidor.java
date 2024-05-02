@@ -22,6 +22,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
+
+import org.hibernate.internal.build.AllowSysOut;
 import org.json.JSONObject;
 import cliente.ClientInfo;
 import service.CandidatoServico;
@@ -205,6 +207,7 @@ public class Servidor extends JFrame {
     String jsonString = jsonResponse.toString();
     String messageToSend = jsonString;
     writer.println(messageToSend.toString());
+    System.out.println("Message to client: " + messageToSend);
     writer.flush();
   }
 
@@ -212,7 +215,6 @@ public class Servidor extends JFrame {
     res.put("status", "INVALID_OPERATION");
     res.put("operation", "operation");
     JSONObject data = new JSONObject();
-    data.put("", "");
     res.put("data", data);
     return res;
   }

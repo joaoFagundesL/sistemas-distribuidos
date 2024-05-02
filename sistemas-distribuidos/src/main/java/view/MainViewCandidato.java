@@ -158,7 +158,7 @@ public class MainViewCandidato {
   private JSONObject buildLogoutJson(JSONObject json, String token) {
     json.put("operation", "LOGOUT_CANDIDATE");
     JSONObject data = new JSONObject();
-    jso.put("token", token);
+    json.put("token", token);
     json.put("data", data);
     return json;
   }
