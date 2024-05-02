@@ -18,8 +18,8 @@ import utitlity.JwtUtility;
 public class CandidatoServico {
   public void lookup_candidate(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    JSONObject dataJson = jsonMessage.getJSONObject("data");
-    String token = dataJson.getString("token");
+    // JSONObject dataJson = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
 
     try {
       DecodedJWT decodedJWT = jwt.verifyToken(token);
@@ -61,7 +61,7 @@ public class CandidatoServico {
     JwtUtility jwt = new JwtUtility();
 
     JSONObject data = jsonMessage.getJSONObject("data");
-    String token = data.getString("token");
+    String token = jsonMessage.getString("token");
 
     // verifica se algum dos campos é vazio
     if (data.has("email") && data.getString("email").isEmpty() ||
@@ -143,8 +143,8 @@ public class CandidatoServico {
 
   public void logoutCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    JSONObject data = jsonMessage.getJSONObject("data");
-    String token = data.getString("token");
+    // JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
 
     try {
       jwt.verifyToken(token);
@@ -217,8 +217,8 @@ public class CandidatoServico {
 
   public void deleteAccount(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    JSONObject data = jsonMessage.getJSONObject("data");
-    String token = data.getString("token");
+    // JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
 
     try {
       DecodedJWT decodedJWT = jwt.verifyToken(token);
@@ -262,7 +262,6 @@ public class CandidatoServico {
     res.put("operation", "DELETE_ACCOUNT_CANDIDATE");
     res.put("status", status);
     JSONObject data = new JSONObject();
-    data.put("", "");
     res.put("data", data);
     return res;
   }
@@ -271,7 +270,6 @@ public class CandidatoServico {
     res.put("operation", "SIGNUP_CANDIDATE");
     res.put("status", status);
     JSONObject data = new JSONObject();
-    data.put("", "");
     res.put("data", data);
     return res;
   }

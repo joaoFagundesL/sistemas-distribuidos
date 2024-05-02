@@ -19,8 +19,6 @@ public class JwtUtility {
         return JWT.create()
                 .withClaim("id", userId)  // id do usuario
                 .withClaim("role", role) // se é recruiter ou candidato
-                // .withIssuedAt(issuedAt) 
-                // .withExpiresAt(expiresAt) 
                 .sign(Algorithm.HMAC256(SECRET_KEY)); 
     }
 

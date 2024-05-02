@@ -215,10 +215,13 @@ public class CandidatoView extends JPanel {
           JSONObject response = Client.getInstance().sendRequest(request);
           JSONObject data = response.getJSONObject("data");
 
-          String nome =  data.getString("name");
-          String email = data.getString("email");
-          String senha = data.getString("password");
-          popularTabelaCandidato(nome, email, senha);
+          if (response.getString("status").equals("SUCCESS")) {
+            String nome =  data.getString("name");
+            String email = data.getString("email");
+            String senha = data.getString("password");
+            popularTabelaCandidato(nome, email, senha);
+          }
+
         } catch(IOException err) {
           err.printStackTrace();
         }
@@ -232,7 +235,7 @@ public class CandidatoView extends JPanel {
   public JSONObject buildJsonLookup(JSONObject json, String token) {
     json.put("operation", "LOOKUP_ACCOUNT_CANDIDATE");
     JSONObject data = new JSONObject();
-    data.put("token", token);
+    json.put("token", token);
     json.put("data", data);
     return json;
   }
@@ -240,14 +243,14 @@ public class CandidatoView extends JPanel {
   public JSONObject buildJsonDelete(JSONObject json, String token) {
     json.put("operation", "DELETE_ACCOUNT_CANDIDATE");
     JSONObject data = new JSONObject();
-    data.put("token", token);
+    json.put("token", token);
     json.put("data", data);
     return json;
   }
 
   public JSONObject buildJsonUpdate(JSONObject json, String token, JSONObject data) {
     json.put("operation", "UPDATE_ACCOUNT_CANDIDATE");
-    data.put("token", token);
+    json.put("token", token);
     json.put("data", data);
 
     return json;
