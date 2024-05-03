@@ -67,12 +67,12 @@ public class CandidatoServico {
     if (data.has("email") && data.getString("email").isEmpty() ||
     data.has("name") && data.getString("name").isEmpty() ||
     data.has("password") && data.getString("password").isEmpty()) {
-      buildUpdateJsonCandidato(jsonResponse, "INVALID_FIELD", token, data);
+      buildUpdateJsonCandidato(jsonResponse, "INVALID_FIELD");
       return;
     }   
 
     if (!data.has("email") && !data.has("password") && !data.has("name")) {
-      buildUpdateJsonCandidato(jsonResponse, "INVALID_FIELD", token, data);
+      buildUpdateJsonCandidato(jsonResponse, "INVALID_FIELD");
       return;
     }
 
@@ -90,7 +90,7 @@ public class CandidatoServico {
       Candidato c = cController.consultarPorId(id);
 
       if (c == null) {
-        buildUpdateJsonCandidato(jsonResponse, "USER_NOT_FOUND", token, data);
+        buildUpdateJsonCandidato(jsonResponse, "USER_NOT_FOUND");
         return;
       }
 
@@ -102,7 +102,7 @@ public class CandidatoServico {
         email = data.getString("email");
 
         if (dao.consultarPeloEmail(email) != null) {
-          buildUpdateJsonCandidato(jsonResponse, "INVALID_EMAIL", token, data);
+          buildUpdateJsonCandidato(jsonResponse, "INVALID_EMAIL");
           return;
         } 
       }
@@ -119,16 +119,16 @@ public class CandidatoServico {
       cdao.update(c, nome, email, senha);
       ucontroller.update(c, nome, email, senha);
 
-      buildUpdateJsonCandidato(jsonResponse, "SUCCESS", token, data);
+      buildUpdateJsonCandidato(jsonResponse, "SUCCESS");
     } catch(JWTVerificationException e) {
       buildInvalidToken(jsonResponse, "UPDATE_ACCOUNT_CANDIDATE");
     }
   }
 
-  public JSONObject buildUpdateJsonCandidato(JSONObject res, String status, String token, JSONObject data) {
+  public JSONObject buildUpdateJsonCandidato(JSONObject res, String status) {
     res.put("operation", "UPDATE_ACCOUNT_CANDIDATE");
     res.put("status", status);
-    data.put("token", token);
+    JSONObject data = new JSONObject();
     res.put("data", data);
     return res;
   }
@@ -148,7 +148,7 @@ public class CandidatoServico {
 
     try {
       jwt.verifyToken(token);
-      buildLogoutJsonCandidato(jsonResponse, "SUCCESS", token);
+      buildLogoutJsonCandidato(jsonResponse, "SUCCESS");
     } catch(JWTVerificationException e) {
       buildInvalidToken(jsonResponse, "LOGOUT_CANDIDATE");
     }
@@ -164,17 +164,17 @@ public class CandidatoServico {
     String nome = data.getString("name");
 
     if (email.isEmpty() || senha.isEmpty() || nome.isEmpty()) {
-      buildJsonSignupCandidate(jsonResponse, "INVALID_FIELD", email, senha, nome);
+      buildJsonSignupCandidate(jsonResponse, "INVALID_FIELD");
       return; 
     }
 
     if (!emailValidator.isValidEmail(email)) {
-      buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL", email, senha, nome);
+      buildJsonSignupCandidate(jsonResponse, "INVALID_EMAIL");
       return;
     } 
 
     if (dao.consultarPeloEmail(email) != null) {
-      buildJsonSignupCandidate(jsonResponse, "USER_EXISTS", email, senha, nome);
+      buildJsonSignupCandidate(jsonResponse, "USER_EXISTS");
       return;
     } 
 
@@ -182,7 +182,7 @@ public class CandidatoServico {
     Usuario u = ucontroller.insert(nome, email, senha);
     CandidatoController ccontroller = new CandidatoController();
     ccontroller.insert(u);
-    buildJsonSignupCandidate(jsonResponse, "SUCCESS", email, senha, nome);
+    buildJsonSignupCandidate(jsonResponse, "SUCCESS");
   }
 
   public void loginCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
@@ -193,26 +193,26 @@ public class CandidatoServico {
     String senha = data.getString("password");
 
     if (email.isEmpty() || senha.isEmpty()) {
-      buildJsonLoginCandidato(jsonResponse, "INVALID_FIELD", "", email, senha);
+      buildJsonLoginCandidato(jsonResponse, "INVALID_FIELD", "");
       return;
     }
 
     if (!fController.isUserValid(email)) {
       // buildJsonLoginCandidato(jsonResponse, "USER_NOT_FOUND", "", email, senha);
-      buildJsonLoginCandidato(jsonResponse, "INVALID_LOGIN", "", email, senha);
+      buildJsonLoginCandidato(jsonResponse, "INVALID_LOGIN", "");
       return;
     }
 
     if (!fController.isPasswordValid(email, senha)) {
       // buildJsonLoginCandidato(jsonResponse, "INVALID_PASSWORD", "", email, senha);
-      buildJsonLoginCandidato(jsonResponse, "INVALID_LOGIN", "", email, senha);
+      buildJsonLoginCandidato(jsonResponse, "INVALID_LOGIN", "");
       return;
     } 
 
     Integer id = fController.consultarId(email);
     String idString = String.valueOf(id);
     String token = JwtUtility.generateToken(idString, "candidate");
-    buildJsonLoginCandidato(jsonResponse, "SUCCESS", token, email, senha);
+    buildJsonLoginCandidato(jsonResponse, "SUCCESS", token);
   }
 
   public void deleteAccount(JSONObject jsonMessage, JSONObject jsonResponse) {
@@ -247,13 +247,11 @@ public class CandidatoServico {
 
   }
 
-  public JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token, String email, String senha) {
+  public JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_CANDIDATE");
     res.put("status", status);
     JSONObject data = new JSONObject();
     data.put("token", token);
-    data.put("email", email);
-    data.put("senha", senha);
     res.put("data", data);
     return res;
   }
@@ -266,7 +264,7 @@ public class CandidatoServico {
     return res;
   }
 
-  public JSONObject buildJsonSignupCandidate(JSONObject res, String status, String email, String senha, String nome) {
+  public JSONObject buildJsonSignupCandidate(JSONObject res, String status) {
     res.put("operation", "SIGNUP_CANDIDATE");
     res.put("status", status);
     JSONObject data = new JSONObject();
@@ -274,11 +272,10 @@ public class CandidatoServico {
     return res;
   }
 
-  private JSONObject buildLogoutJsonCandidato(JSONObject json, String status, String token) {
+  private JSONObject buildLogoutJsonCandidato(JSONObject json, String status) {
     json.put("operation", "LOGOUT_CANDIDATE");
     json.put("status", status);
     JSONObject data = new JSONObject();
-    data.put("token", token);
     json.put("data", data);
     return json;
   }

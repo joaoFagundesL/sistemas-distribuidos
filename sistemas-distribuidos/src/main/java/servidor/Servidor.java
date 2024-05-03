@@ -149,8 +149,14 @@ public class Servidor extends JFrame {
 
         handleOperation(clientMessage, writer);
       }
+      
+      connectedClients.remove(client);
+      updateConnectedUsersList();
+      textArea.append(">> Cliente desconectado: " + client.getIpAddress() + " " + client.getPort() + "\n");
+      DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+      caret.setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
     } catch (IOException  e) {
-      System.out.println("FIM");
+    	System.out.println("FIM");
     }
   } 
 
