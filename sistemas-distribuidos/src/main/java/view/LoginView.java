@@ -24,6 +24,7 @@ public class LoginView {
   JButton btnVoltar = new JButton("Voltar");
   CardLayout cl = new CardLayout();
   private JTextField textField;
+  private static LoginView instance = null;
   private JPasswordField passwordField;
 
   @SuppressWarnings("rawtypes")
@@ -37,6 +38,13 @@ public class LoginView {
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.setVisible(true);
   }
+  
+  public static LoginView getInstance() {
+	    if (instance == null) {
+	      instance = new LoginView();
+	    }
+	    return instance;
+	  }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void initComponents(JFrame frame) {

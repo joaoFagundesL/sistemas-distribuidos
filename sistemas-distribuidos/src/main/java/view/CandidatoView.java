@@ -103,6 +103,8 @@ public class CandidatoView extends JPanel {
           if (status.equals("SUCCESS")) {
             JFrame frame = new JFrame("JOptionPane exemplo");
             JOptionPane.showMessageDialog(frame, "Registro Excluído!");
+            MainViewCandidato.getInstance().frame.dispose();
+            LoginView.getInstance().frame.setVisible(true);
           } else {
             JFrame frame = new JFrame("JOptionPane exemplo");
             JOptionPane.showMessageDialog(frame, "Usuario ja removido!");
