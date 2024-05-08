@@ -10,7 +10,7 @@ public class CandidatoController {
   CandidatoDAO dao = new CandidatoDAO();
 
   public boolean isUserValid(String email) {
-    Candidato candidato = dao.consultarPeloUsuarioId(email);
+    Candidato candidato = dao.consultarPeloUsuarioIdEmail(email);
     System.out.println(candidato == null);
     return candidato != null; 
   }
@@ -20,7 +20,7 @@ public class CandidatoController {
   }
 
   public Boolean isPasswordValid(String email, String senha) {
-    Candidato c = dao.consultarPeloUsuarioId(email);
+    Candidato c = dao.consultarPeloUsuarioIdEmail(email);
 
     String passHash = c.getUsuario().getSenha();
     if(!senha.equals(passHash)) {

@@ -53,11 +53,11 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
     }
   }
 
-  public Candidato consultarPeloUsuarioId(String email) {
+  public Candidato consultarPeloUsuarioIdEmail(String email) {
     EntityManager em = getEM();
     Candidato candidato;
     try {
-      Query query = em.createNamedQuery("Candidato.consultarPeloUsuarioId");
+      Query query = em.createNamedQuery("Candidato.consultarPeloUsuarioIdEmail");
       query.setParameter("email", email);
       candidato = (Candidato) query.getSingleResult();
 

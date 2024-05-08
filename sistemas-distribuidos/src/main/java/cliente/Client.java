@@ -11,7 +11,7 @@ import java.net.Socket;
 
 public class Client {
 
-  private static final String SERVER_IP = "25.49.31.52";
+  private static final String SERVER_IP = "localhost";
   private static final int SERVER_PORT = 21234;
   private Socket socket;
   private PrintWriter outputStream;

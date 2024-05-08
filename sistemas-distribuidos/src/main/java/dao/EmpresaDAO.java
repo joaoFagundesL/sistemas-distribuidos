@@ -39,11 +39,11 @@ public class EmpresaDAO extends GenericoDAO<Empresa> {
 		em.getTransaction().commit();
 	}
 
-	 public Empresa consultarPeloUsuarioId(String email) {
+	 public Empresa consultarPeloUsuarioIdEmail(String email) {
     EntityManager em = getEM();
     Empresa empresa;
     try {
-      Query query = em.createNamedQuery("Empresa.consultarPeloUsuarioId");
+      Query query = em.createNamedQuery("Empresa.consultarPeloUsuarioIdEmail");
       query.setParameter("email", email);
       empresa = (Empresa) query.getSingleResult();
 

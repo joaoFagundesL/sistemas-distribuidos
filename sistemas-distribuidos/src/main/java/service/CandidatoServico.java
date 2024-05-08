@@ -101,10 +101,12 @@ public class CandidatoServico {
       if (data.has("email")) {
         email = data.getString("email");
 
-        if (dao.consultarPeloEmail(email) != null) {
+        Usuario existingCandidatoWithEmail = dao.consultarPeloEmail(email);
+
+        if (existingCandidatoWithEmail != null && !existingCandidatoWithEmail.getId().equals(c.getUsuario().getId())) {
           buildUpdateJsonCandidato(jsonResponse, "INVALID_EMAIL");
           return;
-        } 
+        }
       }
 
       if (data.has("password")) {
