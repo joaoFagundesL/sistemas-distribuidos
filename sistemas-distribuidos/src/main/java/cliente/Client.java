@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client {
 
-  private static final String SERVER_IP = "localhost";
+  static String SERVER_IP;
   private static final int SERVER_PORT = 21234;
   private Socket socket;
   private PrintWriter outputStream;
@@ -39,8 +40,13 @@ public class Client {
   }
 
   public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+    System.out.println("IP: ");
+    SERVER_IP = scanner.nextLine();
+
     Client client = Client.getInstance();
     LoginView loginView = new LoginView(); 
+    scanner.close();
   }
 
   public JSONObject sendRequest(JSONObject request) throws IOException {

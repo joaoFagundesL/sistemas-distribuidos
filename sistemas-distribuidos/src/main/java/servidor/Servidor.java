@@ -119,17 +119,19 @@ public class Servidor extends JFrame {
   }
 
   private void handleClient(Socket clientSocket) {
+    ClientInfo client = null;
     try (
     BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-    PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)  ) {
-
+    PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)
+  ) {
       String clientMessage;
 
-      ClientInfo client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(),
-        clientSocket.getPort());
+      client = new ClientInfo(clientSocket.getInetAddress().getHostAddress(), clientSocket.getPort());
 
       connectedClients.add(client);
       updateConnectedUsersList();
+
+      final ClientInfo finalClient = client; 
 
       while ((clientMessage = reader.readLine()) != null) {
         System.out.println("Received from client: " + clientMessage);
@@ -138,27 +140,29 @@ public class Servidor extends JFrame {
         String formattedMessage = jsonMessage.toString(4);
 
         SwingUtilities.invokeLater(() -> {
-          textArea.append(">> " + client.getIpAddress() + " " + client.getPort() + ": \n");
-          textArea.append(formattedMessage + "\n\n"); 
-          DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+          textArea.append(">> " + finalClient.getIpAddress() + " " + finalClient.getPort() + ": \n");
+          textArea.append(formattedMessage + "\n\n");
+          DefaultCaret caret = (DefaultCaret) textArea.getCaret();
           caret.setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
         });
 
-        connectedClients.add(client);
+        connectedClients.add(finalClient);
         updateConnectedUsersList();
-
         handleOperation(clientMessage, writer);
       }
-      
-      connectedClients.remove(client);
-      updateConnectedUsersList();
-      textArea.append(">> Cliente desconectado: " + client.getIpAddress() + " " + client.getPort() + "\n");
-      DefaultCaret caret = (DefaultCaret)textArea.getCaret();
-      caret.setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
-    } catch (IOException  e) {
-    	System.out.println("FIM");
+      removerClient(client);
+    } catch (IOException e) {
+      removerClient(client);
     }
-  } 
+  }  
+
+  private void removerClient(ClientInfo client) {
+    connectedClients.remove(client);
+    updateConnectedUsersList();
+    textArea.append(">> Cliente desconectado: " + client.getIpAddress() + " " + client.getPort() + "\n");
+    DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+    caret.setUpdatePolicy(DefaultCaret.OUT_BOTTOM);
+  }
 
   private void handleOperation(String clientMessage, PrintWriter writer) {
     JSONObject jsonMessage = new JSONObject(clientMessage);
