@@ -1,9 +1,7 @@
 package controller;
 import dao.CandidatoDAO;
-import dao.UsuarioDAO;
 import modelo.Candidato;
 import modelo.Usuario;
-
 
 /* mudar para GenericoController e implementar com usuario */
 public class CandidatoController {
@@ -11,7 +9,6 @@ public class CandidatoController {
 
   public boolean isUserValid(String email) {
     Candidato candidato = dao.consultarPeloUsuarioIdEmail(email);
-    System.out.println(candidato == null);
     return candidato != null; 
   }
 

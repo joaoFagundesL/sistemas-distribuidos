@@ -22,7 +22,6 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
 		Query query = em.createNamedQuery("Candidato.consultarTodos");
 		
 		candidatos = query.getResultList();
-//		System.out.println(candidatos);
 		return candidatos;
 	}
 

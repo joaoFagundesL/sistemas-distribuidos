@@ -41,9 +41,7 @@ public class MainViewEmpresa {
   }
 
   public void initComponents(LoginView loginClass) {
-    final EmpresaView empresaView = new EmpresaView(
-      // e
-    );
+    final EmpresaView empresaView = new EmpresaView();
 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;
@@ -149,7 +147,7 @@ public class MainViewEmpresa {
   private JSONObject buildLogoutJson(JSONObject json, String token) {
     json.put("operation", "LOGOUT_RECRUITER");
     JSONObject data = new JSONObject();
-    data.put("token", token);
+    json.put("token", token);
     json.put("data", data);
     return json;
   }

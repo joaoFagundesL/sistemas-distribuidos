@@ -7,7 +7,9 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -24,7 +26,6 @@ public class EmpresaView extends JPanel {
 
   private static final long serialVersionUID = 1L;
 
-  // Empresa e;
   private JTextField nomeCandidatoField;
   private JTextField senhaField;
   private JTextField emailField;
@@ -32,18 +33,12 @@ public class EmpresaView extends JPanel {
   private JTextField branchTextField;
   private JTextField textField;
 
-  public EmpresaView(
-    // final Empresa e
-  ) {
-    // this.e = e;
+  public EmpresaView() {
     initComponents(
-      // e
     );
   }
 
-  public void initComponents(
-    // final Empresa e
-  ) {
+  public void initComponents() {
     setLayout(null);
     setBackground(SystemColor.control);
 
@@ -88,12 +83,15 @@ public class EmpresaView extends JPanel {
           JSONObject response = Client.getInstance().sendRequest(request);
           JSONObject data = response.getJSONObject("data");
 
-          String nome =  data.getString("name");
-          String email = data.getString("email");
-          String senha = data.getString("password");
-          String industry = data.getString("industry");
-          String descricao = data.getString("description");
-          popularTabelaEmpresa(nome, email, senha, industry, descricao);
+          if (response.getString("status").equals("SUCCESS")) {
+            String nome =  data.getString("name");
+            String email = data.getString("email");
+            String senha = data.getString("password");
+            String industry = data.getString("industry");
+            String descricao = data.getString("description");
+            popularTabelaEmpresa(nome, email, senha, industry, descricao);
+          }
+
         } catch(IOException err) {
           err.printStackTrace();
         }
@@ -119,7 +117,26 @@ public class EmpresaView extends JPanel {
     JButton btnRemover_1 = new JButton("Remover");
     btnRemover_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        JSONObject request = new JSONObject();
+        String token = Client.getInstance().getToken();
+        buildJsonDelete(request, token);
+        try {
+          JSONObject response = Client.getInstance().sendRequest(request);
 
+          String status = response.getString("status");
+
+          if (status.equals("SUCCESS")) {
+            JFrame frame = new JFrame("JOptionPane exemplo");
+            JOptionPane.showMessageDialog(frame, "Registro Excluído!");
+            MainViewEmpresa.getInstance().frame.dispose();
+            LoginView.getInstance().frame.setVisible(true);
+          } else {
+            JFrame frame = new JFrame("JOptionPane exemplo");
+            JOptionPane.showMessageDialog(frame, "Error");
+          }
+        } catch(IOException err) {
+          err.printStackTrace();
+        }
       }
     });
     btnRemover_1.setBounds(252, 308, 94, 27);
@@ -179,16 +196,18 @@ public class EmpresaView extends JPanel {
     modelo.setNumRows(0);
   }
 
-  public void setEmpresa(Empresa e) {
-    // this.e = e;
-    //        System.out.println(c.getUsuario().getUser());
-    // popularTabelaEmpresa();
-  }
-
   public JSONObject buildJsonLookup(JSONObject json, String token) {
     json.put("operation", "LOOKUP_ACCOUNT_RECRUITER");
     json.put("token", token);
     JSONObject data = new JSONObject();
+    json.put("data", data);
+    return json;
+  }
+
+  public JSONObject buildJsonDelete(JSONObject json, String token) {
+    json.put("operation", "DELETE_ACCOUNT_RECRUITER");
+    JSONObject data = new JSONObject();
+    json.put("token", token);
     json.put("data", data);
     return json;
   }

@@ -47,12 +47,8 @@ public class MainViewCandidato {
     return isLogout;
   }
 
-  public void initComponents(LoginView loginClass
-    // , Candidato c
-  ) {
-    final CandidatoView clienteView = new CandidatoView(
-      // c
-    );
+  public void initComponents(LoginView loginClass) {
+    final CandidatoView clienteView = new CandidatoView();
 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;

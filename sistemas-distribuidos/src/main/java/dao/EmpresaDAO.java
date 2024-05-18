@@ -52,8 +52,6 @@ public class EmpresaDAO extends GenericoDAO<Empresa> {
       return null;
     }
   }
-
-
 	
 	@Transactional
 	public void insertWithQuery(Empresa e) throws Exception {
@@ -66,8 +64,6 @@ public class EmpresaDAO extends GenericoDAO<Empresa> {
 		query.setParameter(1, e.getIndustry());
 		query.setParameter(2, e.getDescricao());
 		query.setParameter(3, e.getUsuario().getId());
-
-		System.out.println("industry = " + e.getIndustry());
 		
 		query.executeUpdate();
 		em.getTransaction().commit();

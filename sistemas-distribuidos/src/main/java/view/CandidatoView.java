@@ -107,7 +107,7 @@ public class CandidatoView extends JPanel {
             LoginView.getInstance().frame.setVisible(true);
           } else {
             JFrame frame = new JFrame("JOptionPane exemplo");
-            JOptionPane.showMessageDialog(frame, "Usuario ja removido!");
+            JOptionPane.showMessageDialog(frame, "Error");
           }
         } catch(IOException err) {
           err.printStackTrace();

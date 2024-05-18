@@ -135,13 +135,6 @@ public class LoginView {
     try {
       serverResponse = Client.getInstance().sendRequest(request);
       String status = (String) serverResponse.get("status");
-
-      // if (status.equals("USER_NOT_FOUND")) {
-      //   JFrame frame = new JFrame("Invalid User!");
-      //   JOptionPane.showMessageDialog(frame, "User Inválido!");
-      // } else if (status.equals("INVALID_PASSWORD")) {
-      //   JFrame frame = new JFrame("Invalid password!");
-      //   JOptionPane.showMessageDialog(frame, "Senha Inválida!");
       
       if (status.equals("INVALID_LOGIN")) {
         JFrame frame = new JFrame("Invalid Login!");
@@ -166,13 +159,6 @@ public class LoginView {
     try {
       serverResponse = Client.getInstance().sendRequest(request);
       String status = (String) serverResponse.get("status");
-
-      // if (status.equals("USER_NOT_FOUND")) {
-      //   JFrame frame = new JFrame("Invalid User!");
-      //   JOptionPane.showMessageDialog(frame, "User Inválido!");
-      // } else if (status.equals("INVALID_PASSWORD")) {
-      //   JFrame frame = new JFrame("Invalid password!");
-      //   JOptionPane.showMessageDialog(frame, "Senha Inválida!");
 
       if (status.equals("INVALID_LOGIN")) {
         JFrame frame = new JFrame("Invalid Login!");

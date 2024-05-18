@@ -36,7 +36,6 @@ public class EmpresaController {
     return true;
   }
 
-
   public Boolean isPasswordValid(String email, String senha) {
     Empresa e = dao.consultarPeloUsuarioIdEmail(email);
 
@@ -57,5 +56,8 @@ public class EmpresaController {
     return e;
   }
 
-
+  public void remover(Class<Empresa> clazz, Integer id) {
+    EmpresaDAO dao = new EmpresaDAO();
+    dao.remover(Empresa.class, id);
+  }
 }

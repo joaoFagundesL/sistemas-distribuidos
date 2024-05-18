@@ -44,9 +44,8 @@ public class CandidatoServico {
     }
   }
 
-  public JSONObject buildLookupCandidate(JSONObject jsonResponse, String status, String token,
-    String nome, String email, String senha) {
-    jsonResponse.put("operation", "LOOKUP_ACCOUNT_CANDIDATE");
+  public JSONObject buildLookupCandidate(JSONObject jsonResponse, String status, String token, String nome, String email, String senha) { 
+    jsonResponse.put("operation", "LOOKUP_ACCOUNT_CANDIDATE"); 
     jsonResponse.put("status", status);
     JSONObject data = new JSONObject();
     data.put("email", email);

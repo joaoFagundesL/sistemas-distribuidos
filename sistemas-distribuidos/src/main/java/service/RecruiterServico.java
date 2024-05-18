@@ -17,21 +17,21 @@ import utitlity.JwtUtility;
 public class RecruiterServico {
   public void logoutRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    JSONObject data = jsonMessage.getJSONObject("data");
-    String token = data.getString("token");
+    // JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
 
     try {
       jwt.verifyToken(token);
       buildLogoutJsonRecruiter(jsonResponse, "SUCCESS", token);
     } catch(JWTVerificationException e) {
-      buildLogoutJsonRecruiter(jsonResponse, "INVALID_TOKEN", token);
+      buildInvalidToken(jsonResponse, "LOGOUT_RECRUITER");
     }
   }
 
  public void lookup_recruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    JSONObject data = jsonMessage.getJSONObject("data");
-    String token = data.getString("token");
+    // JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
 
     try {
       DecodedJWT decodedJWT = jwt.verifyToken(token);
@@ -41,6 +41,11 @@ public class RecruiterServico {
       EmpresaController cController = new EmpresaController();
       Empresa c = cController.consultarPorId(id);
 
+      if (c == null) {
+        buildLookupRecruiter(jsonResponse, "USER_NOT_FOUND", token, "", "", "", "", "");
+        return;
+      }
+
       String nome = c.getUsuario().getNome();
       String email = c.getUsuario().getEmail();
       String senha = c.getUsuario().getSenha();
@@ -49,16 +54,65 @@ public class RecruiterServico {
 
       buildLookupRecruiter(jsonResponse, "SUCCESS", token, nome, email, senha, industry, descricao);    
     } catch(JWTVerificationException e) {
-      buildLookupRecruiter(jsonResponse, "SUCCESS", token, "", "", "", "", "");    
+      buildInvalidToken(jsonResponse, "LOOKUP_ACCOUNT_RECRUITER");
     }
+  }
+
+ public void deleteAccount(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+    // JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
+
+    try {
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      EmpresaController eController = new EmpresaController();
+      Empresa c = eController.consultarPorId(id);
+
+      if (c == null) {
+        buildJsonDeleteRecruiter(jsonResponse, "USER_NOT_FOUND");
+        return;
+      }
+
+      UsuarioController ucontroller = new UsuarioController();
+
+      eController.remover(Empresa.class, c.getId());
+      ucontroller.remover(Usuario.class, c.getUsuario().getId());
+
+      buildJsonDeleteRecruiter(jsonResponse, "SUCCESS");
+
+
+    } catch(JWTVerificationException e) {
+      buildInvalidToken(jsonResponse, "DELETE_ACCOUNT_RECRUITER");
+    }
+
+  }
+
+ public JSONObject buildInvalidToken(JSONObject res, String operation) {
+    res.put("operation", operation);
+    res.put("status", "INVALID_TOKEN");
+    JSONObject data = new JSONObject();
+    res.put("data", data);
+    return res;
+  }
+
+  public JSONObject buildJsonDeleteRecruiter(JSONObject res, String status) {
+    res.put("operation", "DELETE_ACCOUNT_RECRUITER");
+    res.put("status", status);
+    JSONObject data = new JSONObject();
+    res.put("data", data);
+    return res;
   }
 
   public JSONObject buildLookupRecruiter(JSONObject jsonResponse, String status, String token,
     String nome, String email, String senha, String industry, String descricao) {
+
     jsonResponse.put("operation", "LOOKUP_ACCOUNT_RECRUITER");
+    jsonResponse.put("status", status);
     JSONObject data = new JSONObject();
     data.put("token", token);
-    data.put("status", status);
     data.put("email", email);
     data.put("password", senha);
     data.put("name", nome);
@@ -76,7 +130,7 @@ public class RecruiterServico {
     String senha = data.getString("password");
 
     if (email.isEmpty() || senha.isEmpty()) {
-      buildJsonLoginRecruiter(jsonResponse, "INVALID_FIELD", "", email, senha);
+      buildJsonLoginRecruiter(jsonResponse, "INVALID_FIELD", "");
       return;
     }
 
@@ -84,20 +138,20 @@ public class RecruiterServico {
     // esta pronta, é so descomentar a linha
     if (!eController.isUserValid(email)) {
       // buildJsonLoginRecruiter(jsonResponse, "USER_NOT_FOUND", "", email, senha);
-      buildJsonLoginRecruiter(jsonResponse, "INVALID_LOGIN", "", email, senha);
+      buildJsonLoginRecruiter(jsonResponse, "INVALID_LOGIN", "");
       return;
     }
 
     if (!eController.isPasswordValid(email, senha)) {
       // buildJsonLoginRecruiter(jsonResponse, "INVALID_PASSWORD", "", email, senha);
-      buildJsonLoginRecruiter(jsonResponse, "INVALID_LOGIN", "", email, senha);
+      buildJsonLoginRecruiter(jsonResponse, "INVALID_LOGIN", "");
       return;
     } 
 
     Integer id = eController.consultarId(email);
     String idString = String.valueOf(id);
     String token = JwtUtility.generateToken(idString, "recruiter");
-    buildJsonLoginRecruiter(jsonResponse, "SUCCESS", token, email, senha);
+    buildJsonLoginRecruiter(jsonResponse, "SUCCESS", token);
   }
 
   public void signupRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
@@ -132,13 +186,11 @@ public class RecruiterServico {
     buildJsonSignupRecruiter(jsonResponse, "SUCCESS",  email, senha, nome, description, descricao);
   }
 
-  public JSONObject buildJsonLoginRecruiter(JSONObject res, String status, String token, String email, String senha) {
+  public JSONObject buildJsonLoginRecruiter(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_RECRUITER");
     res.put("status", status);
     JSONObject data = new JSONObject();
     data.put("token", token);
-    data.put("email", email);
-    data.put("senha", senha);
     res.put("data", data);
     return res;
   }
@@ -148,7 +200,6 @@ public class RecruiterServico {
     res.put("operation", "SIGNUP_RECRUITER");
     res.put("status", status);
     JSONObject data = new JSONObject();
-    data.put("", "");
     res.put("data", data);
     return res;
   }
