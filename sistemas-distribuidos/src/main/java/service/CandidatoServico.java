@@ -144,7 +144,6 @@ public class CandidatoServico {
 
   public void logoutCandidato(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    // JSONObject data = jsonMessage.getJSONObject("data");
     String token = jsonMessage.getString("token");
 
     try {

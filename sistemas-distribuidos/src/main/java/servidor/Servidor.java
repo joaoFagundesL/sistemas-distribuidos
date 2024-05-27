@@ -198,6 +198,10 @@ public class Servidor extends JFrame {
       recruiterServico.deleteAccount(jsonMessage, jsonResponse);
       break;
 
+      case "UPDATE_ACCOUNT_RECRUITER":
+      recruiterServico.updateRecruiter(jsonMessage, jsonResponse);
+      break;
+
       case "SIGNUP_RECRUITER":
       recruiterServico.signupRecruiter(jsonMessage, jsonResponse);
       break;

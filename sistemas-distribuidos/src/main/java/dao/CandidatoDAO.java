@@ -86,10 +86,6 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
 
     a = consultarPorId(Candidato.class, a.getId());
 
-    //		a.getUsuario().setNome(nome);
-    //		a.getUsuario().setEmail(email);
-    //		a.getUsuario().setSenha(senha);
-    //		a.getUsuario().setUser(usuario);
     a.setUsuario(a.getUsuario());
 
     if (a.getUsuario() instanceof Pessoa) {

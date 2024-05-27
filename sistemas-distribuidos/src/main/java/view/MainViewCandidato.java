@@ -19,7 +19,6 @@ import cliente.Client;
 import modelo.Candidato;
 
 public class MainViewCandidato {
-
   private static MainViewCandidato instance = null;
 
   JPanel panelCont = new JPanel();
@@ -64,18 +63,15 @@ public class MainViewCandidato {
     panelCont.setLayout(cl);
     panelCont.add(panelFirst, "1");
 
-
     tabbedPane.setBounds(219, -88, 573, 656);
     panelFirst.add(tabbedPane);
 
     JPanel panel_1 = new JPanel();
     panel_1.setBackground(SystemColor.activeCaption);
-   // tabbedPane.addTab("New tab", null, panel_1, null);
 
     JPanel panel = new JPanel();
     panel.setBackground(Color.RED);
     tabbedPane.addTab("New tab", null, clienteView, null);
-   // tabbedPane.addTab("New tab", null, new CandidatoViewTeste(), null);
     CandidatoView clienteView_1 = new CandidatoView();
     clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 

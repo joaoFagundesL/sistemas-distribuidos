@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import controller.EmpresaController;
 import controller.UsuarioController;
+import dao.EmpresaDAO;
 import dao.UsuarioDAO;
 import modelo.Empresa;
 import modelo.Usuario;
@@ -17,7 +18,6 @@ import utitlity.JwtUtility;
 public class RecruiterServico {
   public void logoutRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    // JSONObject data = jsonMessage.getJSONObject("data");
     String token = jsonMessage.getString("token");
 
     try {
@@ -30,7 +30,6 @@ public class RecruiterServico {
 
  public void lookup_recruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    // JSONObject data = jsonMessage.getJSONObject("data");
     String token = jsonMessage.getString("token");
 
     try {
@@ -60,7 +59,6 @@ public class RecruiterServico {
 
  public void deleteAccount(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    // JSONObject data = jsonMessage.getJSONObject("data");
     String token = jsonMessage.getString("token");
 
     try {
@@ -87,8 +85,9 @@ public class RecruiterServico {
     } catch(JWTVerificationException e) {
       buildInvalidToken(jsonResponse, "DELETE_ACCOUNT_RECRUITER");
     }
-
   }
+
+
 
  public JSONObject buildInvalidToken(JSONObject res, String operation) {
     res.put("operation", operation);
@@ -137,13 +136,11 @@ public class RecruiterServico {
     // decidiram mudar para apenas invalid_login, caso mudem de novo a logica ja 
     // esta pronta, é so descomentar a linha
     if (!eController.isUserValid(email)) {
-      // buildJsonLoginRecruiter(jsonResponse, "USER_NOT_FOUND", "", email, senha);
       buildJsonLoginRecruiter(jsonResponse, "INVALID_LOGIN", "");
       return;
     }
 
     if (!eController.isPasswordValid(email, senha)) {
-      // buildJsonLoginRecruiter(jsonResponse, "INVALID_PASSWORD", "", email, senha);
       buildJsonLoginRecruiter(jsonResponse, "INVALID_LOGIN", "");
       return;
     } 
@@ -212,4 +209,94 @@ public class RecruiterServico {
     json.put("data", data);
     return json;
   }
-}
+
+  public JSONObject buildUpdateJsonRecruiter(JSONObject res, String status) {
+    res.put("operation", "UPDATE_ACCOUNT_RECRUITER");
+    res.put("status", status);
+    JSONObject data = new JSONObject();
+    res.put("data", data);
+    return res;
+  }
+
+  public void updateRecruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
+
+
+    if ((data.has("email") && data.getString("email").isEmpty()) ||
+  (data.has("name") && data.getString("name").isEmpty()) ||
+  (data.has("password") && data.getString("password").isEmpty()) || 
+  (data.has("industry") && data.getString("industry").isEmpty()) ||
+  (data.has("description") && data.getString("description").isEmpty())) {
+      buildUpdateJsonRecruiter(jsonResponse, "INVALID_FIELD");
+      return;
+    }   
+
+    if (!data.has("email") && !data.has("password") && !data.has("name")
+    && !data.has("description") && !data.has("industry")) {
+      buildUpdateJsonRecruiter(jsonResponse, "INVALID_FIELD");
+      return;
+    }
+
+    try {
+      jwt.verifyToken(token);
+
+      UsuarioController ucontroller = new UsuarioController();
+      UsuarioDAO dao = new UsuarioDAO();
+
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      EmpresaController cController = new EmpresaController();
+      Empresa c = cController.consultarPorId(id);
+
+      if (c == null) {
+        buildUpdateJsonRecruiter(jsonResponse, "USER_NOT_FOUND");
+        return;
+      }
+
+      String email = "";  
+      String senha = "";
+      String nome = "";       
+      String description = "";
+      String industry = "";
+
+      if (data.has("email")) {
+        email = data.getString("email");
+
+        Usuario existingCandidatoWithEmail = dao.consultarPeloEmail(email);
+
+        if (existingCandidatoWithEmail != null && !existingCandidatoWithEmail.getId().equals(c.getUsuario().getId())) {
+          buildUpdateJsonRecruiter(jsonResponse, "INVALID_EMAIL");
+          return;
+        }
+      }
+
+      if (data.has("password")) {
+        senha = data.getString("password");
+      }
+
+      if (data.has("name")) {
+        nome = data.getString("name");
+      }
+
+      if (data.has("description")) {
+        description = data.getString("description");
+      }
+
+      if (data.has("industry")) {
+        industry = data.getString("industry");
+      }
+
+      EmpresaDAO cdao = new EmpresaDAO();
+      cdao.update(c, nome, email, senha, industry, description);
+      ucontroller.updateEmpresa(c, nome, email, senha);
+
+      buildUpdateJsonRecruiter(jsonResponse, "SUCCESS");
+    } catch (JWTVerificationException e) {
+      buildInvalidToken(jsonResponse, "UPDATE_ACCOUNT_CANDIDATE");
+    }
+  }}

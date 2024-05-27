@@ -31,11 +31,10 @@ public class EmpresaView extends JPanel {
   private JTextField emailField;
   private JTable table;
   private JTextField branchTextField;
-  private JTextField textField;
+  private JTextField descricaoField;
 
   public EmpresaView() {
-    initComponents(
-    );
+    initComponents();
   }
 
   public void initComponents() {
@@ -105,6 +104,19 @@ public class EmpresaView extends JPanel {
       @Override
       public void mouseClicked(MouseEvent e) {
 
+        String nome =  table.getValueAt(table.getSelectedRow(), 0).toString();
+        String email = table.getValueAt(table.getSelectedRow(), 1).toString();
+        String senha = table.getValueAt(table.getSelectedRow(), 2).toString();
+        String industry = table.getValueAt(table.getSelectedRow(), 3).toString();
+        String description = table.getValueAt(table.getSelectedRow(), 4). toString();
+
+        limparTela();
+
+        nomeCandidatoField.setText(nome);
+        emailField.setText(email);
+        senhaField.setText(senha);
+        branchTextField.setText(industry);
+        descricaoField.setText(description);
       }
     });
     scrollPane.setBounds(0, 348, 431, 222);
@@ -154,10 +166,89 @@ public class EmpresaView extends JPanel {
     JButton btnAtualizar_1 = new JButton("Atualizar");
     btnAtualizar_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        String email = emailField.getText();
+        String nome = nomeCandidatoField.getText();
+        String senha = senhaField.getText();
+        String industry = branchTextField.getText();  
+        String description = descricaoField.getText();
 
+        JSONObject dataRequest = new JSONObject();  
 
+        if(!nome.equals("")) {
+          dataRequest.put("name", nome);
+        }
+
+        if (!email.equals("")) {
+          dataRequest.put("email", email);
+        }
+
+        if (!senha.equals("")) {
+          dataRequest.put("password", senha);
+        }
+
+        if (!industry.equals("")) {
+          dataRequest.put("industry", industry);
+        }
+
+        if (!description.equals("")) {
+          dataRequest.put("description", description);
+          System.out.println("description not empty");
+        }
+
+        JSONObject request = new JSONObject();
+        String token = Client.getInstance().getToken();
+        buildJsonUpdate(request, token, dataRequest);
+
+        try {
+          DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+          JSONObject response = Client.getInstance().sendRequest(request);
+          JSONObject data = response.getJSONObject("data");
+
+          String nomeResponse = "";
+          String emailResponse = "";
+          String senhaResponse = "";
+          String industryResponse = "";
+          String descriptionResponse = "";
+
+          if (data.has("name")) {
+            nomeResponse = data.getString("name");
+          } else {
+          }
+
+          if (data.has("email")) {
+            emailResponse = data.getString("email");
+          }
+
+          if (data.has("password")) {
+            senhaResponse = data.getString("password");
+          }          
+
+          if (data.has("description")) {
+            descriptionResponse = data.getString("description");
+          }
+
+          if (data.has("industry")) {
+            industryResponse = data.getString("industry");
+          }
+
+          String status = response.getString("status");
+
+          if (status.equals("SUCCESS")) {
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
+          } else if(status.equals("INVALID_EMAIL")){
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Email em uso!");
+          } else {
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Erro!");
+          }
+        } catch(IOException err) {
+          err.printStackTrace();
+        }
       }
     });
+
     btnAtualizar_1.setBounds(142, 270, 98, 27);
     add(btnAtualizar_1);
 
@@ -178,10 +269,10 @@ public class EmpresaView extends JPanel {
     lblNewLabel_2.setBounds(64, 238, 58, 17);
     add(lblNewLabel_2);
 
-    textField = new JTextField();
-    textField.setBounds(142, 237, 213, 21);
-    add(textField);
-    textField.setColumns(10);
+    descricaoField = new JTextField();
+    descricaoField.setBounds(142, 237, 213, 21);
+    add(descricaoField);
+    descricaoField.setColumns(10);
 
   }
 
@@ -189,11 +280,15 @@ public class EmpresaView extends JPanel {
     nomeCandidatoField.setText("");
     emailField.setText("");
     senhaField.setText("");
+    descricaoField.setText("");
+    branchTextField.setText("");
+    limparTable();
   }
 
   public void limparTable() {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
     modelo.setNumRows(0);
+    System.out.println("ENTROU PARA LIMPAR");
   }
 
   public JSONObject buildJsonLookup(JSONObject json, String token) {
@@ -212,20 +307,21 @@ public class EmpresaView extends JPanel {
     return json;
   }
 
+  public JSONObject buildJsonUpdate(JSONObject json, String token, JSONObject data) {
+    json.put("operation", "UPDATE_ACCOUNT_RECRUITER");
+    json.put("token", token);
+    json.put("data", data);
+
+    return json;
+  }
+
   public void popularTabelaEmpresa(String nome, String email,
     String senha, String industry, String descricao) {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 
-    // EmpresaDAO edao = new EmpresaDAO();
-    // Empresa em = edao.consultarPorId(Empresa.class, e.getId());
-
-
     if (modelo.getRowCount() > 0) {
       modelo.setRowCount(0);
     }
-
-    // if (em == null)
-    // 	return;
 
     Object[] arr = new Object[5];
     arr[0] = nome;

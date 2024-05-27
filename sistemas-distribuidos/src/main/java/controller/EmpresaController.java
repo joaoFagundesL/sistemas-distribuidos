@@ -23,6 +23,11 @@ public class EmpresaController {
     }
   }
 
+	public void update(Empresa c, String nome, String email, String senha, String industry, String description) {
+		EmpresaDAO udao = new EmpresaDAO();
+		udao.update(c, nome, email, senha, industry, description);
+	}
+
   public Empresa consultarPorId(Integer id) {
     return dao.consultarPorId(Empresa.class, id);
   }

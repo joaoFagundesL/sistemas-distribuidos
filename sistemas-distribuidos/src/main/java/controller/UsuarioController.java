@@ -2,10 +2,16 @@ package controller;
 
 import dao.UsuarioDAO;
 import modelo.Candidato;
+import modelo.Empresa;
 import modelo.Usuario;
 
 public class UsuarioController {
 	public void update(Candidato c, String nome, String email, String senha) {
+		UsuarioDAO udao = new UsuarioDAO();
+		udao.update(c.getUsuario(), nome, email, senha);
+	}
+
+	public void updateEmpresa(Empresa c, String nome, String email, String senha) {
 		UsuarioDAO udao = new UsuarioDAO();
 		udao.update(c.getUsuario(), nome, email, senha);
 	}

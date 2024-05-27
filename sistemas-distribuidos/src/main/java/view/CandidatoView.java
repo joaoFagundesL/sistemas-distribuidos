@@ -264,29 +264,19 @@ public class CandidatoView extends JPanel {
     senhaField.setText("");
   }
 
-
   public void limparTable() {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
     modelo.setNumRows(0);
   }
 
-  public void setCandidato(
-  ) {
-  }
-
   public void popularTabelaCandidato(String nome, String email, String senha) {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 
-    // CandidatoDAO cdao = new CandidatoDAO();
-    // Candidato can = cdao.consultarPorId(Candidato.class, c.getId());
 
     if (modelo.getRowCount() > 0) {
       modelo.setRowCount(0);
     }
 
-    // if (can == null)
-    // return;
-    // 
     Object[] arr = new Object[3];
     arr[0] = nome;
     arr[1] = email;

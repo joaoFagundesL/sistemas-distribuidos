@@ -62,7 +62,6 @@ public class MainViewEmpresa {
 
     JPanel panel_1 = new JPanel();
     panel_1.setBackground(SystemColor.activeCaption);
-    tabbedPane.addTab("New tab", null, panel_1, null);
 
     JPanel panel = new JPanel();
     panel.setBackground(Color.RED);
@@ -76,7 +75,6 @@ public class MainViewEmpresa {
     panel_2.setBounds(0, 0, 218, 568);
     panelFirst.add(panel_2);
     panel_2.setLayout(null);
-
 
     JButton btnGerenciarProfessor = new JButton("CRUD1");
     btnGerenciarProfessor.addActionListener(new ActionListener() {
@@ -125,6 +123,7 @@ public class MainViewEmpresa {
         String token = Client.getInstance().getToken();
         buildLogoutJson(request, token);
         empresaView.limparTable();
+        System.out.println("LIMPOUUU");
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
         }catch(IOException err) {
@@ -141,7 +140,6 @@ public class MainViewEmpresa {
     panel_2.add(btnLogout);
 
     frame.getContentPane().add(panelCont);
-
   }
 
   private JSONObject buildLogoutJson(JSONObject json, String token) {
