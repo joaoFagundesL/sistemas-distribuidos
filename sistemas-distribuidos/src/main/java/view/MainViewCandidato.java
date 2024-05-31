@@ -113,6 +113,7 @@ public class MainViewCandidato {
         String token = Client.getInstance().getToken();
         buildLogoutJson(request, token);
         clienteView.limparTable();
+        competenciaView.limparTable();
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
         }catch(IOException err) {

@@ -225,6 +225,10 @@ public class Servidor extends JFrame {
       case "INCLUDE_SKILL":
       competenciaServico.includeSkill(jsonMessage, jsonResponse);
       break;
+      
+      case "LOOKUP_SKILLSET":
+      competenciaServico.lookupSkillset(jsonMessage, jsonResponse);
+      break;
 
       default:
       buildInvalidOperation(jsonResponse, operation);

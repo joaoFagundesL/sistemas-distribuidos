@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cliente.Client;
@@ -189,62 +190,71 @@ public class CompetenciaView extends JPanel {
     JButton refreshBtn = new JButton("Refresh");
     refreshBtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-//        JSONObject request = new JSONObject();
-//        String token = Client.getInstance().getToken();
-//        buildJsonLookup(request, token);
-//        try {
-//          JSONObject response = Client.getInstance().sendRequest(request);
-//          JSONObject data = response.getJSONObject("data");
-//
-//          if (response.getString("status").equals("SUCCESS")) {
-//            String nome =  data.getString("name");
-//            String email = data.getString("email");
-//            String senha = data.getString("password");
-//            popularTabelaCandidato(nome, email, senha);
-//          }
-//
-//        } catch(IOException err) {
-//          err.printStackTrace();
-//        }
+        limparTable(); 
+
+        JSONObject request = new JSONObject();
+        String token = Client.getInstance().getToken();
+        buildJsonLookup(request, token);
+        try {
+          JSONObject response = Client.getInstance().sendRequest(request);
+          JSONObject data = response.getJSONObject("data");
+
+
+          if (response.getString("status").equals("SUCCESS")) {
+            int size = data.getInt("skillset_size");
+            JSONArray skillset = data.getJSONArray("skillset");
+
+            for (int i = 0; i < size; i++) {
+              JSONObject skillObject = skillset.getJSONObject(i);
+              String skill = skillObject.getString("skill");
+              int experience = skillObject.getInt("experience");
+              popularTabelaCompetencia(skill, experience);
+            }
+
+          }
+
+        } catch(IOException err) {
+          err.printStackTrace();
+        }
       }
     });
     refreshBtn.setBounds(142, 294, 98, 27);
     add(refreshBtn);
-    
+
     JSpinner spinner = new JSpinner();
     spinner.setBounds(142, 160, 82, 22);
     add(spinner);
-    
+
     JButton enviarBotao = new JButton("Criar");
     enviarBotao.addActionListener(new ActionListener() {
-    	public void actionPerformed(ActionEvent e) {
-    		String skill = skillField.getText();
-    		Integer experience = (Integer) spinner.getValue();
-    		
-    		JSONObject request = new JSONObject();
-            
-            String token = Client.getInstance().getToken();
-            request = buildCreateSkill(request, skill, experience, token);
-            
-            JSONObject response;
-			try {
-				response = Client.getInstance().sendRequest(request);
-				JSONObject data = response.getJSONObject("data");
-				
-		        String status = response.getString("status");
-		        
-		        if (status.equals("SUCCESS")) {
-		            JFrame frame = new JFrame("Mensagem");
-		            JOptionPane.showMessageDialog(frame, "Inserido com sucesso!");
-		        } else {
-		            JFrame frame = new JFrame("Mensagem");
-		            JOptionPane.showMessageDialog(frame, "Erro!");
-		          }
+      public void actionPerformed(ActionEvent e) {
+        String skill = skillField.getText();
+        Integer experience = (Integer) spinner.getValue();
 
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-    	}
+        JSONObject request = new JSONObject();
+
+        String token = Client.getInstance().getToken();
+        request = buildCreateSkill(request, skill, experience, token);
+
+        JSONObject response;
+        try {
+          response = Client.getInstance().sendRequest(request);
+          JSONObject data = response.getJSONObject("data");
+
+          String status = response.getString("status");
+
+          if (status.equals("SUCCESS")) {
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Inserido com sucesso!");
+          } else {
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Erro!");
+          }
+
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }
     });
     enviarBotao.setBounds(199, 223, 101, 27);
     add(enviarBotao);
@@ -279,7 +289,14 @@ public class CompetenciaView extends JPanel {
 
   public void limparTela() {
     skillField.setText("");
-    
+  }
+
+  public JSONObject buildJsonLookup(JSONObject json, String token) {
+    json.put("operation", "LOOKUP_SKILLSET");
+    JSONObject data = new JSONObject();
+    json.put("token", token);
+    json.put("data", data);
+    return json;
   }
 
   public void limparTable() {
@@ -287,18 +304,12 @@ public class CompetenciaView extends JPanel {
     modelo.setNumRows(0);
   }
 
-  public void popularTabelaCandidato(String nome, String email, String senha) {
+  public void popularTabelaCompetencia(String skill, int experience) {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 
-
-    if (modelo.getRowCount() > 0) {
-      modelo.setRowCount(0);
-    }
-
-    Object[] arr = new Object[3];
-    arr[0] = nome;
-    arr[1] = email;
-    arr[2] = senha;
+    Object[] arr = new Object[2];
+    arr[0] = skill;
+    arr[1] = experience;
 
     modelo.addRow(arr);		
   }
