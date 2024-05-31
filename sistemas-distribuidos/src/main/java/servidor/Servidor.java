@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,10 +24,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
 
-import org.hibernate.internal.build.AllowSysOut;
 import org.json.JSONObject;
+
 import cliente.ClientInfo;
 import service.CandidatoServico;
+import service.CompetenciaServico;
 import service.RecruiterServico;
 
 public class Servidor extends JFrame {
@@ -38,6 +40,7 @@ public class Servidor extends JFrame {
 
   CandidatoServico candidatoServico;
   RecruiterServico recruiterServico;
+  CompetenciaServico competenciaServico;
 
   /* com esse set tenho todas informacoes do cliente que eu preciso,
      * caso precise adicionar algo mais é so mexer em ClientInfo (nome, por exemplo) */
@@ -49,6 +52,7 @@ public class Servidor extends JFrame {
   public Servidor() {
     this.candidatoServico = new CandidatoServico();
     this.recruiterServico = new RecruiterServico();
+    this.competenciaServico = new CompetenciaServico();
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setBounds(100, 100, 507, 369);
     contentPane = new JPanel();
@@ -216,6 +220,10 @@ public class Servidor extends JFrame {
 
       case "LOOKUP_ACCOUNT_RECRUITER":
       recruiterServico.lookup_recruiter(jsonMessage, jsonResponse);
+      break;
+      
+      case "INCLUDE_SKILL":
+      competenciaServico.includeSkill(jsonMessage, jsonResponse);
       break;
 
       default:

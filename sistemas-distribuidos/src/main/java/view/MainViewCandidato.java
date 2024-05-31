@@ -48,6 +48,7 @@ public class MainViewCandidato {
 
   public void initComponents(LoginView loginClass) {
     final CandidatoView clienteView = new CandidatoView();
+    final CompetenciaView competenciaView = new CompetenciaView();
 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;
@@ -66,14 +67,9 @@ public class MainViewCandidato {
     tabbedPane.setBounds(219, -88, 573, 656);
     panelFirst.add(tabbedPane);
 
-    JPanel panel_1 = new JPanel();
-    panel_1.setBackground(SystemColor.activeCaption);
-
-    JPanel panel = new JPanel();
-    panel.setBackground(Color.RED);
-    tabbedPane.addTab("New tab", null, clienteView, null);
-    CandidatoView clienteView_1 = new CandidatoView();
-    clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
+    // Adiciona as views ao tabbedPane
+    tabbedPane.addTab("Candidato", clienteView);
+    tabbedPane.addTab("Competencia", competenciaView);
 
     JPanel panel_2 = new JPanel();
     panel_2.setBackground(SystemColor.inactiveCaption);
@@ -81,11 +77,10 @@ public class MainViewCandidato {
     panelFirst.add(panel_2);
     panel_2.setLayout(null);
 
-
     JButton btnGerenciarProfessor = new JButton("CRUD1");
     btnGerenciarProfessor.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        tabbedPane.setSelectedIndex(2);
+        tabbedPane.setSelectedIndex(0); // Vai para CandidatoView
       }
     });
     btnGerenciarProfessor.setForeground(Color.WHITE);
@@ -96,24 +91,13 @@ public class MainViewCandidato {
     JButton btnGerenciarCurso = new JButton("CRUD2");
     btnGerenciarCurso.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        tabbedPane.setSelectedIndex(3);
+        tabbedPane.setSelectedIndex(1); // Vai para CompetenciaView
       }
     });
     btnGerenciarCurso.setForeground(Color.WHITE);
     btnGerenciarCurso.setBackground(Color.DARK_GRAY);
     btnGerenciarCurso.setBounds(23, 148, 171, 27);
     panel_2.add(btnGerenciarCurso);
-
-    JButton btnGerenciarDisciplina = new JButton("CRUD3");
-    btnGerenciarDisciplina.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        tabbedPane.setSelectedIndex(4);
-      }
-    });
-    btnGerenciarDisciplina.setForeground(Color.WHITE);
-    btnGerenciarDisciplina.setBackground(Color.DARK_GRAY);
-    btnGerenciarDisciplina.setBounds(23, 187, 171, 27);
-    panel_2.add(btnGerenciarDisciplina);
 
     JLabel lblSistemaFaculdade = new JLabel("Candidato");
     lblSistemaFaculdade.setFont(new Font("Dialog", Font.BOLD, 16));

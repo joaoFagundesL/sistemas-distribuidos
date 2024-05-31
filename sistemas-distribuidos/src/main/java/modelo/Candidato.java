@@ -1,16 +1,22 @@
 package modelo;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.Cascade;
+
 
 @Entity
 @NamedQueries({
@@ -43,14 +49,14 @@ public class Candidato implements Entidade {
   @OneToOne(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "usuario_id", referencedColumnName = "id")
   private Usuario usuario;
+  
+  @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "candidato")
+  private List<Competencia> competencias;
+ 
 
-  /* Construtores */
+/* Construtores */
   public Candidato() {
-  }
-
-  public Candidato(Integer id, Integer anoEntrada) {
-    super();
-    this.id = id;
   }
 
   /* Getters e Setters */
@@ -70,6 +76,14 @@ public class Candidato implements Entidade {
   public void setId(Integer id) {
     this.id = id;
   }
+  
+  public List<Competencia> getCompetencias() {
+	return competencias;
+  }
+
+	public void setCompetencias(List<Competencia> competencias) {
+		this.competencias = competencias;
+	}
 
   /* Equals e HashCode */
   @Override

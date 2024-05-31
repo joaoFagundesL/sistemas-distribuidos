@@ -87,8 +87,6 @@ public class RecruiterServico {
     }
   }
 
-
-
  public JSONObject buildInvalidToken(JSONObject res, String operation) {
     res.put("operation", operation);
     res.put("status", "INVALID_TOKEN");
