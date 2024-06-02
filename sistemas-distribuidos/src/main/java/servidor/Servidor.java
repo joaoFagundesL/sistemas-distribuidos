@@ -234,6 +234,14 @@ public class Servidor extends JFrame {
       competenciaServico.lookupSkill(jsonMessage, jsonResponse);
       break;
 
+      case "DELETE_SKILL":
+      competenciaServico.deleteSkill(jsonMessage, jsonResponse);
+      break;
+
+      case "UPDATE_SKILL":
+      //todo
+      break;
+
       default:
       buildInvalidOperation(jsonResponse, operation);
     }

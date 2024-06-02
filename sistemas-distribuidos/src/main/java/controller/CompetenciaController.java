@@ -28,6 +28,10 @@ public class CompetenciaController {
     return cdao.listarCompetenciaEspecifica(idCandidato, idCompetencia);
   }
 
+  public void remover(Class<Competencia> clazz, Integer id) {
+    cdao.remover(Competencia.class, id);
+  }
+
   public Competencia consultarPorId(Integer id) {
     return cdao.consultarPorId(Competencia.class, id);
   }

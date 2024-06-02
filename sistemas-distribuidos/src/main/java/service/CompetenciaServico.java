@@ -11,6 +11,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import controller.CandidatoController;
 import controller.CompetenciaController;
+import dao.CompetenciaDAO;
 import modelo.Candidato;
 import modelo.Competencia;
 import utitlity.JwtUtility;
@@ -44,6 +45,36 @@ public class CompetenciaServico {
       buildJson(jsonResponse, "SUCCESS", "INCLUDE_SKILL");
     } catch(JWTVerificationException e) {
       buildJson(jsonResponse, "INVALID_TOKEN", "INCLUDE_SKILL");
+    }
+  }
+
+  public void deleteSkill(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
+
+    try {
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      CandidatoController cController = new CandidatoController();
+      Candidato c = cController.consultarPorId(id);
+
+      Integer idComp = data.getInt("id");
+
+      CompetenciaController cc = new CompetenciaController();
+      Competencia competencia = cc.listarCompetenciaEspecifica(id, idComp);
+
+      if (competencia == null) {
+        buildJson(jsonResponse, "SKILL_NOT_FOUND", "DELETE_SKILL");
+      } else {
+        cc.remover(Competencia.class, competencia.getId()); 
+        buildJson(jsonResponse, "SUCCESS", "DELETE_SKILL");
+      }
+
+    } catch(JWTVerificationException e) {
+      buildJson(jsonResponse, "INVALID_TOKEN", "DELETE_SKILL");
     }
   }
 

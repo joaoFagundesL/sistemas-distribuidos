@@ -54,7 +54,7 @@ public class CompetenciaView extends JPanel {
     ));
 
     skillField = new JTextField();
-    skillField.setBounds(114, 162, 213, 20);
+    skillField.setBounds(114, 162, 114, 20);
     add(skillField);
     skillField.setColumns(10);
 
@@ -86,7 +86,18 @@ public class CompetenciaView extends JPanel {
       public void actionPerformed(ActionEvent e) {
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
-        buildJsonDelete(request, token);
+
+        String idString = idField.getText();
+
+        if (idString.equals("")) {
+          JFrame frame = new JFrame("JOptionPane exemplo");
+          JOptionPane.showMessageDialog(frame, "Informe o id!");
+          return;
+        }
+
+        Integer id = Integer.parseInt(idString);
+
+        buildJsonDelete(request, id, token);
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
 
@@ -95,18 +106,16 @@ public class CompetenciaView extends JPanel {
           if (status.equals("SUCCESS")) {
             JFrame frame = new JFrame("JOptionPane exemplo");
             JOptionPane.showMessageDialog(frame, "Registro Excluído!");
-            MainViewCandidato.getInstance().frame.dispose();
-            LoginView.getInstance().frame.setVisible(true);
           } else {
             JFrame frame = new JFrame("JOptionPane exemplo");
-            JOptionPane.showMessageDialog(frame, "Error");
+            JOptionPane.showMessageDialog(frame, "Id nao existe");
           }
         } catch(IOException err) {
           err.printStackTrace();
         }
       }
     });
-    btnRemover_1.setBounds(158, 233, 94, 27);
+    btnRemover_1.setBounds(306, 76, 94, 27);
     add(btnRemover_1);
 
     JButton btnLimpar_1 = new JButton("Limpar");
@@ -115,7 +124,7 @@ public class CompetenciaView extends JPanel {
         limparTela();
       }
     });
-    btnLimpar_1.setBounds(154, 272, 98, 27);
+    btnLimpar_1.setBounds(45, 272, 98, 27);
     add(btnLimpar_1);
 
     JButton btnAtualizar_1 = new JButton("Atualizar");
@@ -183,7 +192,7 @@ public class CompetenciaView extends JPanel {
         // }
       }
     });
-    btnAtualizar_1.setBounds(264, 233, 98, 27);
+    btnAtualizar_1.setBounds(154, 233, 98, 27);
     add(btnAtualizar_1);
 
     JLabel experienceLabel = new JLabel("Experience");
@@ -222,7 +231,7 @@ public class CompetenciaView extends JPanel {
         }
       }
     });
-    refreshBtn.setBounds(45, 272, 98, 27);
+    refreshBtn.setBounds(264, 233, 98, 27);
     add(refreshBtn);
 
     JSpinner spinner = new JSpinner();
@@ -262,16 +271,23 @@ public class CompetenciaView extends JPanel {
     });
     enviarBotao.setBounds(45, 233, 101, 27);
     add(enviarBotao);
-    
+
     idField = new JTextField();
-    idField.setBounds(114, 79, 114, 24);
+    idField.setBounds(70, 78, 114, 24);
     add(idField);
     idField.setColumns(10);
-    
+
     JButton btnNewButton = new JButton("Pesquisar");
     btnNewButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         String idString = idField.getText();
+
+        if (idString.equals("")) {
+          JFrame frame = new JFrame("Mensagem");
+          JOptionPane.showMessageDialog(frame, "Informe o id!");
+          return;
+        }
+
         Integer id = Integer.parseInt(idString);
 
         JSONObject request = new JSONObject();
@@ -303,13 +319,13 @@ public class CompetenciaView extends JPanel {
       }
 
     });
-    btnNewButton.setBounds(240, 76, 109, 27);
+    btnNewButton.setBounds(191, 76, 109, 26);
     add(btnNewButton);
-    
+
     JLabel lblId = new JLabel("ID");
     lblId.setBounds(45, 79, 58, 17);
     add(lblId);
-    
+
     JSeparator separator = new JSeparator();
     separator.setBackground(new Color(97, 53, 131));
     separator.setBounds(0, 130, 649, 2);
@@ -335,9 +351,10 @@ public class CompetenciaView extends JPanel {
     return json;
   }
 
-  public JSONObject buildJsonDelete(JSONObject json, String token) {
-    json.put("operation", "DELETE_ACCOUNT_CANDIDATE");
+  public JSONObject buildJsonDelete(JSONObject json, Integer id, String token) {
+    json.put("operation", "DELETE_SKILL");
     JSONObject data = new JSONObject();
+    data.put("id", id);
     json.put("token", token);
     json.put("data", data);
     return json;
@@ -353,6 +370,7 @@ public class CompetenciaView extends JPanel {
 
   public void limparTela() {
     skillField.setText("");
+    idField.setText("");
   }
 
   public JSONObject buildJsonLookup(JSONObject json, String token) {
