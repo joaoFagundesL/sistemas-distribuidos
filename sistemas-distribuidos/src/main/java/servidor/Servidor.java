@@ -239,7 +239,7 @@ public class Servidor extends JFrame {
       break;
 
       case "UPDATE_SKILL":
-      //todo
+      competenciaServico.updateSkill(jsonMessage, jsonResponse);
       break;
 
       default:

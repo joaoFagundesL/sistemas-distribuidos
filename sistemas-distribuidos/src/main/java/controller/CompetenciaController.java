@@ -28,6 +28,10 @@ public class CompetenciaController {
     return cdao.listarCompetenciaEspecifica(idCandidato, idCompetencia);
   }
 
+  public void update(Competencia c, String skill, Integer experience) {
+    cdao.update(c, skill, experience);
+  }
+
   public void remover(Class<Competencia> clazz, Integer id) {
     cdao.remover(Competencia.class, id);
   }

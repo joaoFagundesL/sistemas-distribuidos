@@ -41,6 +41,7 @@ public class CompetenciaView extends JPanel {
     setLayout(null);
     setBackground(SystemColor.control);
 
+    JSpinner spinner = new JSpinner();
 
     JScrollPane scrollPane = new JScrollPane();
     table = new JTable();
@@ -130,66 +131,67 @@ public class CompetenciaView extends JPanel {
     JButton btnAtualizar_1 = new JButton("Atualizar");
     btnAtualizar_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        // String email = emailField.getText();
-        // String nome = skillField.getText();
-        // String senha = senhaField.getText();
-        //
-        // JSONObject dataRequest = new JSONObject();  
-        //
-        // if(!nome.equals("")) {
-        //   dataRequest.put("name", nome);
-        // }
-        //
-        // if (!email.equals("")) {
-        //   dataRequest.put("email", email);
-        // }
-        //
-        // if (!senha.equals("")) {
-        //   dataRequest.put("password", senha);
-        // }
-        //
-        // JSONObject request = new JSONObject();
-        // String token = Client.getInstance().getToken();
-        // buildJsonUpdate(request, token, dataRequest);
-        // try {
-        //   DefaultTableModel modelo = (DefaultTableModel) table.getModel();
-        //   JSONObject response = Client.getInstance().sendRequest(request);
-        //   JSONObject data = response.getJSONObject("data");
-        //
-        //   String nomeResponse = "";
-        //   String emailResponse = "";
-        //   String senhaResponse = "";
-        //
-        //   if (data.has("name")) {
-        //     nomeResponse = data.getString("name");
-        //   } else {
-        //   }
-        //
-        //   if (data.has("email")) {
-        //     emailResponse = data.getString("email");
-        //   } else {
-        //   }
-        //
-        //   if (data.has("password")) {
-        //     senhaResponse = data.getString("password");
-        //   } else {
-        //   }          
-        //
-        //   String status = response.getString("status");
-        //
-        //   if (status.equals("SUCCESS")) {
-        //     JFrame frame = new JFrame("Mensagem");
-        //     JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
-        //   } else if(status.equals("INVALID_EMAIL")){
-        //     JFrame frame = new JFrame("Mensagem");
-        //     JOptionPane.showMessageDialog(frame, "Email em uso!");
-        //   } else {
-        //     JFrame frame = new JFrame("Mensagem");
-        //     JOptionPane.showMessageDialog(frame, "Erro!");
-        //   }
-        // } catch(IOException err) {
-        //   err.printStackTrace();
-        // }
+        String skill = skillField.getText();
+        Integer experience = (Integer) spinner.getValue();
+        String idString = idField.getText();
+        Integer id = Integer.parseInt(idString);
+
+        JSONObject dataRequest = new JSONObject();  
+
+        if(!skill.equals("")) {
+          dataRequest.put("skill", skill);
+        }
+
+        if (experience != null) {
+          dataRequest.put("experience", experience);
+        }
+
+        if (id != null) {
+          dataRequest.put("id", id);
+        }
+
+        JSONObject request = new JSONObject();
+        String token = Client.getInstance().getToken();
+        buildJsonUpdate(request, token, dataRequest);
+
+        try {
+          DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+          JSONObject response = Client.getInstance().sendRequest(request);
+          JSONObject data = response.getJSONObject("data");
+
+          String skillResponse = "";
+          Integer experienceResponse = null;
+          Integer idResponse = null;
+
+          if (data.has("skill")) {
+            skillResponse = data.getString("skill");
+          } else {
+          }
+
+          if (data.has("id")) {
+            idResponse = data.getInt("id");
+          }
+
+          if (data.has("experience")) {
+            experienceResponse = data.getInt("experience");
+          } else {
+          }
+
+          String status = response.getString("status");
+
+          if (status.equals("SUCCESS")) {
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
+          } else if(status.equals("SKILL_EXISTS")){
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Skill existe!");
+          } else {
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Erro!");
+          }
+        } catch(IOException err) {
+          err.printStackTrace();
+        }
       }
     });
     btnAtualizar_1.setBounds(154, 233, 98, 27);
@@ -234,7 +236,6 @@ public class CompetenciaView extends JPanel {
     refreshBtn.setBounds(264, 233, 98, 27);
     add(refreshBtn);
 
-    JSpinner spinner = new JSpinner();
     spinner.setBounds(115, 191, 82, 22);
     add(spinner);
 
@@ -361,7 +362,7 @@ public class CompetenciaView extends JPanel {
   }
 
   public JSONObject buildJsonUpdate(JSONObject json, String token, JSONObject data) {
-    json.put("operation", "UPDATE_ACCOUNT_CANDIDATE");
+    json.put("operation", "UPDATE_SKILL");
     json.put("token", token);
     json.put("data", data);
 
@@ -371,6 +372,7 @@ public class CompetenciaView extends JPanel {
   public void limparTela() {
     skillField.setText("");
     idField.setText("");
+    limparTable();
   }
 
   public JSONObject buildJsonLookup(JSONObject json, String token) {

@@ -28,7 +28,7 @@ public class RecruiterServico {
     }
   }
 
- public void lookup_recruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
+  public void lookup_recruiter(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
     String token = jsonMessage.getString("token");
 
@@ -57,7 +57,7 @@ public class RecruiterServico {
     }
   }
 
- public void deleteAccount(JSONObject jsonMessage, JSONObject jsonResponse) {
+  public void deleteAccount(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
     String token = jsonMessage.getString("token");
 
@@ -87,7 +87,7 @@ public class RecruiterServico {
     }
   }
 
- public JSONObject buildInvalidToken(JSONObject res, String operation) {
+  public JSONObject buildInvalidToken(JSONObject res, String operation) {
     res.put("operation", operation);
     res.put("status", "INVALID_TOKEN");
     JSONObject data = new JSONObject();
@@ -297,4 +297,5 @@ public class RecruiterServico {
     } catch (JWTVerificationException e) {
       buildInvalidToken(jsonResponse, "UPDATE_ACCOUNT_CANDIDATE");
     }
-  }}
+  }
+}
