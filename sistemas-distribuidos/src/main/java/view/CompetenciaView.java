@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cliente.Client;
+import javax.swing.JSeparator;
+import java.awt.Color;
 
 public class CompetenciaView extends JPanel {
 
@@ -47,12 +49,12 @@ public class CompetenciaView extends JPanel {
       new Object[][] {
       },
       new String[] {
-        "Skill", "Experience" 
+        "Id", "Skill", "Experience" 
       }
     ));
 
     skillField = new JTextField();
-    skillField.setBounds(142, 129, 213, 20);
+    skillField.setBounds(114, 162, 213, 20);
     add(skillField);
     skillField.setColumns(10);
 
@@ -76,7 +78,7 @@ public class CompetenciaView extends JPanel {
     add(scrollPane);
 
     JLabel skillLabel = new JLabel("Skill");
-    skillLabel.setBounds(64, 131, 60, 17);
+    skillLabel.setBounds(45, 164, 60, 17);
     add(skillLabel);
 
     JButton btnRemover_1 = new JButton("Remover");
@@ -104,7 +106,7 @@ public class CompetenciaView extends JPanel {
         }
       }
     });
-    btnRemover_1.setBounds(142, 255, 94, 27);
+    btnRemover_1.setBounds(158, 233, 94, 27);
     add(btnRemover_1);
 
     JButton btnLimpar_1 = new JButton("Limpar");
@@ -113,7 +115,7 @@ public class CompetenciaView extends JPanel {
         limparTela();
       }
     });
-    btnLimpar_1.setBounds(248, 294, 98, 27);
+    btnLimpar_1.setBounds(154, 272, 98, 27);
     add(btnLimpar_1);
 
     JButton btnAtualizar_1 = new JButton("Atualizar");
@@ -181,11 +183,11 @@ public class CompetenciaView extends JPanel {
         // }
       }
     });
-    btnAtualizar_1.setBounds(248, 255, 98, 27);
+    btnAtualizar_1.setBounds(264, 233, 98, 27);
     add(btnAtualizar_1);
 
     JLabel experienceLabel = new JLabel("Experience");
-    experienceLabel.setBounds(64, 162, 60, 17);
+    experienceLabel.setBounds(45, 193, 60, 17);
     add(experienceLabel);
 
     JButton refreshBtn = new JButton("Refresh");
@@ -209,7 +211,8 @@ public class CompetenciaView extends JPanel {
               JSONObject skillObject = skillset.getJSONObject(i);
               String skill = skillObject.getString("skill");
               int experience = skillObject.getInt("experience");
-              popularTabelaCompetencia(skill, experience);
+              int id = skillObject.getInt("id");
+              popularTabelaCompetencia(skill, experience, id);
             }
 
           }
@@ -219,11 +222,11 @@ public class CompetenciaView extends JPanel {
         }
       }
     });
-    refreshBtn.setBounds(142, 294, 98, 27);
+    refreshBtn.setBounds(45, 272, 98, 27);
     add(refreshBtn);
 
     JSpinner spinner = new JSpinner();
-    spinner.setBounds(142, 160, 82, 22);
+    spinner.setBounds(115, 191, 82, 22);
     add(spinner);
 
     JButton enviarBotao = new JButton("Criar");
@@ -257,11 +260,11 @@ public class CompetenciaView extends JPanel {
         }
       }
     });
-    enviarBotao.setBounds(199, 223, 101, 27);
+    enviarBotao.setBounds(45, 233, 101, 27);
     add(enviarBotao);
     
     idField = new JTextField();
-    idField.setBounds(64, 72, 114, 21);
+    idField.setBounds(114, 79, 114, 24);
     add(idField);
     idField.setColumns(10);
     
@@ -287,7 +290,8 @@ public class CompetenciaView extends JPanel {
             limparTable();
             String skill = data.getString("skill");
             Integer experience = data.getInt("experience");
-            popularTabelaCompetencia(skill, experience);
+            int idComp = data.getInt("id");
+            popularTabelaCompetencia(skill, experience, idComp);
           } else {
             JFrame frame = new JFrame("Mensagem");
             JOptionPane.showMessageDialog(frame, "Id nao existe!");
@@ -299,8 +303,17 @@ public class CompetenciaView extends JPanel {
       }
 
     });
-    btnNewButton.setBounds(190, 69, 101, 27);
+    btnNewButton.setBounds(240, 76, 109, 27);
     add(btnNewButton);
+    
+    JLabel lblId = new JLabel("ID");
+    lblId.setBounds(45, 79, 58, 17);
+    add(lblId);
+    
+    JSeparator separator = new JSeparator();
+    separator.setBackground(new Color(97, 53, 131));
+    separator.setBounds(0, 130, 649, 2);
+    add(separator);
   }
 
   public JSONObject buildLookup(JSONObject json, Integer id, String token) {
@@ -355,12 +368,13 @@ public class CompetenciaView extends JPanel {
     modelo.setNumRows(0);
   }
 
-  public void popularTabelaCompetencia(String skill, int experience) {
+  public void popularTabelaCompetencia(String skill, int experience, int id) {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 
-    Object[] arr = new Object[2];
-    arr[0] = skill;
-    arr[1] = experience;
+    Object[] arr = new Object[3];
+    arr[0] = id;
+    arr[1] = skill;
+    arr[2] = experience;
 
     modelo.addRow(arr);		
   }
