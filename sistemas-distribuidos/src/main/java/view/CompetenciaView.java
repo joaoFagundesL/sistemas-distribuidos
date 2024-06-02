@@ -29,6 +29,7 @@ public class CompetenciaView extends JPanel {
 
   private JTextField skillField;
   private JTable table;
+  private JTextField idField;
 
   public CompetenciaView() {
     initComponents();
@@ -46,7 +47,7 @@ public class CompetenciaView extends JPanel {
       new Object[][] {
       },
       new String[] {
-        "Skill", "Experience", "Senha"
+        "Skill", "Experience" 
       }
     ));
 
@@ -258,7 +259,57 @@ public class CompetenciaView extends JPanel {
     });
     enviarBotao.setBounds(199, 223, 101, 27);
     add(enviarBotao);
+    
+    idField = new JTextField();
+    idField.setBounds(64, 72, 114, 21);
+    add(idField);
+    idField.setColumns(10);
+    
+    JButton btnNewButton = new JButton("Pesquisar");
+    btnNewButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        String idString = idField.getText();
+        Integer id = Integer.parseInt(idString);
 
+        JSONObject request = new JSONObject();
+
+        String token = Client.getInstance().getToken();
+        request = buildLookup(request, id, token);
+
+        JSONObject response;
+        try {
+          response = Client.getInstance().sendRequest(request);
+          JSONObject data = response.getJSONObject("data");
+
+          String status = response.getString("status");
+
+          if (status.equals("SUCCESS")) {
+            limparTable();
+            String skill = data.getString("skill");
+            Integer experience = data.getInt("experience");
+            popularTabelaCompetencia(skill, experience);
+          } else {
+            JFrame frame = new JFrame("Mensagem");
+            JOptionPane.showMessageDialog(frame, "Id nao existe!");
+          }
+
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }
+
+    });
+    btnNewButton.setBounds(190, 69, 101, 27);
+    add(btnNewButton);
+  }
+
+  public JSONObject buildLookup(JSONObject json, Integer id, String token) {
+    json.put("operation", "LOOKUP_SKILL");
+    JSONObject data = new JSONObject();
+    data.put("id", id);
+    json.put("token", token);
+    json.put("data", data);
+    return json;
   }
 
   public JSONObject buildCreateSkill(JSONObject json, String skill, Integer experience, String token) {

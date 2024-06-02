@@ -230,6 +230,10 @@ public class Servidor extends JFrame {
       competenciaServico.lookupSkillset(jsonMessage, jsonResponse);
       break;
 
+      case "LOOKUP_SKILL":
+      competenciaServico.lookupSkill(jsonMessage, jsonResponse);
+      break;
+
       default:
       buildInvalidOperation(jsonResponse, operation);
     }

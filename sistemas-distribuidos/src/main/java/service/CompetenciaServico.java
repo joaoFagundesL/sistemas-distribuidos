@@ -23,7 +23,7 @@ public class CompetenciaServico {
     Integer experience = data.getInt("experience");
 
     if (skill.isEmpty()) {
-      buildJsonIncludeSkill(jsonResponse, "INVALID_FIELD", skill, experience);
+      buildJson(jsonResponse, "INVALID_FIELD", "INCLUDE_SKILL");
       return; 
     }
 
@@ -41,11 +41,10 @@ public class CompetenciaServico {
       Candidato c = candidatoController.consultarPorId(id);
 
       Competencia comp = competenciaController.insert(c, skill, experience);
-      buildJsonIncludeSkill(jsonResponse, "SUCCESS",  skill, experience);
+      buildJson(jsonResponse, "SUCCESS", "INCLUDE_SKILL");
     } catch(JWTVerificationException e) {
-      buildInvalidToken(jsonResponse, "INCLUDE_SKILL");
+      buildJson(jsonResponse, "INVALID_TOKEN", "INCLUDE_SKILL");
     }
-
   }
 
   public void lookupSkillset(JSONObject jsonMessage, JSONObject jsonResponse) {
@@ -66,17 +65,38 @@ public class CompetenciaServico {
       buildSkillset(jsonResponse, competencias);
 
     } catch(JWTVerificationException e) {
-      buildInvalidToken(jsonResponse, "LOOKUP_SKILLSET");
+      buildJson(jsonResponse, "INVALID_TOKEN", "LOOKUP_SKILLSET");
     }
-
   }
 
-  public JSONObject buildInvalidToken(JSONObject res, String operation) {
-    res.put("operation", operation);
-    res.put("status", "INVALID_TOKEN");
-    JSONObject data = new JSONObject();
-    res.put("data", data);
-    return res;
+  public void lookupSkill(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+    String token = jsonMessage.getString("token");
+
+    JSONObject data = jsonMessage.getJSONObject("data");
+
+    CandidatoController candidatoController = new CandidatoController();
+    CompetenciaController competenciaController = new CompetenciaController();
+
+    try {
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      Candidato c = candidatoController.consultarPorId(id);
+
+      Integer idCompetencia = data.getInt("id");
+
+      Competencia competencia = competenciaController.listarCompetenciaEspecifica(id, idCompetencia);
+
+      if (competencia == null) {
+        buildJson(jsonResponse, "SKILL_NOT_FOUND", "LOOKUP_SKILL");
+      } else {
+        buildSkill(jsonResponse, competencia);
+      }
+    } catch(JWTVerificationException e) {
+      buildJson(jsonResponse, "INVALID_TOKEN", "LOOKUP_SKILLSET");
+    }
   }
 
   public  JSONObject buildSkillset(JSONObject res, List<Competencia> competencias) {
@@ -88,7 +108,7 @@ public class CompetenciaServico {
       JSONObject skill = new JSONObject();
       skill.put("skill", competencia.getSkill());
       skill.put("experience", competencia.getExperience());
-      skill.put("id", competencia.getId());  // Assumindo que o objeto Competencia tem um método getId()
+      skill.put("id", competencia.getId()); 
       skillset.put(skill);
     }
 
@@ -100,13 +120,25 @@ public class CompetenciaServico {
     return res;
   }
 
-  public JSONObject buildJsonIncludeSkill(JSONObject res, String status, String skill, Integer experience) {
-    res.put("operation", "INCLUDE_SKILL");
+  public  JSONObject buildSkill(JSONObject res, Competencia competencia) {
+    res.put("operation", "LOOKUP_SKILLSET");
+    res.put("status", "SUCCESS");
+
+    JSONObject data = new JSONObject();
+
+    data.put("skill", competencia.getSkill());
+    data.put("experience", competencia.getExperience());
+    data.put("id", competencia.getId()); 
+
+    res.put("data", data);
+    return res;
+  }
+
+  public JSONObject buildJson(JSONObject res, String status, String operation) {
+    res.put("operation", operation);
     res.put("status", status);
     JSONObject data = new JSONObject();
     res.put("data", data);
     return res;
   }
-
-
 }

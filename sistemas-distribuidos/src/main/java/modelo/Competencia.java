@@ -14,8 +14,14 @@ import javax.persistence.NamedQuery;
   @NamedQuery(
     name = "Competencia.listarCompetenciaUsuario",
     query = "SELECT c FROM Competencia c JOIN c.candidato ca WHERE ca.id = :id"
+  ),
+
+  @NamedQuery(
+    name = "Competencia.listarCompetenciaEspecifica",
+    query = "SELECT c FROM Competencia c JOIN c.candidato ca WHERE ca.id = :candidatoId AND c.id = :competenciaId"
   )
 })
+
 public class Competencia implements Entidade {
 
   @Id

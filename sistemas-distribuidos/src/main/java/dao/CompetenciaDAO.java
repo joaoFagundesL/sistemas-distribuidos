@@ -3,6 +3,7 @@ package dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
@@ -26,6 +27,7 @@ public class CompetenciaDAO extends GenericoDAO<Competencia> {
     em.getTransaction().commit();
   }
 
+  @SuppressWarnings("unchecked")
   public List<Competencia> listarCompetenciaUsuario(Integer id) {
     EntityManager em = getEM();
     List<Competencia> competencias;
@@ -33,8 +35,25 @@ public class CompetenciaDAO extends GenericoDAO<Competencia> {
     Query query = em.createNamedQuery("Competencia.listarCompetenciaUsuario");
     query.setParameter("id", id);
 
-
     competencias = query.getResultList();
     return competencias;
   }
+
+public Competencia listarCompetenciaEspecifica(Integer candidatoId, Integer competenciaId) {
+    EntityManager em = getEM();
+    Competencia competencia = null;
+
+    try {
+        Query query = em.createNamedQuery("Competencia.listarCompetenciaEspecifica");
+        query.setParameter("candidatoId", candidatoId);
+        query.setParameter("competenciaId", competenciaId);
+
+        competencia = (Competencia) query.getSingleResult();
+    } catch (NoResultException e) {
+        competencia = null;
+    }
+
+    return competencia;
+}
+
 }

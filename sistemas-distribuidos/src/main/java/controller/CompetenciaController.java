@@ -24,6 +24,10 @@ public class CompetenciaController {
     }
   }
 
+  public Competencia listarCompetenciaEspecifica(Integer idCandidato, Integer idCompetencia) {
+    return cdao.listarCompetenciaEspecifica(idCandidato, idCompetencia);
+  }
+
   public Competencia consultarPorId(Integer id) {
     return cdao.consultarPorId(Competencia.class, id);
   }
