@@ -19,6 +19,9 @@ import utitlity.JwtUtility;
 public class CompetenciaServico {
   public void includeSkill(JSONObject jsonMessage, JSONObject jsonResponse) {
     JSONObject data = jsonMessage.getJSONObject("data");
+    
+    CandidatoController candidatoController = new CandidatoController();
+    CompetenciaController competenciaController = new CompetenciaController();
 
     String skill = data.getString("skill");
     Integer experience = data.getInt("experience");
@@ -31,15 +34,23 @@ public class CompetenciaServico {
     JwtUtility jwt = new JwtUtility();
     String token = jsonMessage.getString("token");
 
-    CandidatoController candidatoController = new CandidatoController();
-    CompetenciaController competenciaController = new CompetenciaController();
-
     try {
       DecodedJWT decodedJWT = jwt.verifyToken(token);
       Claim idClaim = decodedJWT.getClaim("id");
       String userIdAsString = idClaim.asString();
       Integer id = Integer.parseInt(userIdAsString);
       Candidato c = candidatoController.consultarPorId(id);
+
+      List<Competencia> competencias = competenciaController.listarCompetenciaUsuario(id); 
+
+      int size = competencias.size();
+
+      for (int i = 0; i < size; i++) {
+        if (skill.equals(competencias.get(i).getSkill())) {
+          buildJson(jsonResponse, "SKILL_EXISTS", "INCLUDE_SKILL");
+          return;
+        }        
+      }
 
       Competencia comp = competenciaController.insert(c, skill, experience);
       buildJson(jsonResponse, "SUCCESS", "INCLUDE_SKILL");
