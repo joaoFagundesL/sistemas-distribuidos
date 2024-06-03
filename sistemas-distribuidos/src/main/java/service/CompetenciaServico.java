@@ -226,9 +226,16 @@ public class CompetenciaServico {
       Integer id = Integer.parseInt(userIdAsString);
       Candidato c = candidatoController.consultarPorId(id);
 
-      Integer idCompetencia = data.getInt("id");
+      String skill = data.getString("skill");
+      
+      Competencia comp = competenciaController.listarCompetenciaNome(skill);
+      
+      if (!competenciaIsValid(skill)) {
+    	  buildJson(jsonResponse, "SKILL_NOT_FOUND", "LOOKUP_SKILL");
+    	  return;
+      }
 
-      CandidatoCompetencia competenciaGeneric = ccController.listarCompetenciaEspecifica(id, idCompetencia);
+      CandidatoCompetencia competenciaGeneric = ccController.listarCompetenciaEspecifica(id, comp.getId());
 
       if (competenciaGeneric.getCompetencia() == null) {
         buildJson(jsonResponse, "SKILL_NOT_FOUND", "LOOKUP_SKILL");

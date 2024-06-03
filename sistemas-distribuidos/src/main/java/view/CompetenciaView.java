@@ -192,7 +192,7 @@ public class CompetenciaView extends JPanel {
         }
       }
     });
-    btnAtualizar_1.setBounds(154, 233, 98, 27);
+    btnAtualizar_1.setBounds(158, 233, 98, 27);
     add(btnAtualizar_1);
 
     JLabel experienceLabel = new JLabel("Experience");
@@ -279,20 +279,18 @@ public class CompetenciaView extends JPanel {
     JButton btnNewButton = new JButton("Pesquisar");
     btnNewButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        String idString = idField.getText();
+        String skill = idField.getText();
 
-        if (idString.equals("")) {
+        if (skill.equals("")) {
           JFrame frame = new JFrame("Mensagem");
-          JOptionPane.showMessageDialog(frame, "Informe o id!");
+          JOptionPane.showMessageDialog(frame, "Informe a skill!");
           return;
         }
-
-        Integer id = Integer.parseInt(idString);
 
         JSONObject request = new JSONObject();
 
         String token = Client.getInstance().getToken();
-        request = buildLookup(request, id, token);
+        request = buildLookup(request, skill, token);
 
         JSONObject response;
         try {
@@ -303,10 +301,10 @@ public class CompetenciaView extends JPanel {
 
           if (status.equals("SUCCESS")) {
             limparTable();
-            String skill = data.getString("skill");
+            String skillUpdated = data.getString("skill");
             Integer experience = data.getInt("experience");
             int idComp = data.getInt("id");
-            popularTabelaCompetencia(skill, experience, idComp);
+            popularTabelaCompetencia(skillUpdated, experience, idComp);
           } else {
             JFrame frame = new JFrame("Mensagem");
             JOptionPane.showMessageDialog(frame, "Id nao existe!");
@@ -321,9 +319,9 @@ public class CompetenciaView extends JPanel {
     btnNewButton.setBounds(191, 76, 109, 26);
     add(btnNewButton);
 
-    JLabel lblId = new JLabel("ID");
-    lblId.setBounds(45, 79, 58, 17);
-    add(lblId);
+    JLabel skill = new JLabel("Skill");
+    skill.setBounds(29, 81, 58, 17);
+    add(skill);
 
     JSeparator separator = new JSeparator();
     separator.setBackground(new Color(97, 53, 131));
@@ -331,10 +329,10 @@ public class CompetenciaView extends JPanel {
     add(separator);
   }
 
-  public JSONObject buildLookup(JSONObject json, Integer id, String token) {
+  public JSONObject buildLookup(JSONObject json, String skill, String token) {
     json.put("operation", "LOOKUP_SKILL");
     JSONObject data = new JSONObject();
-    data.put("id", id);
+    data.put("skill", skill);
     json.put("token", token);
     json.put("data", data);
     return json;
