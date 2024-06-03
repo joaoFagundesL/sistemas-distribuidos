@@ -24,14 +24,13 @@ import org.json.JSONObject;
 import cliente.Client;
 import javax.swing.JSeparator;
 import java.awt.Color;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class CompetenciaView extends JPanel {
 
   private static final long serialVersionUID = 1L;
-
-  private JTextField skillField;
   private JTable table;
-  private JTextField idField;
 
   public CompetenciaView() {
     initComponents();
@@ -53,11 +52,6 @@ public class CompetenciaView extends JPanel {
         "Id", "Skill", "Experience" 
       }
     ));
-
-    skillField = new JTextField();
-    skillField.setBounds(114, 162, 114, 20);
-    add(skillField);
-    skillField.setColumns(10);
 
 
     scrollPane.setViewportView(table);
@@ -81,6 +75,16 @@ public class CompetenciaView extends JPanel {
     JLabel skillLabel = new JLabel("Skill");
     skillLabel.setBounds(45, 164, 60, 17);
     add(skillLabel);
+    
+    JComboBox comboBox = new JComboBox();
+    comboBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby"}));
+    comboBox.setBounds(113, 159, 94, 22);
+    add(comboBox);
+    
+    JComboBox comboBox_1 = new JComboBox();
+    comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby"}));
+    comboBox_1.setBounds(69, 76, 94, 22);
+    add(comboBox_1);
 
     JButton btnRemover_1 = new JButton("Remover");
     btnRemover_1.addActionListener(new ActionListener() {
@@ -88,7 +92,7 @@ public class CompetenciaView extends JPanel {
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
         
-        String skill = skillField.getText();
+        String skill = (String) comboBox_1.getSelectedItem();
         
         if (skill.equals("")) {
           JFrame frame = new JFrame("JOptionPane exemplo");
@@ -129,10 +133,8 @@ public class CompetenciaView extends JPanel {
     JButton btnAtualizar_1 = new JButton("Atualizar");
     btnAtualizar_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        String skill = skillField.getText();
+        String skill = (String) comboBox.getSelectedItem();
         Integer experience = (Integer) spinner.getValue();
-        String idString = idField.getText();
-        //Integer id = Integer.parseInt(idString);
 
         JSONObject dataRequest = new JSONObject();  
 
@@ -143,10 +145,6 @@ public class CompetenciaView extends JPanel {
         if (experience != null) {
           dataRequest.put("experience", experience);
         }
-//
-//        if (id != null) {
-//          dataRequest.put("id", id);
-//        }
 
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
@@ -240,7 +238,7 @@ public class CompetenciaView extends JPanel {
     JButton enviarBotao = new JButton("Criar");
     enviarBotao.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        String skill = skillField.getText();
+          String skill = (String) comboBox.getSelectedItem();
         Integer experience = (Integer) spinner.getValue();
 
         JSONObject request = new JSONObject();
@@ -271,15 +269,10 @@ public class CompetenciaView extends JPanel {
     enviarBotao.setBounds(45, 233, 101, 27);
     add(enviarBotao);
 
-    idField = new JTextField();
-    idField.setBounds(70, 78, 114, 24);
-    add(idField);
-    idField.setColumns(10);
-
     JButton btnNewButton = new JButton("Pesquisar");
     btnNewButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        String skill = idField.getText();
+          String skill = (String) comboBox_1.getSelectedItem();
 
         if (skill.equals("")) {
           JFrame frame = new JFrame("Mensagem");
@@ -320,13 +313,14 @@ public class CompetenciaView extends JPanel {
     add(btnNewButton);
 
     JLabel skill = new JLabel("Skill");
-    skill.setBounds(29, 81, 58, 17);
+    skill.setBounds(31, 81, 58, 17);
     add(skill);
 
     JSeparator separator = new JSeparator();
     separator.setBackground(new Color(97, 53, 131));
     separator.setBounds(0, 130, 649, 2);
     add(separator);
+    
   }
 
   public JSONObject buildLookup(JSONObject json, String skill, String token) {
@@ -366,9 +360,7 @@ public class CompetenciaView extends JPanel {
   }
 
   public void limparTela() {
-    skillField.setText("");
-    idField.setText("");
-    limparTable();
+     limparTable();
   }
 
   public JSONObject buildJsonLookup(JSONObject json, String token) {

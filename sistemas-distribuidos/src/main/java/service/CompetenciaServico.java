@@ -195,6 +195,11 @@ public class CompetenciaServico {
       /* para atualizar a experiencia primeiro eu pego o registro da tabela CandidatoCompetencia, pois
        * o atributo experience só esta presente nessa tabela */
       CandidatoCompetencia competenciaGeneric = ccController.listarCompetenciaEspecifica(id, comp.getId());
+      
+      if (competenciaGeneric == null) {
+    	  buildJson(jsonResponse, "SKILL_NOT_FOUND", "UPDATE_SKILL");
+          return;
+      }
 
       ccController.update(competenciaGeneric, experience);
 
@@ -237,7 +242,7 @@ public class CompetenciaServico {
 
       CandidatoCompetencia competenciaGeneric = ccController.listarCompetenciaEspecifica(id, comp.getId());
 
-      if (competenciaGeneric.getCompetencia() == null) {
+      if (competenciaGeneric == null) {
         buildJson(jsonResponse, "SKILL_NOT_FOUND", "LOOKUP_SKILL");
       } else {
         buildSkill(jsonResponse, competenciaGeneric);
