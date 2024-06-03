@@ -1,25 +1,24 @@
 package modelo;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @NamedQueries({
   @NamedQuery(
-    name = "Competencia.listarCompetenciaUsuario",
-    query = "SELECT c FROM Competencia c JOIN c.candidato ca WHERE ca.id = :id"
+    name = "Competencia.listarCompetenciaNome",
+    query = "SELECT c FROM Competencia c WHERE c.skill = :skill"
   ),
-
-  @NamedQuery(
-    name = "Competencia.listarCompetenciaEspecifica",
-    query = "SELECT c FROM Competencia c JOIN c.candidato ca WHERE ca.id = :candidatoId AND c.id = :competenciaId"
-  )
 })
 
 public class Competencia implements Entidade {
@@ -29,11 +28,10 @@ public class Competencia implements Entidade {
   private Integer id;
 
   private String skill;
-  private Integer experience;
 
-  @ManyToOne
-  @JoinColumn(name = "candidato_id")
-  private Candidato candidato;
+  @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "competencia")
+  private List<CandidatoCompetencia> candidatos;
 
   public Competencia() {
   }
@@ -41,19 +39,23 @@ public class Competencia implements Entidade {
   public String getSkill() {
     return skill;
   }
+  public List<CandidatoCompetencia> getCandidatos() {
+    return candidatos;
+  }
+
+  public void setCandidatos(List<CandidatoCompetencia> candidatos) {
+    this.candidatos = candidatos;
+  }
+
   public void setSkill(String skill) {
     this.skill = skill;
   }
+
   public Integer getId() {
     return id;
   }
+
   public void setId(Integer id) {
     this.id = id;
-  }
-  public Integer getExperience() {
-    return experience;
-  }
-  public void setExperience(Integer experience) {
-    this.experience = experience;
   }
 }

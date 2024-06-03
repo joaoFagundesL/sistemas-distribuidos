@@ -15,19 +15,18 @@ public class CompetenciaDAO extends GenericoDAO<Competencia> {
   public void insertWithQuery(Competencia competencia, Candidato c) throws Exception {
     EntityManager em = getEM();
 
-    Query query = em.createNativeQuery("INSERT INTO Competencia (skill, experience, candidato_id)"
-      + " VALUES (?, ?, ?)");
+    Query query = em.createNativeQuery("INSERT INTO Competencia (skill, candidato_id)"
+      + " VALUES (?, ?)");
 
     em.getTransaction().begin();
     query.setParameter(1, competencia.getSkill());
-    query.setParameter(2, competencia.getExperience());
-    query.setParameter(3, c.getId());
+    query.setParameter(2, c.getId());
 
     query.executeUpdate();
     em.getTransaction().commit();
   }
-
-  public void update(Competencia c, String skill, Integer experience) {
+ 
+  public void update(Competencia c, String skill) {
     EntityManager em = getEM();
 
     em.getTransaction().begin();
@@ -37,41 +36,23 @@ public class CompetenciaDAO extends GenericoDAO<Competencia> {
     if (skill != null && !skill.isEmpty()) {
       c.setSkill(skill);
     }
-
-    if (experience != null) { 
-      c.setExperience(experience);
-    }
     em.merge(c);
     em.getTransaction().commit();
   }
 
-  @SuppressWarnings("unchecked")
-  public List<Competencia> listarCompetenciaUsuario(Integer id) {
-    EntityManager em = getEM();
-    List<Competencia> competencias;
+  public Competencia listarCompetenciaNome(String skill) {
+	    EntityManager em = getEM();
+	    Competencia competencia = null;
 
-    Query query = em.createNamedQuery("Competencia.listarCompetenciaUsuario");
-    query.setParameter("id", id);
+	    try {
+	        Query query = em.createNamedQuery("Competencia.listarCompetenciaNome");
+	        query.setParameter("skill", skill);
+	        
+	        competencia = (Competencia) query.getSingleResult();
+	    } catch (NoResultException e) {
+	        competencia = null;
+	    }
 
-    competencias = query.getResultList();
-    return competencias;
-  }
-
-  public Competencia listarCompetenciaEspecifica(Integer candidatoId, Integer competenciaId) {
-    EntityManager em = getEM();
-    Competencia competencia = null;
-
-    try {
-      Query query = em.createNamedQuery("Competencia.listarCompetenciaEspecifica");
-      query.setParameter("candidatoId", candidatoId);
-      query.setParameter("competenciaId", competenciaId);
-
-      competencia = (Competencia) query.getSingleResult();
-    } catch (NoResultException e) {
-      competencia = null;
-    }
-
-    return competencia;
-  }
-
-}
+	    return competencia;
+	}
+ }

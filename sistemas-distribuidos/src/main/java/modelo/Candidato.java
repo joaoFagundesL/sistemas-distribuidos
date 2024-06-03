@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -49,13 +51,21 @@ public class Candidato implements Entidade {
   @OneToOne(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "usuario_id", referencedColumnName = "id")
   private Usuario usuario;
-  
+
   @Cascade(org.hibernate.annotations.CascadeType.DELETE)
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "candidato")
-  private List<Competencia> competencias;
- 
+  private List<CandidatoCompetencia> competencias;
 
-/* Construtores */
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.MERGE, 
+    org.hibernate.annotations.CascadeType.PERSIST})
+  @JoinTable(name = "Candidato_Vaga", joinColumns = @JoinColumn(name = "candidatoId"),
+    inverseJoinColumns = @JoinColumn(name = "vagaId"))
+  private List<Vaga> vagas;
+
+
+  /* Construtores */
   public Candidato() {
   }
 
@@ -69,6 +79,19 @@ public class Candidato implements Entidade {
     return usuario;
   }
 
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
+
+  public List<Vaga> getVagas() {
+    return vagas;
+  }
+
+  public void setVagas(List<Vaga> vagas) {
+    this.vagas = vagas;
+  }
+
+
   public void setUsuario(Usuario usuario) {
     this.usuario = usuario;
   }
@@ -76,14 +99,14 @@ public class Candidato implements Entidade {
   public void setId(Integer id) {
     this.id = id;
   }
-  
-  public List<Competencia> getCompetencias() {
-	return competencias;
+
+  public List<CandidatoCompetencia> getCompetencias() {
+    return competencias;
   }
 
-	public void setCompetencias(List<Competencia> competencias) {
-		this.competencias = competencias;
-	}
+  public void setCompetencias(List<CandidatoCompetencia> competencias) {
+    this.competencias = competencias;
+  }
 
   /* Equals e HashCode */
   @Override

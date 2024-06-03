@@ -12,7 +12,6 @@ public class CompetenciaController {
   public Competencia insert(Candidato candidato, String skill, Integer experience) {
     Competencia competencia = new Competencia();
 
-    competencia.setExperience(experience);
     competencia.setSkill(skill);
 
     try {
@@ -24,12 +23,12 @@ public class CompetenciaController {
     }
   }
 
-  public Competencia listarCompetenciaEspecifica(Integer idCandidato, Integer idCompetencia) {
-    return cdao.listarCompetenciaEspecifica(idCandidato, idCompetencia);
+   public void update(Competencia c, String skill) {
+    cdao.update(c, skill);
   }
 
-  public void update(Competencia c, String skill, Integer experience) {
-    cdao.update(c, skill, experience);
+  public Competencia listarCompetenciaNome(String skill) {
+    return cdao.listarCompetenciaNome(skill);
   }
 
   public void remover(Class<Competencia> clazz, Integer id) {
@@ -39,9 +38,4 @@ public class CompetenciaController {
   public Competencia consultarPorId(Integer id) {
     return cdao.consultarPorId(Competencia.class, id);
   }
-
-  public List<Competencia> listarCompetenciaUsuario(Integer id) {
-    return cdao.listarCompetenciaUsuario(id);
-  }
-
 }

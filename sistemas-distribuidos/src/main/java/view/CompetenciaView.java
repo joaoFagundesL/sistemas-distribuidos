@@ -87,18 +87,16 @@ public class CompetenciaView extends JPanel {
       public void actionPerformed(ActionEvent e) {
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
-
-        String idString = idField.getText();
-
-        if (idString.equals("")) {
+        
+        String skill = skillField.getText();
+        
+        if (skill.equals("")) {
           JFrame frame = new JFrame("JOptionPane exemplo");
-          JOptionPane.showMessageDialog(frame, "Informe o id!");
+          JOptionPane.showMessageDialog(frame, "Informe a skil!");
           return;
         }
-
-        Integer id = Integer.parseInt(idString);
-
-        buildJsonDelete(request, id, token);
+        
+        buildJsonDelete(request, skill, token);
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
 
@@ -134,7 +132,7 @@ public class CompetenciaView extends JPanel {
         String skill = skillField.getText();
         Integer experience = (Integer) spinner.getValue();
         String idString = idField.getText();
-        Integer id = Integer.parseInt(idString);
+        //Integer id = Integer.parseInt(idString);
 
         JSONObject dataRequest = new JSONObject();  
 
@@ -145,10 +143,10 @@ public class CompetenciaView extends JPanel {
         if (experience != null) {
           dataRequest.put("experience", experience);
         }
-
-        if (id != null) {
-          dataRequest.put("id", id);
-        }
+//
+//        if (id != null) {
+//          dataRequest.put("id", id);
+//        }
 
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
@@ -168,9 +166,9 @@ public class CompetenciaView extends JPanel {
           } else {
           }
 
-          if (data.has("id")) {
-            idResponse = data.getInt("id");
-          }
+//          if (data.has("id")) {
+//            idResponse = data.getInt("id");
+//          }
 
           if (data.has("experience")) {
             experienceResponse = data.getInt("experience");
@@ -352,10 +350,10 @@ public class CompetenciaView extends JPanel {
     return json;
   }
 
-  public JSONObject buildJsonDelete(JSONObject json, Integer id, String token) {
+  public JSONObject buildJsonDelete(JSONObject json, String skill, String token) {
     json.put("operation", "DELETE_SKILL");
     JSONObject data = new JSONObject();
-    data.put("id", id);
+    data.put("skill", skill);
     json.put("token", token);
     json.put("data", data);
     return json;
