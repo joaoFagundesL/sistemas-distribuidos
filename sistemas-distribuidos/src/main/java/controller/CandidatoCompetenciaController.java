@@ -16,8 +16,8 @@ public class CandidatoCompetenciaController {
   }
 
 
-   public void update(CandidatoCompetencia c, Integer experience) {
-    cdao.update(c, experience);
+   public void update(CandidatoCompetencia c, Integer experience, Competencia competencia) {
+    cdao.update(c, experience, competencia);
   }
 
   public CandidatoCompetencia listarCompetenciaEspecifica(Integer idCandidato, Integer idCompetencia) {

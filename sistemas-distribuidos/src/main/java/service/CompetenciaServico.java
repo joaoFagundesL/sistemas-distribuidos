@@ -103,7 +103,7 @@ public class CompetenciaServico {
       // uma skill que ele nao possue
       CandidatoCompetencia cc = ccController.listarCompetenciaEspecifica(id, comp.getId());
 
-      if (cc.getCompetencia() == null) {
+      if (cc == null) {
         buildJson(jsonResponse, "SKILL_NOT_FOUND", "DELETE_SKILL");
       } else {
         ccController.remover(CandidatoCompetencia.class, cc.getId()); 
@@ -145,6 +145,11 @@ public class CompetenciaServico {
         buildJson(jsonResponse, "INVALID_FIELD", "UPDATE_SKILL");
         return;
     }
+    
+    if (!data.has("newSkill") || data.getString("newSkill").isEmpty()) {
+        buildJson(jsonResponse, "INVALID_FIELD", "UPDATE_SKILL");
+        return;
+    }
 
     if (data.has("experience")) {
         int experience = data.getInt("experience");
@@ -166,23 +171,36 @@ public class CompetenciaServico {
       Integer id = Integer.parseInt(userIdAsString);
 
       String skill = "";  
+      String newSkill = "";  
       Integer experience = null;
       
+      Competencia originalComp = null;
       Competencia comp = null;
-      
+
       if (data.has("skill")) {
         skill = data.getString("skill");
-        comp = competenciaController.listarCompetenciaNome(skill);
-        if (competenciaExiste(jsonResponse, id, skill) && !skill.equals(comp.getSkill())) {
-          buildJson(jsonResponse, "SKILL_EXISTS", "UPDATE_SKILL");
-          return;
-        }
-        
+        originalComp = competenciaController.listarCompetenciaNome(skill);
+      
         if (!competenciaIsValid(skill)) {
         	buildJson(jsonResponse, "SKILL_NOT_FOUND", "UPDATE_SKILL");
             return;
         }
       }
+      
+      if (data.has("newSkill")) {
+          newSkill = data.getString("newSkill");
+          comp = competenciaController.listarCompetenciaNome(newSkill);
+          if (competenciaExiste(jsonResponse, id, newSkill) && !newSkill.equals(originalComp.getSkill())) {
+            buildJson(jsonResponse, "SKILL_EXISTS", "UPDATE_SKILL");
+            return;
+          }
+          
+          if (!competenciaIsValid(newSkill)) {
+          	buildJson(jsonResponse, "SKILL_NOT_FOUND", "UPDATE_SKILL");
+              return;
+          }
+        }
+      
 
       if (data.has("skill")) {
         skill = data.getString("skill");
@@ -191,17 +209,21 @@ public class CompetenciaServico {
       if (data.has("experience")) {
         experience = data.getInt("experience");
       }
+      
+      if (data.has("newSkill")) {
+          newSkill = data.getString("newSkill");
+        }
 
       /* para atualizar a experiencia primeiro eu pego o registro da tabela CandidatoCompetencia, pois
        * o atributo experience só esta presente nessa tabela */
-      CandidatoCompetencia competenciaGeneric = ccController.listarCompetenciaEspecifica(id, comp.getId());
+      CandidatoCompetencia competenciaGeneric = ccController.listarCompetenciaEspecifica(id, originalComp.getId());
       
       if (competenciaGeneric == null) {
     	  buildJson(jsonResponse, "SKILL_NOT_FOUND", "UPDATE_SKILL");
           return;
       }
 
-      ccController.update(competenciaGeneric, experience);
+      ccController.update(competenciaGeneric, experience, comp);
 
       buildJson(jsonResponse, "SUCCESS", "UPDATE_SKILL");
     } catch (JWTVerificationException e) {

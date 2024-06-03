@@ -22,13 +22,13 @@ public class VagaCompetencia implements Entidade{
   @JoinColumn(name = "competencia_id")
   private Competencia competencia;
   
-  private String experience;
+  private Integer experience;
 
-	public String getExperience() {
+	public Integer getExperience() {
 	return experience;
 }
 
-public void setExperience(String experience) {
+public void setExperience(Integer experience) {
 	this.experience = experience;
 }
 

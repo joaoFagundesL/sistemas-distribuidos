@@ -7,6 +7,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import modelo.CandidatoCompetencia;
+import modelo.Competencia;
 
 public class CandidatoCompetenciaDAO extends GenericoDAO<CandidatoCompetencia> {
   public void inserirCompetenciaCandidato(Integer competenciaId, Integer candidatoId, Integer experience) {
@@ -33,7 +34,7 @@ public class CandidatoCompetenciaDAO extends GenericoDAO<CandidatoCompetencia> {
     return competencias;
   }
 
-  public void update(CandidatoCompetencia c, Integer experience) {
+  public void update(CandidatoCompetencia c, Integer experience, Competencia competencia) {
     EntityManager em = getEM();
 
     em.getTransaction().begin();
@@ -43,6 +44,11 @@ public class CandidatoCompetenciaDAO extends GenericoDAO<CandidatoCompetencia> {
     if (experience != null) {
       c.setExperience(experience);
     }
+    
+    if (competencia != null) {    	
+    	c.setCompetencia(competencia);
+    }
+    
 
     em.merge(c);
     em.getTransaction().commit();

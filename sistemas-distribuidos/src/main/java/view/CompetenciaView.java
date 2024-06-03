@@ -41,6 +41,8 @@ public class CompetenciaView extends JPanel {
     setBackground(SystemColor.control);
 
     JSpinner spinner = new JSpinner();
+    JComboBox newSkillBox= new JComboBox();
+
 
     JScrollPane scrollPane = new JScrollPane();
     table = new JTable();
@@ -58,15 +60,7 @@ public class CompetenciaView extends JPanel {
     table.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        // String nome =  table.getValueAt(table.getSelectedRow(), 0).toString();
-        // String email = table.getValueAt(table.getSelectedRow(), 1).toString();
-        // String senha = table.getValueAt(table.getSelectedRow(), 2).toString();
-        //
-        // limparTela();
-        //
-        // skillField.setText(nome);
-        // emailField.setText(email);
-        // senhaField.setText(senha);
+ 
       }
     });
     scrollPane.setBounds(0, 348, 431, 222);
@@ -134,6 +128,8 @@ public class CompetenciaView extends JPanel {
     btnAtualizar_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         String skill = (String) comboBox.getSelectedItem();
+        String newSkill = (String) newSkillBox.getSelectedItem();
+                
         Integer experience = (Integer) spinner.getValue();
 
         JSONObject dataRequest = new JSONObject();  
@@ -141,6 +137,10 @@ public class CompetenciaView extends JPanel {
         if(!skill.equals("")) {
           dataRequest.put("skill", skill);
         }
+
+        if(!newSkill.equals("")) {
+            dataRequest.put("newSkill", newSkill);
+         }
 
         if (experience != null) {
           dataRequest.put("experience", experience);
@@ -156,6 +156,7 @@ public class CompetenciaView extends JPanel {
           JSONObject data = response.getJSONObject("data");
 
           String skillResponse = "";
+          String newSkillResponse = "";
           Integer experienceResponse = null;
           Integer idResponse = null;
 
@@ -164,14 +165,15 @@ public class CompetenciaView extends JPanel {
           } else {
           }
 
-//          if (data.has("id")) {
-//            idResponse = data.getInt("id");
-//          }
-
           if (data.has("experience")) {
             experienceResponse = data.getInt("experience");
           } else {
           }
+          
+          if (data.has("newSkill")) {
+              newSkillResponse = data.getString("newSkill");
+            } else {
+            }
 
           String status = response.getString("status");
 
@@ -320,6 +322,10 @@ public class CompetenciaView extends JPanel {
     separator.setBackground(new Color(97, 53, 131));
     separator.setBounds(0, 130, 649, 2);
     add(separator);
+    
+    newSkillBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby"}));
+    newSkillBox.setBounds(233, 159, 94, 22);
+    add(newSkillBox);
     
   }
 
