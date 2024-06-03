@@ -53,19 +53,23 @@ public class Candidato implements Entidade {
   private Usuario usuario;
 
   @Cascade(org.hibernate.annotations.CascadeType.DELETE)
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "candidato")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "candidato")
   private List<CandidatoCompetencia> competencias;
+  
+  @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "candidato")
+  private List<VagaCandidato> vagas;
 
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.MERGE, 
-    org.hibernate.annotations.CascadeType.PERSIST})
-  @JoinTable(name = "Candidato_Vaga", joinColumns = @JoinColumn(name = "candidatoId"),
-    inverseJoinColumns = @JoinColumn(name = "vagaId"))
-  private List<Vaga> vagas;
+  public List<VagaCandidato> getVagas() {
+	return vagas;
+}
 
+public void setVagas(List<VagaCandidato> vagas) {
+	this.vagas = vagas;
+}
 
-  /* Construtores */
+/* Construtores */
   public Candidato() {
   }
 
@@ -82,15 +86,6 @@ public class Candidato implements Entidade {
   public static long getSerialversionuid() {
     return serialVersionUID;
   }
-
-  public List<Vaga> getVagas() {
-    return vagas;
-  }
-
-  public void setVagas(List<Vaga> vagas) {
-    this.vagas = vagas;
-  }
-
 
   public void setUsuario(Usuario usuario) {
     this.usuario = usuario;

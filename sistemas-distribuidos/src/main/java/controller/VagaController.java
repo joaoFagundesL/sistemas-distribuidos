@@ -10,9 +10,6 @@ public class VagaController {
   public Vaga insert(Vaga vaga, String skill, String experience) {
     Vaga v = new Vaga();
 
-    v.setExperience(experience);
-    v.setSkill(skill);
-
     try {
       dao.insertWithQuery(vaga);
       return v;
@@ -22,14 +19,14 @@ public class VagaController {
     }
   }
 
-  public boolean inserirVagaCandidato(Vaga vaga, Candidato candidato) {
-    try {
-      dao.inserirVagaCandidato(vaga.getId(), candidato.getId());
-      return true;
-    } catch (Exception e) {
-      e.printStackTrace();
-      return false;
-    }
-  }
+//  public boolean inserirVagaCandidato(Vaga vaga, Candidato candidato) {
+//    try {
+//      dao.inserirVagaCandidato(vaga.getId(), candidato.getId());
+//      return true;
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//      return false;
+//    }
+//  }
 
 }

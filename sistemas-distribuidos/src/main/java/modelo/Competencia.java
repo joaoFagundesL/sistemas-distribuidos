@@ -30,11 +30,24 @@ public class Competencia implements Entidade {
   private String skill;
 
   @Cascade(org.hibernate.annotations.CascadeType.DELETE)
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "competencia")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "competencia")
   private List<CandidatoCompetencia> candidatos;
+  
+  @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "competencia")
+  private List<VagaCompetencia> vagas;
 
-  public Competencia() {
+public Competencia() {
   }
+
+public List<VagaCompetencia> getVagas() {
+	return vagas;
+}
+
+public void setVagas(List<VagaCompetencia> vagas) {
+	this.vagas = vagas;
+
+}
 
   public String getSkill() {
     return skill;
