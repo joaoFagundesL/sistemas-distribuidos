@@ -7,6 +7,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -32,22 +34,20 @@ public class Competencia implements Entidade {
   @Cascade(org.hibernate.annotations.CascadeType.DELETE)
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "competencia")
   private List<CandidatoCompetencia> candidatos;
-  
-  @Cascade(org.hibernate.annotations.CascadeType.DELETE)
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "competencia")
-  private List<VagaCompetencia> vagas;
 
-public Competencia() {
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "competencia")
+  private List<Vaga> vagas;
+
+  public List<Vaga> getVagas() {
+    return vagas;
   }
 
-public List<VagaCompetencia> getVagas() {
-	return vagas;
-}
+  public void setVagas(List<Vaga> vagas) {
+    this.vagas = vagas;
+  }
 
-public void setVagas(List<VagaCompetencia> vagas) {
-	this.vagas = vagas;
-
-}
+  public Competencia() {
+  }
 
   public String getSkill() {
     return skill;

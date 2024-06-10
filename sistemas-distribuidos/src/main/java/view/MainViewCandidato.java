@@ -77,7 +77,7 @@ public class MainViewCandidato {
     panelFirst.add(panel_2);
     panel_2.setLayout(null);
 
-    JButton btnGerenciarProfessor = new JButton("CRUD1");
+    JButton btnGerenciarProfessor = new JButton("Login Infos");
     btnGerenciarProfessor.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         tabbedPane.setSelectedIndex(0); // Vai para CandidatoView
@@ -88,7 +88,7 @@ public class MainViewCandidato {
     btnGerenciarProfessor.setBounds(23, 109, 171, 27);
     panel_2.add(btnGerenciarProfessor);
 
-    JButton btnGerenciarCurso = new JButton("CRUD2");
+    JButton btnGerenciarCurso = new JButton("CRUD Skills");
     btnGerenciarCurso.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         tabbedPane.setSelectedIndex(1); // Vai para CompetenciaView

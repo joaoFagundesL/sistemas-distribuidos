@@ -42,6 +42,7 @@ public class MainViewEmpresa {
 
   public void initComponents(LoginView loginClass) {
     final EmpresaView empresaView = new EmpresaView();
+    final VagaView vagaView = new VagaView();
 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;
@@ -66,7 +67,7 @@ public class MainViewEmpresa {
     JPanel panel = new JPanel();
     panel.setBackground(Color.RED);
     tabbedPane.addTab("New tab", null, empresaView, null);
-    tabbedPane.addTab("New tab", null, new EmpresaView(), null);
+    tabbedPane.addTab("New tab", null, vagaView, null);
     EmpresaView clienteView_1 = new EmpresaView();
     clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 
@@ -76,10 +77,10 @@ public class MainViewEmpresa {
     panelFirst.add(panel_2);
     panel_2.setLayout(null);
 
-    JButton btnGerenciarProfessor = new JButton("CRUD1");
+    JButton btnGerenciarProfessor = new JButton("Login Infos");
     btnGerenciarProfessor.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        tabbedPane.setSelectedIndex(2);
+        tabbedPane.setSelectedIndex(0);
       }
     });
     btnGerenciarProfessor.setForeground(Color.WHITE);
@@ -87,10 +88,10 @@ public class MainViewEmpresa {
     btnGerenciarProfessor.setBounds(23, 109, 171, 27);
     panel_2.add(btnGerenciarProfessor);
 
-    JButton btnGerenciarCurso = new JButton("CRUD2");
+    JButton btnGerenciarCurso = new JButton("CRUD Vagas");
     btnGerenciarCurso.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        tabbedPane.setSelectedIndex(3);
+        tabbedPane.setSelectedIndex(1);
       }
     });
     btnGerenciarCurso.setForeground(Color.WHITE);
@@ -100,9 +101,10 @@ public class MainViewEmpresa {
 
     JButton btnGerenciarDisciplina = new JButton("CRUD3");
     btnGerenciarDisciplina.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        tabbedPane.setSelectedIndex(4);
-      }
+		@Override
+		public void actionPerformed(ActionEvent e) {			
+		}
+
     });
     btnGerenciarDisciplina.setForeground(Color.WHITE);
     btnGerenciarDisciplina.setBackground(Color.DARK_GRAY);

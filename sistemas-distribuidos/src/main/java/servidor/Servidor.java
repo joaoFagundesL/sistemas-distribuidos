@@ -30,6 +30,7 @@ import cliente.ClientInfo;
 import service.CandidatoServico;
 import service.CompetenciaServico;
 import service.RecruiterServico;
+import service.VagaServico;
 
 public class Servidor extends JFrame {
 
@@ -41,6 +42,7 @@ public class Servidor extends JFrame {
   CandidatoServico candidatoServico;
   RecruiterServico recruiterServico;
   CompetenciaServico competenciaServico;
+  VagaServico vagaServico;
 
   /* com esse set tenho todas informacoes do cliente que eu preciso,
      * caso precise adicionar algo mais é so mexer em ClientInfo (nome, por exemplo) */
@@ -53,6 +55,7 @@ public class Servidor extends JFrame {
     this.candidatoServico = new CandidatoServico();
     this.recruiterServico = new RecruiterServico();
     this.competenciaServico = new CompetenciaServico();
+    this.vagaServico = new VagaServico();
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setBounds(100, 100, 507, 369);
     contentPane = new JPanel();
@@ -221,11 +224,11 @@ public class Servidor extends JFrame {
       case "LOOKUP_ACCOUNT_RECRUITER":
       recruiterServico.lookup_recruiter(jsonMessage, jsonResponse);
       break;
-      
+
       case "INCLUDE_SKILL":
       competenciaServico.includeSkill(jsonMessage, jsonResponse);
       break;
-      
+
       case "LOOKUP_SKILLSET":
       competenciaServico.lookupSkillset(jsonMessage, jsonResponse);
       break;
@@ -240,6 +243,18 @@ public class Servidor extends JFrame {
 
       case "UPDATE_SKILL":
       competenciaServico.updateSkill(jsonMessage, jsonResponse);
+      break;
+
+      case "INCLUDE_JOB":
+      vagaServico.includeJob(jsonMessage, jsonResponse);
+      break;
+
+      case "LOOKUP_JOB":
+      vagaServico.lookupJob(jsonMessage, jsonResponse);
+      break;
+
+      case "LOOKUP_JOBSET":
+      vagaServico.lookupJobset(jsonMessage, jsonResponse);
       break;
 
       default:

@@ -1,17 +1,21 @@
 package controller;
 
+import java.util.List;
+
 import dao.VagaDAO;
-import modelo.Candidato;
+import modelo.Competencia;
 import modelo.Vaga;
 
 public class VagaController {
   VagaDAO dao = new VagaDAO();
 
-  public Vaga insert(Vaga vaga, String skill, String experience) {
+  public Vaga insert(Competencia competencia, Integer experience) {
     Vaga v = new Vaga();
+    v.setSkill(competencia);
+    v.setExperience(experience);
 
     try {
-      dao.insertWithQuery(vaga);
+      dao.insertWithQuery(v);
       return v;
     } catch (Exception e1) {
       e1.printStackTrace();
@@ -19,6 +23,13 @@ public class VagaController {
     }
   }
 
+  public List<Vaga> consultarTodos() {
+    return dao.consultarTodos();
+  }
+
+  public Vaga consultarPorId(Integer id) {
+    return dao.consultarPorId(Vaga.class, id);
+  }
 //  public boolean inserirVagaCandidato(Vaga vaga, Candidato candidato) {
 //    try {
 //      dao.inserirVagaCandidato(vaga.getId(), candidato.getId());

@@ -27,12 +27,13 @@ import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-public class CompetenciaView extends JPanel {
+public class VagaView extends JPanel {
 
   private static final long serialVersionUID = 1L;
   private JTable table;
+  private JTextField idField;
 
-  public CompetenciaView() {
+  public VagaView() {
     initComponents();
   }
 
@@ -42,7 +43,6 @@ public class CompetenciaView extends JPanel {
 
     JSpinner spinner = new JSpinner();
     JComboBox newSkillBox= new JComboBox();
-
 
     JScrollPane scrollPane = new JScrollPane();
     table = new JTable();
@@ -74,11 +74,6 @@ public class CompetenciaView extends JPanel {
     comboBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby"}));
     comboBox.setBounds(113, 159, 94, 22);
     add(comboBox);
-    
-    JComboBox comboBox_1 = new JComboBox();
-    comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby"}));
-    comboBox_1.setBounds(69, 76, 94, 22);
-    add(comboBox_1);
 
     JButton btnRemover_1 = new JButton("Remover");
     btnRemover_1.addActionListener(new ActionListener() {
@@ -86,7 +81,7 @@ public class CompetenciaView extends JPanel {
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
         
-        String skill = (String) comboBox_1.getSelectedItem();
+        String skill = "Java";
         
         if (skill.equals("")) {
           JFrame frame = new JFrame("JOptionPane exemplo");
@@ -211,13 +206,12 @@ public class CompetenciaView extends JPanel {
           JSONObject response = Client.getInstance().sendRequest(request);
           JSONObject data = response.getJSONObject("data");
 
-
           if (response.getString("status").equals("SUCCESS")) {
-            int size = data.getInt("skillset_size");
-            JSONArray skillset = data.getJSONArray("skillset");
+            int size = data.getInt("jobset_size");
+            JSONArray jobset = data.getJSONArray("jobset");
 
             for (int i = 0; i < size; i++) {
-              JSONObject skillObject = skillset.getJSONObject(i);
+              JSONObject skillObject = jobset.getJSONObject(i);
               String skill = skillObject.getString("skill");
               int experience = skillObject.getInt("experience");
               int id = skillObject.getInt("id");
@@ -240,13 +234,13 @@ public class CompetenciaView extends JPanel {
     JButton enviarBotao = new JButton("Criar");
     enviarBotao.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-          String skill = (String) comboBox.getSelectedItem();
+        String skill = (String) comboBox.getSelectedItem();
         Integer experience = (Integer) spinner.getValue();
 
         JSONObject request = new JSONObject();
 
         String token = Client.getInstance().getToken();
-        request = buildCreateSkill(request, skill, experience, token);
+        request = buildIncludeJob(request, skill, experience, token);
 
         JSONObject response;
         try {
@@ -274,18 +268,19 @@ public class CompetenciaView extends JPanel {
     JButton btnNewButton = new JButton("Pesquisar");
     btnNewButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-          String skill = (String) comboBox_1.getSelectedItem();
+          String idString = idField.getText();
+          Integer id = Integer.parseInt(idString);
 
-        if (skill.equals("")) {
+        if (id < 0 || id == null) {
           JFrame frame = new JFrame("Mensagem");
-          JOptionPane.showMessageDialog(frame, "Informe a skill!");
+          JOptionPane.showMessageDialog(frame, "Invalido!");
           return;
         }
 
         JSONObject request = new JSONObject();
 
         String token = Client.getInstance().getToken();
-        request = buildLookup(request, skill, token);
+        request = buildLookup(request, token, id);
 
         JSONObject response;
         try {
@@ -314,9 +309,9 @@ public class CompetenciaView extends JPanel {
     btnNewButton.setBounds(191, 76, 109, 26);
     add(btnNewButton);
 
-    JLabel skill = new JLabel("Skill");
-    skill.setBounds(31, 81, 58, 17);
-    add(skill);
+    JLabel id = new JLabel("id");
+    id.setBounds(31, 81, 58, 17);
+    add(id);
 
     JSeparator separator = new JSeparator();
     separator.setBackground(new Color(97, 53, 131));
@@ -331,19 +326,24 @@ public class CompetenciaView extends JPanel {
     lblNewSkill.setBounds(235, 164, 58, 17);
     add(lblNewSkill);
     
+    idField = new JTextField();
+    idField.setBounds(57, 79, 114, 21);
+    add(idField);
+    idField.setColumns(10);
+    
   }
 
-  public JSONObject buildLookup(JSONObject json, String skill, String token) {
-    json.put("operation", "LOOKUP_SKILL");
+  public JSONObject buildLookup(JSONObject json, String token, Integer id) {
+    json.put("operation", "LOOKUP_JOB");
     JSONObject data = new JSONObject();
-    data.put("skill", skill);
+    data.put("id",id);
     json.put("token", token);
     json.put("data", data);
     return json;
   }
 
-  public JSONObject buildCreateSkill(JSONObject json, String skill, Integer experience, String token) {
-    json.put("operation", "INCLUDE_SKILL");
+  public JSONObject buildIncludeJob(JSONObject json, String skill, Integer experience, String token) {
+    json.put("operation", "INCLUDE_JOB");
     JSONObject data = new JSONObject();
     json.put("token", token);
     data.put("skill", skill);
@@ -353,7 +353,7 @@ public class CompetenciaView extends JPanel {
   }
 
   public JSONObject buildJsonDelete(JSONObject json, String skill, String token) {
-    json.put("operation", "DELETE_SKILL");
+    json.put("operation", "DELETE_JOB");
     JSONObject data = new JSONObject();
     data.put("skill", skill);
     json.put("token", token);
@@ -362,7 +362,7 @@ public class CompetenciaView extends JPanel {
   }
 
   public JSONObject buildJsonUpdate(JSONObject json, String token, JSONObject data) {
-    json.put("operation", "UPDATE_SKILL");
+    json.put("operation", "UPDATE_JOB");
     json.put("token", token);
     json.put("data", data);
 
@@ -374,7 +374,7 @@ public class CompetenciaView extends JPanel {
   }
 
   public JSONObject buildJsonLookup(JSONObject json, String token) {
-    json.put("operation", "LOOKUP_SKILLSET");
+    json.put("operation", "LOOKUP_JOBSET");
     JSONObject data = new JSONObject();
     json.put("token", token);
     json.put("data", data);

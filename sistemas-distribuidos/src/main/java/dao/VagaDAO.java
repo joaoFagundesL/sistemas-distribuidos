@@ -1,4 +1,6 @@
 package dao;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -6,16 +8,33 @@ import javax.transaction.Transactional;
 import modelo.Vaga;
 
 public class VagaDAO extends GenericoDAO<Vaga> {
- @Transactional
+
+  /* Insere no banco */
+  @Transactional
   public void insertWithQuery(Vaga vaga) throws Exception {
     EntityManager em = getEM();
 
+    Query query = em.createNativeQuery("INSERT INTO Vaga(experience, competencia_id)"
+      + " VALUES (?, ?)");
+
     em.getTransaction().begin();
+    query.setParameter(2, vaga.getSkill().getId());
+    query.setParameter(1, vaga.getExperience());
 
-    em.persist(vaga);
-
+    query.executeUpdate();
     em.getTransaction().commit();
   }
+
+	@SuppressWarnings("unchecked")
+	public List<Vaga> consultarTodos() {
+		EntityManager em = getEM();
+		List<Vaga> vagas;
+		
+		Query query = em.createNamedQuery("Vaga.consultarTodos");
+		
+		vagas = query.getResultList();
+		return vagas;
+	}
  
 //  public void inserirVagaCandidato(Integer vagaId, Integer candidatoId) throws Exception {
 //    EntityManager em = getEM();

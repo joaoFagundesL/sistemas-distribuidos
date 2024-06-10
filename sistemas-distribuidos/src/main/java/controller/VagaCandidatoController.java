@@ -4,7 +4,6 @@ import dao.VagaCandidatoDAO;
 import modelo.Candidato;
 import modelo.Vaga;
 import modelo.VagaCandidato;
-import modelo.VagaCompetencia;
 
 public class VagaCandidatoController {
 	VagaCandidatoDAO cdao = new VagaCandidatoDAO();

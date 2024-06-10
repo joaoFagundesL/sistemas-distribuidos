@@ -53,6 +53,8 @@ public class Client {
     JSONObject serverResponse = new JSONObject();
     String jsonRequest = request.toString();
 
+    System.out.println("From client to server: " + jsonRequest);
+
     outputStream.println(jsonRequest); 
 
     try {
