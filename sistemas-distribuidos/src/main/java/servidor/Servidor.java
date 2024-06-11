@@ -257,6 +257,14 @@ public class Servidor extends JFrame {
       vagaServico.lookupJobset(jsonMessage, jsonResponse);
       break;
 
+      case "DELETE_JOB":
+      vagaServico.deleteJob(jsonMessage, jsonResponse);
+      break;
+
+      case "UPDATE_JOB":
+      //todo
+      break;
+
       default:
       buildInvalidOperation(jsonResponse, operation);
     }

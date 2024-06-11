@@ -61,6 +61,38 @@ public class VagaServico {
       buildJson(jsonResponse, "INVALID_TOKEN", "INCLUDE_JOB");
     }
   }
+  public void deleteJob(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
+
+    try {
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      
+      Integer jobId = data.getInt("id");
+      
+      if (jobId == null || jobId < 0) {
+          buildJson(jsonResponse, "JOB_NOT_FOUND", "DELETE_JOB");
+          return;
+      }
+
+      Vaga vaga = vagaController.consultarPorId(jobId);
+
+      if (vaga == null) {
+        buildJson(jsonResponse, "JOB_NOT_FOUND", "DELETE_JOB");
+      } else {
+        vagaController.remover(Vaga.class, vaga.getId()); 
+        buildJson(jsonResponse, "SUCCESS", "DELETE_JOB");
+      }
+
+    } catch(JWTVerificationException e) {
+      buildJson(jsonResponse, "INVALID_TOKEN", "DELETE_JOB");
+    }
+  }
+
 
   public void lookupJob(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();

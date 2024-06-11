@@ -30,6 +30,11 @@ public class VagaController {
   public Vaga consultarPorId(Integer id) {
     return dao.consultarPorId(Vaga.class, id);
   }
+
+
+  public void remover(Class<Vaga> clazz, Integer id) {
+    dao.remover(Vaga.class, id);
+  }
 //  public boolean inserirVagaCandidato(Vaga vaga, Candidato candidato) {
 //    try {
 //      dao.inserirVagaCandidato(vaga.getId(), candidato.getId());

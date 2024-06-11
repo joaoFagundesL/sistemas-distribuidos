@@ -81,15 +81,16 @@ public class VagaView extends JPanel {
         JSONObject request = new JSONObject();
         String token = Client.getInstance().getToken();
         
-        String skill = "Java";
+        String idString = idField.getText();
+        Integer id = Integer.parseInt(idString);
         
-        if (skill.equals("")) {
+        if (id < 0 || id == null) {
           JFrame frame = new JFrame("JOptionPane exemplo");
-          JOptionPane.showMessageDialog(frame, "Informe a skil!");
+          JOptionPane.showMessageDialog(frame, "ID inválido");
           return;
         }
         
-        buildJsonDelete(request, skill, token);
+        buildJsonDelete(request, id, token);
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
 
@@ -352,10 +353,10 @@ public class VagaView extends JPanel {
     return json;
   }
 
-  public JSONObject buildJsonDelete(JSONObject json, String skill, String token) {
+  public JSONObject buildJsonDelete(JSONObject json, Integer id, String token) {
     json.put("operation", "DELETE_JOB");
     JSONObject data = new JSONObject();
-    data.put("skill", skill);
+    data.put("id", id);
     json.put("token", token);
     json.put("data", data);
     return json;
