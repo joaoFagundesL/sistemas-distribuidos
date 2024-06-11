@@ -264,6 +264,10 @@ public class Servidor extends JFrame {
       case "UPDATE_JOB":
       vagaServico.updateJob(jsonMessage, jsonResponse);
       break;
+      
+      case "SEARCH_JOB":
+      candidatoServico.searchJob(jsonMessage, jsonResponse);
+      break;
 
       default:
       buildInvalidOperation(jsonResponse, operation);

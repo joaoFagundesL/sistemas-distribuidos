@@ -1,5 +1,9 @@
 package service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -7,11 +11,16 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import controller.CandidatoController;
+import controller.CompetenciaController;
 import controller.UsuarioController;
+import controller.VagaController;
 import dao.CandidatoDAO;
 import dao.UsuarioDAO;
 import modelo.Candidato;
+import modelo.CandidatoCompetencia;
+import modelo.Competencia;
 import modelo.Usuario;
+import modelo.Vaga;
 import utitlity.EmailValidator;
 import utitlity.JwtUtility;
 
@@ -247,6 +256,73 @@ public class CandidatoServico {
 
   }
 
+  
+  public void searchJob(JSONObject jsonMessage, JSONObject jsonResponse) {
+	    JwtUtility jwt = new JwtUtility();
+	    JSONObject data = jsonMessage.getJSONObject("data");
+	    String token = jsonMessage.getString("token");
+
+	    try {
+	      DecodedJWT decodedJWT = jwt.verifyToken(token);
+	      Claim idClaim = decodedJWT.getClaim("id");
+	      String userIdAsString = idClaim.asString();
+	      Integer id = Integer.parseInt(userIdAsString);
+	      CandidatoController cController = new CandidatoController();
+	      Candidato c = cController.consultarPorId(id);
+
+	      if (c == null) {
+	        buildJsonDeleteCandidate(jsonResponse, "USER_NOT_FOUND");
+	        return;
+	      }
+
+          JSONArray skillArray = (JSONArray) data.get("skill");
+          
+          List<String> skillList = new ArrayList<>();
+          for (Object skill : skillArray) {
+              skillList.add((String) skill);
+          }
+          
+          List<Integer> experienceList = new ArrayList<>();
+          if (data.has("experience")) {
+              JSONArray experienceArray = (JSONArray) data.get("experience");
+              for (Object experience : experienceArray) {
+            	  experienceList.add((Integer) experience);
+              }
+          }
+          
+          CompetenciaController compController = new CompetenciaController();
+          List<Integer> skillsId = new ArrayList<>();
+          
+          for (int i = 0; i < skillList.size(); i++) {
+        	  Competencia comp = compController.listarCompetenciaNome(skillList.get(i));
+        	  if (comp == null) {
+        		  buildJson(jsonResponse, "SEARCH_JOB", "SKILL_NOT_FOUND");
+        	  }
+        	  Integer skillId = comp.getId();
+        	  
+        	  skillsId.add(skillId);
+          }
+          
+          VagaController vagaController = new VagaController();
+          String filter = data.getString("filter");
+          
+          List<Vaga> vagas;
+          
+          if (!data.has("experience")) {        	  
+        	  vagas = vagaController.getVagasBySkills(skillsId, filter);
+          } else {
+        	  vagas = vagaController.getBySkillAndExperience(skillsId, experienceList, filter);        	  
+          }
+          
+          
+          buildJsonSearch(jsonResponse, vagas);
+
+	    } catch(JWTVerificationException e) {
+	      buildInvalidToken(jsonResponse, "SEARCH_JOB");
+	    }
+	  }
+
+  
   public JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_CANDIDATE");
     res.put("status", status);
@@ -255,6 +331,28 @@ public class CandidatoServico {
     res.put("data", data);
     return res;
   }
+  
+  
+  public  JSONObject buildJsonSearch(JSONObject res, List<Vaga> vagas) {
+	    res.put("operation", "SEARCH_JOB");
+	    res.put("status", "SUCCESS");
+
+	    JSONArray jobset = new JSONArray();
+	    for (Vaga v : vagas) {
+	      JSONObject job = new JSONObject();
+	      job.put("skill", v.getSkill().getSkill());
+	      job.put("experience", v.getExperience());
+	      job.put("id", v.getId()); 
+	      jobset.put(job);
+	    }
+
+	    JSONObject data = new JSONObject();
+	    data.put("jobset_size", vagas.size());
+	    data.put("jobset", jobset);
+
+	    res.put("data", data);
+	    return res;
+	  }
 
   public JSONObject buildJsonDeleteCandidate(JSONObject res, String status) {
     res.put("operation", "DELETE_ACCOUNT_CANDIDATE");
@@ -279,5 +377,13 @@ public class CandidatoServico {
     json.put("data", data);
     return json;
   }
+  
+  private JSONObject buildJson(JSONObject json, String operation, String status) {
+	    json.put("operation", operation);
+	    json.put("status", status);
+	    JSONObject data = new JSONObject();
+	    json.put("data", data);
+	    return json;
+	  }
 
 }

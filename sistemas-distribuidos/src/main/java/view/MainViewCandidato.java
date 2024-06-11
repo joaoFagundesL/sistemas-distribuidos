@@ -16,7 +16,6 @@ import javax.swing.JTabbedPane;
 import org.json.JSONObject;
 
 import cliente.Client;
-import modelo.Candidato;
 
 public class MainViewCandidato {
   private static MainViewCandidato instance = null;
@@ -49,6 +48,7 @@ public class MainViewCandidato {
   public void initComponents(LoginView loginClass) {
     final CandidatoView clienteView = new CandidatoView();
     final CompetenciaView competenciaView = new CompetenciaView();
+    final FiltrarVagaView filtrarView = new FiltrarVagaView(); 
 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;
@@ -67,9 +67,9 @@ public class MainViewCandidato {
     tabbedPane.setBounds(219, -88, 573, 656);
     panelFirst.add(tabbedPane);
 
-    // Adiciona as views ao tabbedPane
     tabbedPane.addTab("Candidato", clienteView);
     tabbedPane.addTab("Competencia", competenciaView);
+    tabbedPane.addTab("Filtrar", filtrarView);
 
     JPanel panel_2 = new JPanel();
     panel_2.setBackground(SystemColor.inactiveCaption);
@@ -98,6 +98,18 @@ public class MainViewCandidato {
     btnGerenciarCurso.setBackground(Color.DARK_GRAY);
     btnGerenciarCurso.setBounds(23, 148, 171, 27);
     panel_2.add(btnGerenciarCurso);
+
+    
+    JButton btnGerenciarFiltrar = new JButton("Filtrar Vaga");
+    btnGerenciarFiltrar.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        tabbedPane.setSelectedIndex(2); // Vai para CompetenciaView
+      }
+    });
+    btnGerenciarFiltrar.setForeground(Color.WHITE);
+    btnGerenciarFiltrar.setBackground(Color.DARK_GRAY);
+    btnGerenciarFiltrar.setBounds(23, 187, 171, 27);
+    panel_2.add(btnGerenciarFiltrar);
 
     JLabel lblSistemaFaculdade = new JLabel("Candidato");
     lblSistemaFaculdade.setFont(new Font("Dialog", Font.BOLD, 16));

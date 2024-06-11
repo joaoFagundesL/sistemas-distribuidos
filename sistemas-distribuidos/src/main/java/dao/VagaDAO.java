@@ -1,8 +1,10 @@
 package dao;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import modelo.Competencia;
@@ -49,7 +51,69 @@ public class VagaDAO extends GenericoDAO<Vaga> {
     em.merge(vaga);
     em.getTransaction().commit();
   }
- 
+  
+  public List<Vaga> findBySkills(List<Integer> competenciaIds, String filter) {
+      if (competenciaIds == null || competenciaIds.isEmpty()) {
+          return new ArrayList<>();
+      }
+
+      EntityManager em = getEM();
+      StringBuilder jpql = new StringBuilder("SELECT v FROM Vaga v JOIN v.competencia c WHERE ");
+      for (int i = 0; i < competenciaIds.size(); i++) {
+          jpql.append("c.id = :competenciaId").append(i);
+          if (i < competenciaIds.size() - 1) {
+              jpql.append(" " + filter + " ");
+          }
+      }
+
+      TypedQuery<Vaga> query = em.createQuery(jpql.toString(), Vaga.class);
+      for (int i = 0; i < competenciaIds.size(); i++) {
+          query.setParameter("competenciaId" + i, competenciaIds.get(i));
+      }
+
+      return query.getResultList();
+  }
+  
+  public List<Vaga> getBySkillsAndExperience(List<Integer> competenciaIds, List<Integer> experienciaIds, String filter) {
+	    if (competenciaIds == null || competenciaIds.isEmpty() || experienciaIds == null || experienciaIds.isEmpty()) {
+	        return new ArrayList<>();
+	    }
+
+	    EntityManager em = getEM();
+	    StringBuilder jpql = new StringBuilder("SELECT DISTINCT v FROM Vaga v ");
+	    jpql.append("JOIN v.competencia c WHERE ");
+
+	    jpql.append("(");
+	    for (int i = 0; i < competenciaIds.size(); i++) {
+	        jpql.append("c.id = :competenciaId").append(i);
+	        if (i < competenciaIds.size() - 1) {
+	            jpql.append(" ").append(filter).append(" ");
+	        }
+	    }
+	    jpql.append(") AND ");
+
+	    jpql.append("(");
+	    for (int i = 0; i < experienciaIds.size(); i++) {
+	        jpql.append("v.experiencia.id = :experienciaId").append(i);
+	        if (i < experienciaIds.size() - 1) {
+	            jpql.append(" ").append(filter).append(" ");
+	        }
+	    }
+	    jpql.append(")");
+
+	    TypedQuery<Vaga> query = em.createQuery(jpql.toString(), Vaga.class);
+
+	    for (int i = 0; i < competenciaIds.size(); i++) {
+	        query.setParameter("competenciaId" + i, competenciaIds.get(i));
+	    }
+
+	    for (int i = 0; i < experienciaIds.size(); i++) {
+	        query.setParameter("experienciaId" + i, experienciaIds.get(i));
+	    }
+
+	    return query.getResultList();
+	}
+
 //  public void inserirVagaCandidato(Integer vagaId, Integer candidatoId) throws Exception {
 //    EntityManager em = getEM();
 //
