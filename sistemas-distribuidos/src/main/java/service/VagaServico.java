@@ -171,6 +171,80 @@ public class VagaServico {
     return res;
   }
 
+  public void updateJob(JSONObject jsonMessage, JSONObject jsonResponse) {
+    JwtUtility jwt = new JwtUtility();
+
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
+
+    if (!data.has("skill") || data.getString("skill").isEmpty()) {
+        buildJson(jsonResponse, "INVALID_FIELD", "UPDATE_JOB");
+        return;
+    }
+
+    if (data.has("experience")) {
+        int experience = data.getInt("experience");
+        if (experience < 0) {
+            buildJson(jsonResponse, "INVALID_FIELD", "UPDATE_JOB");
+            return;
+        }
+    } else {
+        buildJson(jsonResponse, "INVALID_FIELD", "UPDATE_JOB");
+        return;
+    }
+
+    try {
+      jwt.verifyToken(token);
+
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+
+      String skill = "";  
+      Integer experience = null;
+      
+      Competencia originalComp = null;
+
+      if (data.has("skill")) {
+        skill = data.getString("skill");
+        originalComp = competenciaController.listarCompetenciaNome(skill);
+      
+        if (!validator.competenciaIsValid(skill)) {
+        	buildJson(jsonResponse, "SKILL_NOT_FOUND", "UPDATE_JOB");
+          return;
+        }
+      }
+
+      if (data.has("skill")) {
+        skill = data.getString("skill");
+      }
+
+      if (data.has("experience")) {
+        experience = data.getInt("experience");
+      }
+
+      Integer jobId = data.getInt("id");
+      if (jobId < 0) {
+        	buildJson(jsonResponse, "JOB_NOT_FOUND", "UPDATE_JOB");
+          return;
+      }
+
+      Vaga vaga = vagaController.consultarPorId(jobId);
+      
+      if (vaga == null) {
+    	  buildJson(jsonResponse, "JOB_NOT_FOUND", "UPDATE_JOB");
+        return;
+      }
+
+      vagaController.update(vaga, originalComp, experience);
+
+      buildJson(jsonResponse, "SUCCESS", "UPDATE_JOB");
+    } catch (JWTVerificationException e) {
+      buildJson(jsonResponse, "INVALID_TOKEN", "UPDATE_JOB");
+    }
+  }
+
   public JSONObject buildLookupJob(JSONObject jsonResponse, String status, String skill, Integer experience, Integer id) { 
     jsonResponse.put("operation", "LOOKUP_JOB"); 
     jsonResponse.put("status", status);

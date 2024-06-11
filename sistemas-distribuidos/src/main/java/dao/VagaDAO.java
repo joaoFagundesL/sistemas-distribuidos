@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import modelo.Competencia;
 import modelo.Vaga;
 
 public class VagaDAO extends GenericoDAO<Vaga> {
@@ -35,6 +36,19 @@ public class VagaDAO extends GenericoDAO<Vaga> {
 		vagas = query.getResultList();
 		return vagas;
 	}
+
+  public void update(Vaga vaga, Competencia skill, Integer experience) {
+    EntityManager em = getEM();
+
+    em.getTransaction().begin();
+
+    if (skill != null && experience != null) {
+      vaga.setSkill(skill);
+      vaga.setExperience(experience);
+    }
+    em.merge(vaga);
+    em.getTransaction().commit();
+  }
  
 //  public void inserirVagaCandidato(Integer vagaId, Integer candidatoId) throws Exception {
 //    EntityManager em = getEM();

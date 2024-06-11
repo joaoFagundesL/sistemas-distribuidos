@@ -31,6 +31,9 @@ public class VagaController {
     return dao.consultarPorId(Vaga.class, id);
   }
 
+  public void update(Vaga vaga, Competencia skill, Integer experience) {
+    dao.update(vaga, skill, experience);
+  }
 
   public void remover(Class<Vaga> clazz, Integer id) {
     dao.remover(Vaga.class, id);

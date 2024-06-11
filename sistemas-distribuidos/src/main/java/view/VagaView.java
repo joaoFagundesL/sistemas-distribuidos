@@ -123,20 +123,33 @@ public class VagaView extends JPanel {
     JButton btnAtualizar_1 = new JButton("Atualizar");
     btnAtualizar_1.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        String skill = (String) comboBox.getSelectedItem();
-        String newSkill = (String) newSkillBox.getSelectedItem();
+        String skill = (String) newSkillBox.getSelectedItem();
+
+        String idString = idField.getText();
+
+        if (idString.equals("")) {
+          JFrame frame = new JFrame("Mensagem");
+          JOptionPane.showMessageDialog(frame, "ID vazio!");
+          return;
+        }
+
+        Integer jobId = Integer.parseInt(idString);
                 
         Integer experience = (Integer) spinner.getValue();
 
         JSONObject dataRequest = new JSONObject();  
 
+        if (jobId < 0 || jobId == null) {
+          JFrame frame = new JFrame("Mensagem");
+          JOptionPane.showMessageDialog(frame, "Atualizado com sucesso!");
+          return;
+        }
+
+        dataRequest.put("id", jobId);
+
         if(!skill.equals("")) {
           dataRequest.put("skill", skill);
         }
-
-        if(!newSkill.equals("")) {
-            dataRequest.put("newSkill", newSkill);
-         }
 
         if (experience != null) {
           dataRequest.put("experience", experience);
@@ -152,7 +165,6 @@ public class VagaView extends JPanel {
           JSONObject data = response.getJSONObject("data");
 
           String skillResponse = "";
-          String newSkillResponse = "";
           Integer experienceResponse = null;
           Integer idResponse = null;
 
@@ -165,11 +177,6 @@ public class VagaView extends JPanel {
             experienceResponse = data.getInt("experience");
           } else {
           }
-          
-          if (data.has("newSkill")) {
-              newSkillResponse = data.getString("newSkill");
-            } else {
-            }
 
           String status = response.getString("status");
 
@@ -269,8 +276,8 @@ public class VagaView extends JPanel {
     JButton btnNewButton = new JButton("Pesquisar");
     btnNewButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-          String idString = idField.getText();
-          Integer id = Integer.parseInt(idString);
+        String idString = idField.getText();
+        Integer id = Integer.parseInt(idString);
 
         if (id < 0 || id == null) {
           JFrame frame = new JFrame("Mensagem");
@@ -318,20 +325,20 @@ public class VagaView extends JPanel {
     separator.setBackground(new Color(97, 53, 131));
     separator.setBounds(0, 130, 649, 2);
     add(separator);
-    
+
     newSkillBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby"}));
     newSkillBox.setBounds(306, 161, 94, 22);
     add(newSkillBox);
-    
+
     JLabel lblNewSkill = new JLabel("Update to");
     lblNewSkill.setBounds(235, 164, 58, 17);
     add(lblNewSkill);
-    
+
     idField = new JTextField();
     idField.setBounds(57, 79, 114, 21);
     add(idField);
     idField.setColumns(10);
-    
+
   }
 
   public JSONObject buildLookup(JSONObject json, String token, Integer id) {
@@ -371,7 +378,7 @@ public class VagaView extends JPanel {
   }
 
   public void limparTela() {
-     limparTable();
+    limparTable();
   }
 
   public JSONObject buildJsonLookup(JSONObject json, String token) {

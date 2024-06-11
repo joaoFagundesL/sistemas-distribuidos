@@ -262,7 +262,7 @@ public class Servidor extends JFrame {
       break;
 
       case "UPDATE_JOB":
-      //todo
+      vagaServico.updateJob(jsonMessage, jsonResponse);
       break;
 
       default:

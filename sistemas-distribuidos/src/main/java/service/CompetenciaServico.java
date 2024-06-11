@@ -153,7 +153,7 @@ public class CompetenciaServico {
 
     if (data.has("experience")) {
         int experience = data.getInt("experience");
-        if (experience <= 0) {
+        if (experience < 0) {
             buildJson(jsonResponse, "INVALID_FIELD", "UPDATE_SKILL");
             return;
         }
@@ -201,7 +201,6 @@ public class CompetenciaServico {
           }
         }
       
-
       if (data.has("skill")) {
         skill = data.getString("skill");
       }

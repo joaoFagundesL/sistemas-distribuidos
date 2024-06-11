@@ -48,7 +48,6 @@ public class CandidatoCompetenciaDAO extends GenericoDAO<CandidatoCompetencia> {
     if (competencia != null) {    	
     	c.setCompetencia(competencia);
     }
-    
 
     em.merge(c);
     em.getTransaction().commit();

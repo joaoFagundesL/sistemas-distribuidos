@@ -5,10 +5,13 @@ import java.util.List;
 import org.json.JSONObject;
 
 import controller.CandidatoCompetenciaController;
+import controller.CompetenciaController;
 import modelo.CandidatoCompetencia;
+import modelo.Competencia;
 
 public class SkillValidator {
 	CandidatoCompetenciaController ccController = new CandidatoCompetenciaController();
+  CompetenciaController competenciaController = new CompetenciaController();
 
 	public boolean competenciaExiste(JSONObject jsonResponse, Integer id, String skill) {
 	    List<CandidatoCompetencia> competenciasGeneric = ccController.listarCompetenciaUsuario(id); 
@@ -22,4 +25,14 @@ public class SkillValidator {
 	    }
 	    return false;
 	  }
+
+  public boolean competenciaIsValid(String skill) {
+	  Competencia comp = competenciaController.listarCompetenciaNome(skill);
+	  if (comp == null) {
+		  return false;
+	  }
+	  
+	  return true;
+  }
+
 }
