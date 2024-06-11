@@ -27,7 +27,10 @@ public class CompetenciaServico {
     JSONObject data = jsonMessage.getJSONObject("data");
 
     String skill = data.getString("skill");
-    Integer experience = data.getInt("experience");
+    String experienceString = data.getString("experience");
+
+    Integer experience = Integer.parseInt(experienceString);
+
 
     if (skill.isEmpty()) {
       buildJson(jsonResponse, "INVALID_FIELD", "INCLUDE_SKILL");
@@ -152,7 +155,8 @@ public class CompetenciaServico {
     }
 
     if (data.has("experience")) {
-        int experience = data.getInt("experience");
+        String experienceString = data.getString("experience");
+        Integer experience = Integer.parseInt(experienceString);
         if (experience < 0) {
             buildJson(jsonResponse, "INVALID_FIELD", "UPDATE_SKILL");
             return;
@@ -172,6 +176,7 @@ public class CompetenciaServico {
 
       String skill = "";  
       String newSkill = "";  
+      String experienceString = "";
       Integer experience = null;
       
       Competencia originalComp = null;
@@ -206,7 +211,8 @@ public class CompetenciaServico {
       }
 
       if (data.has("experience")) {
-        experience = data.getInt("experience");
+        experienceString = data.getString("experience");
+        experience = Integer.parseInt(experienceString);
       }
       
       if (data.has("newSkill")) {
@@ -281,13 +287,15 @@ public class CompetenciaServico {
     for (CandidatoCompetencia competenciaGeneric : competencias) {
       JSONObject skill = new JSONObject();
       skill.put("skill", competenciaGeneric.getCompetencia().getSkill());
-      skill.put("experience", competenciaGeneric.getExperience());
-      skill.put("id", competenciaGeneric.getCompetencia().getId()); 
+      skill.put("experience", competenciaGeneric.getExperience().toString());
+      skill.put("id", competenciaGeneric.getCompetencia().getId().toString()); 
       skillset.put(skill);
     }
 
+    Integer size = competencias.size();
+
     JSONObject data = new JSONObject();
-    data.put("skillset_size", competencias.size());
+    data.put("skillset_size", size.toString());
     data.put("skillset", skillset);
 
     res.put("data", data);
@@ -301,8 +309,8 @@ public class CompetenciaServico {
     JSONObject data = new JSONObject();
 
     data.put("skill", competenciaGeneric.getCompetencia().getSkill());
-    data.put("experience", competenciaGeneric.getExperience());
-    data.put("id", competenciaGeneric.getCompetencia().getId()); 
+    data.put("experience", competenciaGeneric.getExperience().toString());
+    data.put("id", competenciaGeneric.getCompetencia().getId().toString()); 
 
     res.put("data", data);
     return res;

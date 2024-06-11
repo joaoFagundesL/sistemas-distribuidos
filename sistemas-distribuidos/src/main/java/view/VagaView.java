@@ -82,6 +82,13 @@ public class VagaView extends JPanel {
         String token = Client.getInstance().getToken();
         
         String idString = idField.getText();
+        
+        if (idString.equals("")) {
+        	JFrame frame = new JFrame("JOptionPane exemplo");
+            JOptionPane.showMessageDialog(frame, "ID inválido");
+            return;
+        }
+        
         Integer id = Integer.parseInt(idString);
         
         if (id < 0 || id == null) {
@@ -90,7 +97,7 @@ public class VagaView extends JPanel {
           return;
         }
         
-        buildJsonDelete(request, id, token);
+        buildJsonDelete(request, idString, token);
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
 
@@ -136,6 +143,7 @@ public class VagaView extends JPanel {
         Integer jobId = Integer.parseInt(idString);
                 
         Integer experience = (Integer) spinner.getValue();
+        String experienceString = experience.toString();
 
         JSONObject dataRequest = new JSONObject();  
 
@@ -145,14 +153,14 @@ public class VagaView extends JPanel {
           return;
         }
 
-        dataRequest.put("id", jobId);
+        dataRequest.put("id", idString);
 
         if(!skill.equals("")) {
           dataRequest.put("skill", skill);
         }
 
         if (experience != null) {
-          dataRequest.put("experience", experience);
+          dataRequest.put("experience", experienceString);
         }
 
         JSONObject request = new JSONObject();
@@ -165,8 +173,8 @@ public class VagaView extends JPanel {
           JSONObject data = response.getJSONObject("data");
 
           String skillResponse = "";
-          Integer experienceResponse = null;
-          Integer idResponse = null;
+          String experienceResponse = "";
+          String idResponse = "";
 
           if (data.has("skill")) {
             skillResponse = data.getString("skill");
@@ -174,7 +182,7 @@ public class VagaView extends JPanel {
           }
 
           if (data.has("experience")) {
-            experienceResponse = data.getInt("experience");
+            experienceResponse = data.getString("experience");
           } else {
           }
 
@@ -215,14 +223,17 @@ public class VagaView extends JPanel {
           JSONObject data = response.getJSONObject("data");
 
           if (response.getString("status").equals("SUCCESS")) {
-            int size = data.getInt("jobset_size");
+            String sizeString = data.getString("jobset_size");
+            Integer size = Integer.parseInt(sizeString);
             JSONArray jobset = data.getJSONArray("jobset");
 
             for (int i = 0; i < size; i++) {
               JSONObject skillObject = jobset.getJSONObject(i);
               String skill = skillObject.getString("skill");
-              int experience = skillObject.getInt("experience");
-              int id = skillObject.getInt("id");
+              String experienceString = skillObject.getString("experience");
+              Integer experience = Integer.parseInt(experienceString);
+              String idString = skillObject.getString("id");
+              Integer id = Integer.parseInt(idString);
               popularTabelaCompetencia(skill, experience, id);
             }
 
@@ -244,11 +255,13 @@ public class VagaView extends JPanel {
       public void actionPerformed(ActionEvent e) {
         String skill = (String) comboBox.getSelectedItem();
         Integer experience = (Integer) spinner.getValue();
+        
+        String experienceString = experience.toString();
 
         JSONObject request = new JSONObject();
 
         String token = Client.getInstance().getToken();
-        request = buildIncludeJob(request, skill, experience, token);
+        request = buildIncludeJob(request, skill, experienceString, token);
 
         JSONObject response;
         try {
@@ -288,7 +301,7 @@ public class VagaView extends JPanel {
         JSONObject request = new JSONObject();
 
         String token = Client.getInstance().getToken();
-        request = buildLookup(request, token, id);
+        request = buildLookup(request, token, idString);
 
         JSONObject response;
         try {
@@ -300,8 +313,10 @@ public class VagaView extends JPanel {
           if (status.equals("SUCCESS")) {
             limparTable();
             String skillUpdated = data.getString("skill");
-            Integer experience = data.getInt("experience");
-            int idComp = data.getInt("id");
+            String experienceString = data.getString("experience");
+            Integer experience = Integer.parseInt(experienceString);
+            String idCompString = data.getString("id");
+            Integer idComp = Integer.parseInt(idCompString);
             popularTabelaCompetencia(skillUpdated, experience, idComp);
           } else {
             JFrame frame = new JFrame("Mensagem");
@@ -341,7 +356,7 @@ public class VagaView extends JPanel {
 
   }
 
-  public JSONObject buildLookup(JSONObject json, String token, Integer id) {
+  public JSONObject buildLookup(JSONObject json, String token, String id) {
     json.put("operation", "LOOKUP_JOB");
     JSONObject data = new JSONObject();
     data.put("id",id);
@@ -350,7 +365,7 @@ public class VagaView extends JPanel {
     return json;
   }
 
-  public JSONObject buildIncludeJob(JSONObject json, String skill, Integer experience, String token) {
+  public JSONObject buildIncludeJob(JSONObject json, String skill, String experience, String token) {
     json.put("operation", "INCLUDE_JOB");
     JSONObject data = new JSONObject();
     json.put("token", token);
@@ -360,7 +375,7 @@ public class VagaView extends JPanel {
     return json;
   }
 
-  public JSONObject buildJsonDelete(JSONObject json, Integer id, String token) {
+  public JSONObject buildJsonDelete(JSONObject json, String id, String token) {
     json.put("operation", "DELETE_JOB");
     JSONObject data = new JSONObject();
     data.put("id", id);

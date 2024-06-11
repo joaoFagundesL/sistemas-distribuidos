@@ -30,7 +30,9 @@ public class VagaServico {
     JSONObject data = jsonMessage.getJSONObject("data");
 
     String skill = data.getString("skill");
-    Integer experience = data.getInt("experience");
+    String experienceString = data.getString("experience");
+
+    Integer experience = Integer.parseInt(experienceString);
 
     if (skill.isEmpty() || experience < 0 || experience > 10) {
       buildJson(jsonResponse, "INVALID_FIELD", "INCLUDE_JOB");
@@ -72,7 +74,9 @@ public class VagaServico {
       String userIdAsString = idClaim.asString();
       Integer id = Integer.parseInt(userIdAsString);
       
-      Integer jobId = data.getInt("id");
+      String jobIdString = data.getString("id");
+
+      Integer jobId = Integer.parseInt(jobIdString);
       
       if (jobId == null || jobId < 0) {
           buildJson(jsonResponse, "JOB_NOT_FOUND", "DELETE_JOB");
@@ -112,7 +116,8 @@ public class VagaServico {
         return;
       }
 
-      Integer vagaId = dataJson.getInt("id");
+      String vagaIdString = dataJson.getString("id");
+      Integer vagaId = Integer.parseInt(vagaIdString);
 
       Vaga vaga = vagaController.consultarPorId(vagaId);
 
@@ -124,7 +129,7 @@ public class VagaServico {
       Competencia skill = vaga.getSkill();
       Integer experience = vaga.getExperience();
 
-      buildLookupJob(jsonResponse, "SUCCESS", skill.getSkill(), experience, vagaId);    
+      buildLookupJob(jsonResponse, "SUCCESS", skill.getSkill(), experience.toString(), vagaId.toString());    
 
     } catch(JWTVerificationException e) {
       buildJson(jsonResponse, "INVALID_TOKEN", "LOOKUP_JOB");
@@ -158,13 +163,15 @@ public class VagaServico {
     for (Vaga  vaga: vagas) {
       JSONObject skill = new JSONObject();
       skill.put("skill", vaga.getSkill().getSkill());
-      skill.put("experience", vaga.getExperience());
-      skill.put("id", vaga.getId()); 
+      skill.put("experience", vaga.getExperience().toString());
+      skill.put("id", vaga.getId().toString()); 
       jobset.put(skill);
     }
 
+    Integer size = vagas.size();
+
     JSONObject data = new JSONObject();
-    data.put("jobset_size", vagas.size());
+    data.put("jobset_size", size.toString());
     data.put("jobset", jobset);
 
     res.put("data", data);
@@ -183,7 +190,9 @@ public class VagaServico {
     }
 
     if (data.has("experience")) {
-        int experience = data.getInt("experience");
+        String experienceString = data.getString("experience");
+        Integer experience = Integer.parseInt(experienceString);
+
         if (experience < 0) {
             buildJson(jsonResponse, "INVALID_FIELD", "UPDATE_JOB");
             return;
@@ -202,6 +211,7 @@ public class VagaServico {
       Integer id = Integer.parseInt(userIdAsString);
 
       String skill = "";  
+      String experienceString = "";
       Integer experience = null;
       
       Competencia originalComp = null;
@@ -221,10 +231,12 @@ public class VagaServico {
       }
 
       if (data.has("experience")) {
-        experience = data.getInt("experience");
+        experienceString = data.getString("experience");
+        experience = Integer.parseInt(experienceString);
       }
 
-      Integer jobId = data.getInt("id");
+      String jobIdString = data.getString("id");
+      Integer jobId = Integer.parseInt(jobIdString);
       if (jobId < 0) {
         	buildJson(jsonResponse, "JOB_NOT_FOUND", "UPDATE_JOB");
           return;
@@ -245,7 +257,7 @@ public class VagaServico {
     }
   }
 
-  public JSONObject buildLookupJob(JSONObject jsonResponse, String status, String skill, Integer experience, Integer id) { 
+  public JSONObject buildLookupJob(JSONObject jsonResponse, String status, String skill, String experience, String id) { 
     jsonResponse.put("operation", "LOOKUP_JOB"); 
     jsonResponse.put("status", status);
     JSONObject data = new JSONObject();

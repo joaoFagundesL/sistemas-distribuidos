@@ -92,16 +92,9 @@ public class FiltrarVagaView extends JPanel {
         
         JSONObject request = new JSONObject();
         JSONObject response = new JSONObject();
-        
-        Integer experience;
-        
-        String experienceString = experienceField.getText();
-        if (experienceString.equals("")) {
-        	experience = null;
-        } else {
-        	experience = Integer.parseInt(experienceString);
-        }
-        
+     
+        String experience = experienceField.getText();
+      
         String filter;
         
         if (eBox.isSelected()) {
@@ -123,14 +116,17 @@ public class FiltrarVagaView extends JPanel {
             String status = (String) response.get("status");
             
             if (response.getString("status").equals("SUCCESS")) {
-                int size = data.getInt("jobset_size");
+                String sizeString = data.getString("jobset_size");
+                Integer size = Integer.parseInt(sizeString);
                 JSONArray jobset = data.getJSONArray("jobset");
 
                 for (int i = 0; i < size; i++) {
                   JSONObject vagaObject = jobset.getJSONObject(i);
                   String skill = vagaObject.getString("skill");
-                  int experienceVaga = vagaObject.getInt("experience");
-                  int id = vagaObject.getInt("id");
+                  String experienceVagaString = vagaObject.getString("experience");
+                  Integer experienceVaga = Integer.parseInt(experienceVagaString);
+                  String idString = vagaObject.getString("id");
+                  Integer id = Integer.parseInt(idString);
                   limparTable();
                   popularTabelaVaga(skill, experienceVaga, id);
                 }
@@ -174,14 +170,14 @@ public class FiltrarVagaView extends JPanel {
 
   }
 
-  public JSONObject buildJsonSearch(JSONObject json, List<String> langs, Integer experience, String filter
+  public JSONObject buildJsonSearch(JSONObject json, List<String> langs, String experience, String filter
 		  ,String token) {
 	  json.put("operation", "SEARCH_JOB");
 	  json.put("token", token);
 	  JSONObject data = new JSONObject();
 	  data.put("skill", langs);
 	  
-	  if (experience != null) {
+	  if (!experience.equals("")) {
 		  data.put("experience", experience);
 	  }
 	  

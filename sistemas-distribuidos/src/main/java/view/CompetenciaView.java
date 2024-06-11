@@ -131,6 +131,8 @@ public class CompetenciaView extends JPanel {
         String newSkill = (String) newSkillBox.getSelectedItem();
                 
         Integer experience = (Integer) spinner.getValue();
+        
+        String experienceString = experience.toString();
 
         JSONObject dataRequest = new JSONObject();  
 
@@ -143,7 +145,7 @@ public class CompetenciaView extends JPanel {
          }
 
         if (experience != null) {
-          dataRequest.put("experience", experience);
+          dataRequest.put("experience", experienceString);
         }
 
         JSONObject request = new JSONObject();
@@ -159,6 +161,8 @@ public class CompetenciaView extends JPanel {
           String newSkillResponse = "";
           Integer experienceResponse = null;
           Integer idResponse = null;
+          String experienceResponseString = "";
+          String  idResponseString = "";
 
           if (data.has("skill")) {
             skillResponse = data.getString("skill");
@@ -166,7 +170,8 @@ public class CompetenciaView extends JPanel {
           }
 
           if (data.has("experience")) {
-            experienceResponse = data.getInt("experience");
+            experienceResponseString = data.getString("experience");
+            experienceResponse = Integer.parseInt(experienceResponseString);
           } else {
           }
           
@@ -213,14 +218,18 @@ public class CompetenciaView extends JPanel {
 
 
           if (response.getString("status").equals("SUCCESS")) {
-            int size = data.getInt("skillset_size");
+            String sizeString = data.getString("skillset_size");
+            Integer size = Integer.parseInt(sizeString);
+
             JSONArray skillset = data.getJSONArray("skillset");
 
             for (int i = 0; i < size; i++) {
               JSONObject skillObject = skillset.getJSONObject(i);
               String skill = skillObject.getString("skill");
-              int experience = skillObject.getInt("experience");
-              int id = skillObject.getInt("id");
+              String experienceString = skillObject.getString("experience");
+              Integer experience = Integer.parseInt(experienceString);
+              String idString = skillObject.getString("id");
+              Integer id = Integer.parseInt(idString);
               popularTabelaCompetencia(skill, experience, id);
             }
 
@@ -240,13 +249,15 @@ public class CompetenciaView extends JPanel {
     JButton enviarBotao = new JButton("Criar");
     enviarBotao.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-          String skill = (String) comboBox.getSelectedItem();
+        String skill = (String) comboBox.getSelectedItem();
         Integer experience = (Integer) spinner.getValue();
+        
+        String experienceString = experience.toString();
 
         JSONObject request = new JSONObject();
 
         String token = Client.getInstance().getToken();
-        request = buildCreateSkill(request, skill, experience, token);
+        request = buildCreateSkill(request, skill, experienceString, token);
 
         JSONObject response;
         try {
@@ -297,8 +308,11 @@ public class CompetenciaView extends JPanel {
           if (status.equals("SUCCESS")) {
             limparTable();
             String skillUpdated = data.getString("skill");
-            Integer experience = data.getInt("experience");
-            int idComp = data.getInt("id");
+            String experienceString = data.getString("experience");
+            Integer experience = Integer.parseInt(experienceString);
+            String idCompString = data.getString("id");
+            Integer idComp = Integer.parseInt(idCompString);
+
             popularTabelaCompetencia(skillUpdated, experience, idComp);
           } else {
             JFrame frame = new JFrame("Mensagem");
@@ -342,7 +356,7 @@ public class CompetenciaView extends JPanel {
     return json;
   }
 
-  public JSONObject buildCreateSkill(JSONObject json, String skill, Integer experience, String token) {
+  public JSONObject buildCreateSkill(JSONObject json, String skill, String experience, String token) {
     json.put("operation", "INCLUDE_SKILL");
     JSONObject data = new JSONObject();
     json.put("token", token);
