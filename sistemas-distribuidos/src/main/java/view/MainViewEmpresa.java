@@ -125,7 +125,7 @@ public class MainViewEmpresa {
         String token = Client.getInstance().getToken();
         buildLogoutJson(request, token);
         empresaView.limparTable();
-        System.out.println("LIMPOUUU");
+        vagaView.limparTable();
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
         }catch(IOException err) {

@@ -56,7 +56,7 @@ public class VagaServico {
         return;
       }
 
-      Vaga vaga = vagaController.insert(competencia, experience);
+      Vaga vaga = vagaController.insert(competencia, experience, c);
 
       buildJson(jsonResponse, "SUCCESS", "INCLUDE_JOB");
     } catch(JWTVerificationException e) {
@@ -73,6 +73,7 @@ public class VagaServico {
       Claim idClaim = decodedJWT.getClaim("id");
       String userIdAsString = idClaim.asString();
       Integer id = Integer.parseInt(userIdAsString);
+      Empresa empresa = empresaController.consultarPorId(id);
       
       String jobIdString = data.getString("id");
 
@@ -82,8 +83,8 @@ public class VagaServico {
           buildJson(jsonResponse, "JOB_NOT_FOUND", "DELETE_JOB");
           return;
       }
-
-      Vaga vaga = vagaController.consultarPorId(jobId);
+      
+      Vaga vaga = empresaController.consultarVagaEmpresaPorId(jobId, empresa.getId());
 
       if (vaga == null) {
         buildJson(jsonResponse, "JOB_NOT_FOUND", "DELETE_JOB");
@@ -119,7 +120,7 @@ public class VagaServico {
       String vagaIdString = dataJson.getString("id");
       Integer vagaId = Integer.parseInt(vagaIdString);
 
-      Vaga vaga = vagaController.consultarPorId(vagaId);
+      Vaga vaga = empresaController.consultarVagaEmpresaPorId(vagaId, empresa.getId());
 
       if (vaga == null) {
         buildJson(jsonResponse, "JOB_NOT_FOUND", "LOOKUP_JOB");
@@ -145,8 +146,9 @@ public class VagaServico {
       Claim idClaim = decodedJWT.getClaim("id");
       String userIdAsString = idClaim.asString();
       Integer id = Integer.parseInt(userIdAsString);
+      Empresa empresa = empresaController.consultarPorId(id);
 
-      List<Vaga> vagas = vagaController.consultarTodos();
+      List<Vaga> vagas = empresaController.consultarVagasEmpresa(empresa.getId());
 
       buildJobset(jsonResponse, vagas);
 
@@ -209,6 +211,7 @@ public class VagaServico {
       Claim idClaim = decodedJWT.getClaim("id");
       String userIdAsString = idClaim.asString();
       Integer id = Integer.parseInt(userIdAsString);
+      Empresa empresa = empresaController.consultarPorId(id);
 
       String skill = "";  
       String experienceString = "";
@@ -242,7 +245,7 @@ public class VagaServico {
           return;
       }
 
-      Vaga vaga = vagaController.consultarPorId(jobId);
+      Vaga vaga = empresaController.consultarVagaEmpresaPorId(jobId, empresa.getId());
       
       if (vaga == null) {
     	  buildJson(jsonResponse, "JOB_NOT_FOUND", "UPDATE_JOB");

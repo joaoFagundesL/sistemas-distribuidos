@@ -4,15 +4,17 @@ import java.util.List;
 
 import dao.VagaDAO;
 import modelo.Competencia;
+import modelo.Empresa;
 import modelo.Vaga;
 
 public class VagaController {
   VagaDAO dao = new VagaDAO();
 
-  public Vaga insert(Competencia competencia, Integer experience) {
+  public Vaga insert(Competencia competencia, Integer experience, Empresa empresa) {
     Vaga v = new Vaga();
     v.setSkill(competencia);
     v.setExperience(experience);
+    v.setEmpresa(empresa);
 
     try {
       dao.insertWithQuery(v);

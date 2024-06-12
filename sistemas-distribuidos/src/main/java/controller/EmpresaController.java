@@ -1,8 +1,11 @@
 package controller;
 
+import java.util.List;
+
 import dao.EmpresaDAO;
 import modelo.Empresa;
 import modelo.Usuario;
+import modelo.Vaga;
 
 public class EmpresaController {
   EmpresaDAO dao = new EmpresaDAO();
@@ -27,7 +30,16 @@ public class EmpresaController {
     EmpresaDAO udao = new EmpresaDAO();
     udao.update(c, nome, email, senha, industry, description);
   }
+  
+  public List<Vaga> consultarVagasEmpresa(Integer id) {
+	  return dao.consultarVagasEmpresa(id);
+  }
 
+  
+  public Vaga consultarVagaEmpresaPorId(Integer vagaId, Integer empresaId) {
+	  return dao.consultarVagaEmpresaPorId(vagaId, empresaId);
+  }
+  
   public Empresa consultarPorId(Integer id) {
     return dao.consultarPorId(Empresa.class, id);
   }

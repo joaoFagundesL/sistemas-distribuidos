@@ -1,5 +1,7 @@
 package modelo;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -17,7 +20,13 @@ import javax.persistence.OneToOne;
     query = "SELECT e FROM Empresa e"),
 
   @NamedQuery(name = "Empresa.consultarPeloUsuarioIdEmail",
-    query = "SELECT e FROM Empresa e WHERE e.usuario.id = (SELECT u.id FROM Usuario u WHERE u.email = :email)")
+    query = "SELECT e FROM Empresa e WHERE e.usuario.id = (SELECT u.id FROM Usuario u WHERE u.email = :email)"),
+  
+  @NamedQuery(name = "Empresa.consultarVagasEmpresa",
+  query = "SELECT v FROM Vaga v JOIN v.empresa e WHERE e.id = :id"),
+  
+  @NamedQuery(name = "Empresa.consultarVagaEmpresaPorId",
+  query = "SELECT v FROM Vaga v JOIN v.empresa e WHERE e.id = :empresaId and v.id = :vagaId")
 })
 
 public class Empresa implements Entidade{
@@ -34,11 +43,22 @@ public class Empresa implements Entidade{
   @OneToOne(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "usuario_id", referencedColumnName = "id")
   private Usuario usuario;
+  
+  @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+  private List<Vaga> vagas;
 
   public Empresa() {
   }
 
-  public String getIndustry() {
+  public List<Vaga> getVagas() {
+	return vagas;
+}
+
+public void setVagas(List<Vaga> vagas) {
+	this.vagas = vagas;
+}
+
+public String getIndustry() {
     return industry;
   }
 

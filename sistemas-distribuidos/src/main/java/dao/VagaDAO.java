@@ -17,11 +17,12 @@ public class VagaDAO extends GenericoDAO<Vaga> {
   public void insertWithQuery(Vaga vaga) throws Exception {
     EntityManager em = getEM();
 
-    Query query = em.createNativeQuery("INSERT INTO Vaga(experience, competencia_id)"
-      + " VALUES (?, ?)");
+    Query query = em.createNativeQuery("INSERT INTO Vaga(experience, competencia_id, empresa_id)"
+      + " VALUES (?, ?, ?)");
 
     em.getTransaction().begin();
     query.setParameter(2, vaga.getSkill().getId());
+    query.setParameter(3, vaga.getEmpresa().getId());
     query.setParameter(1, vaga.getExperience());
 
     query.executeUpdate();

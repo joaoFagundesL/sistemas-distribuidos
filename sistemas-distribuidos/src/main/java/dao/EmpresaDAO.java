@@ -1,12 +1,16 @@
 package dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+
 import modelo.Empresa;
 import modelo.Pessoa;
 import modelo.Usuario;
+import modelo.Vaga;
 
 public class EmpresaDAO extends GenericoDAO<Empresa> {
 	
@@ -55,6 +59,35 @@ public class EmpresaDAO extends GenericoDAO<Empresa> {
       return null;
     }
   }
+  
+  public Vaga consultarVagaEmpresaPorId(Integer vagaId, Integer empresaId) {
+	  EntityManager em = getEM();
+	    Vaga vaga;
+	    try {
+	      Query query = em.createNamedQuery("Empresa.consultarVagaEmpresaPorId");
+	      query.setParameter("vagaId", vagaId);
+	      query.setParameter("empresaId", empresaId);
+	      vaga = (Vaga) query.getSingleResult();
+
+	      return vaga;
+	    } catch(NoResultException e) {
+	      return null;
+	    }
+  }
+  
+  public List<Vaga> consultarVagasEmpresa(Integer id) {
+	    EntityManager em = getEM();
+	    List<Vaga> vagas;
+	    try {
+	      Query query = em.createNamedQuery("Empresa.consultarVagasEmpresa");
+	      query.setParameter("id", id);
+	      vagas = query.getResultList();
+
+	      return vagas;
+	    } catch(NoResultException e) {
+	      return null;
+	    }
+	  }
 
   @Transactional
   public void insertWithQuery(Empresa e) throws Exception {

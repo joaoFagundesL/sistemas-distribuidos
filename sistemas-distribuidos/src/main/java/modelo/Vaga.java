@@ -37,8 +37,20 @@ public class Vaga implements Entidade {
   @Cascade(org.hibernate.annotations.CascadeType.DELETE)
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "vaga")
   private List<VagaCandidato> vagaCandidato;
+  
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "empresa_id")
+  private Empresa empresa;
 
-  public List<VagaCandidato> getVagaCandidato() {
+  public Empresa getEmpresa() {
+	return empresa;
+}
+
+public void setEmpresa(Empresa empresa) {
+	this.empresa = empresa;
+}
+
+public List<VagaCandidato> getVagaCandidato() {
     return vagaCandidato;
   }
 
