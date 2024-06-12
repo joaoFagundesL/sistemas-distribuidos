@@ -52,11 +52,11 @@ public class FiltrarVagaView extends JPanel {
     checkBoxList = new ArrayList<>(); 
     
     JCheckBox eBox = new JCheckBox("E");
-    eBox.setBounds(240, 114, 112, 25);
+    eBox.setBounds(165, 85, 112, 25);
     add(eBox);
     
     JCheckBox ouBox = new JCheckBox("OU");
-    ouBox.setBounds(240, 143, 112, 25);
+    ouBox.setBounds(49, 85, 112, 25);
     add(ouBox);
 
     JScrollPane scrollPane = new JScrollPane();
@@ -119,7 +119,9 @@ public class FiltrarVagaView extends JPanel {
                 String sizeString = data.getString("jobset_size");
                 Integer size = Integer.parseInt(sizeString);
                 JSONArray jobset = data.getJSONArray("jobset");
-
+                
+                limparTable();
+                
                 for (int i = 0; i < size; i++) {
                   JSONObject vagaObject = jobset.getJSONObject(i);
                   String skill = vagaObject.getString("skill");
@@ -127,7 +129,6 @@ public class FiltrarVagaView extends JPanel {
                   Integer experienceVaga = Integer.parseInt(experienceVagaString);
                   String idString = vagaObject.getString("id");
                   Integer id = Integer.parseInt(idString);
-                  limparTable();
                   popularTabelaVaga(skill, experienceVaga, id);
                 }
               }
@@ -143,20 +144,20 @@ public class FiltrarVagaView extends JPanel {
     JCheckBox javaBox = new JCheckBox("Java");
     javaBox.setBounds(49, 114, 112, 25);
     add(javaBox);
-    checkBoxList.add(javaBox); // Adiciona à lista
+    checkBoxList.add(javaBox);
 
     JCheckBox rubyBox = new JCheckBox("Ruby");
     rubyBox.setBounds(49, 143, 112, 25);
     add(rubyBox);
-    checkBoxList.add(rubyBox); // Adiciona à lista
+    checkBoxList.add(rubyBox);
     
     experienceField = new JTextField();
-    experienceField.setBounds(113, 213, 114, 21);
+    experienceField.setBounds(128, 248, 114, 21);
     add(experienceField);
     experienceField.setColumns(10);
     
     JLabel lblExperience = new JLabel("experience");
-    lblExperience.setBounds(25, 214, 83, 19);
+    lblExperience.setBounds(49, 249, 83, 19);
     add(lblExperience);
     
     JButton limparButton = new JButton("Limpar");
@@ -167,6 +168,47 @@ public class FiltrarVagaView extends JPanel {
     });
     limparButton.setBounds(158, 281, 101, 27);
     add(limparButton);
+    
+    JCheckBox chckbxTypescript = new JCheckBox("TypeScript");
+    chckbxTypescript.setBounds(49, 172, 112, 25);
+    add(chckbxTypescript);
+    checkBoxList.add(chckbxTypescript);
+    
+    JCheckBox rubyBox_1_1 = new JCheckBox("C");
+    rubyBox_1_1.setBounds(165, 114, 112, 25);
+    add(rubyBox_1_1);
+    checkBoxList.add(rubyBox_1_1);
+    
+    JCheckBox rubyBox_1_2 = new JCheckBox("HTML");
+    rubyBox_1_2.setBounds(165, 143, 112, 25);
+    add(rubyBox_1_2);
+    checkBoxList.add(rubyBox_1_2);
+
+    JCheckBox rubyBox_1_3 = new JCheckBox("CSS");
+    rubyBox_1_3.setBounds(165, 172, 112, 25);
+    add(rubyBox_1_3);
+    checkBoxList.add(rubyBox_1_3);
+
+    JCheckBox rubyBox_1_4 = new JCheckBox("NodeJS");
+    rubyBox_1_4.setBounds(281, 114, 112, 25);
+    add(rubyBox_1_4);
+    checkBoxList.add(rubyBox_1_4);
+
+    JCheckBox rubyBox_1_5 = new JCheckBox("React");
+    rubyBox_1_5.setBounds(281, 143, 112, 25);
+    add(rubyBox_1_5);
+    checkBoxList.add(rubyBox_1_5);
+
+    JCheckBox rubyBox_1_6 = new JCheckBox("ReactNative");
+    rubyBox_1_6.setBounds(281, 172, 112, 25);
+    add(rubyBox_1_6);
+    checkBoxList.add(rubyBox_1_6);
+
+    JCheckBox chckbxJavascript = new JCheckBox("JavaScript");
+    chckbxJavascript.setBounds(49, 201, 112, 25);
+    add(chckbxJavascript);
+    checkBoxList.add(chckbxJavascript);
+
 
   }
 
@@ -175,7 +217,10 @@ public class FiltrarVagaView extends JPanel {
 	  json.put("operation", "SEARCH_JOB");
 	  json.put("token", token);
 	  JSONObject data = new JSONObject();
-	  data.put("skill", langs);
+	  
+	  if (!langs.isEmpty()) {		  
+		  data.put("skill", langs);
+	  }
 	  
 	  if (!experience.equals("")) {
 		  data.put("experience", experience);

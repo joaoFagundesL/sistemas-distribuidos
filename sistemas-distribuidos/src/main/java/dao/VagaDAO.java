@@ -52,31 +52,45 @@ public class VagaDAO extends GenericoDAO<Vaga> {
     em.getTransaction().commit();
   }
   
-  public List<Vaga> findBySkills(List<Integer> competenciaIds, String filter) {
-      if (competenciaIds == null || competenciaIds.isEmpty()) {
+  public List<Vaga> findBySkills(List<String> competencias, String filter) {
+      if (competencias == null || competencias.isEmpty()) {
           return new ArrayList<>();
       }
+      
+      if (filter.equals("E")) {
+    	  filter = "AND";
+    	  
+      } else {
+		filter = "OR";
+	  }
 
       EntityManager em = getEM();
       StringBuilder jpql = new StringBuilder("SELECT v FROM Vaga v JOIN v.competencia c WHERE ");
-      for (int i = 0; i < competenciaIds.size(); i++) {
-          jpql.append("c.id = :competenciaId").append(i);
-          if (i < competenciaIds.size() - 1) {
+      for (int i = 0; i < competencias.size(); i++) {
+          jpql.append("c.skill = :competencia").append(i);
+          if (i < competencias.size() - 1) {
               jpql.append(" " + filter + " ");
           }
       }
 
       TypedQuery<Vaga> query = em.createQuery(jpql.toString(), Vaga.class);
-      for (int i = 0; i < competenciaIds.size(); i++) {
-          query.setParameter("competenciaId" + i, competenciaIds.get(i));
+      for (int i = 0; i < competencias.size(); i++) {
+          query.setParameter("competencia" + i, competencias.get(i));
       }
-
+      
+      System.out.println("query = " + jpql.toString());
       return query.getResultList();
   }
   
-  public List<Vaga> getBySkillsAndExperience(List<Integer> competenciaIds, List<Integer> experienciaIds, String filter) {
-	    if (competenciaIds == null || competenciaIds.isEmpty() || experienciaIds == null || experienciaIds.isEmpty()) {
+  public List<Vaga> getBySkillsAndExperience(List<String> competencias, Integer experiencia, String filter) {
+	    if (competencias == null || competencias.isEmpty() || experiencia == null) {
 	        return new ArrayList<>();
+	    }
+	    
+	    if (filter.equals("E")) {
+	        filter = "AND";
+	    } else {
+	        filter = "OR";
 	    }
 
 	    EntityManager em = getEM();
@@ -84,32 +98,45 @@ public class VagaDAO extends GenericoDAO<Vaga> {
 	    jpql.append("JOIN v.competencia c WHERE ");
 
 	    jpql.append("(");
-	    for (int i = 0; i < competenciaIds.size(); i++) {
-	        jpql.append("c.id = :competenciaId").append(i);
-	        if (i < competenciaIds.size() - 1) {
+	    for (int i = 0; i < competencias.size(); i++) {
+	        jpql.append("c.skill = :competenciaId").append(i);
+	        if (i < competencias.size() - 1) {
 	            jpql.append(" ").append(filter).append(" ");
 	        }
 	    }
-	    jpql.append(") AND ");
+	    jpql.append(") " + filter + " ");
 
-	    jpql.append("(");
-	    for (int i = 0; i < experienciaIds.size(); i++) {
-	        jpql.append("v.experiencia.id = :experienciaId").append(i);
-	        if (i < experienciaIds.size() - 1) {
-	            jpql.append(" ").append(filter).append(" ");
-	        }
-	    }
-	    jpql.append(")");
+	    jpql.append("v.experience <= :experiencia");
 
 	    TypedQuery<Vaga> query = em.createQuery(jpql.toString(), Vaga.class);
 
-	    for (int i = 0; i < competenciaIds.size(); i++) {
-	        query.setParameter("competenciaId" + i, competenciaIds.get(i));
+	    for (int i = 0; i < competencias.size(); i++) {
+	        query.setParameter("competenciaId" + i, competencias.get(i));
 	    }
 
-	    for (int i = 0; i < experienciaIds.size(); i++) {
-	        query.setParameter("experienciaId" + i, experienciaIds.get(i));
+	    query.setParameter("experiencia", experiencia);
+
+	    return query.getResultList();
+	}
+
+
+
+  public List<Vaga> getByExperience(Integer experiencia, String filter) {
+	  		  
+	    EntityManager em = getEM();
+	    
+	    if (filter.equals("E")) {
+	    	filter = "AND";
+	    	
+	    } else {
+	    	filter = "OR";
 	    }
+	    System.out.println("experience = " + experiencia);
+	    StringBuilder jpql = new StringBuilder("SELECT DISTINCT v FROM Vaga v WHERE v.experience <= :experiencia");
+
+	    TypedQuery<Vaga> query = em.createQuery(jpql.toString(), Vaga.class);
+
+	    query.setParameter("experiencia", experiencia);
 
 	    return query.getResultList();
 	}

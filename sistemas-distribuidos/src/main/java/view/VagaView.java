@@ -71,7 +71,7 @@ public class VagaView extends JPanel {
     add(skillLabel);
     
     JComboBox comboBox = new JComboBox();
-    comboBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby"}));
+    comboBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby", "React", "ReactNative", "C", "HTML", "CSS", "JavaScript", "TypeScript", "NodeJS"}));
     comboBox.setBounds(113, 159, 94, 22);
     add(comboBox);
 
@@ -341,7 +341,7 @@ public class VagaView extends JPanel {
     separator.setBounds(0, 130, 649, 2);
     add(separator);
 
-    newSkillBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby"}));
+    newSkillBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby", "React", "ReactNative", "C", "HTML", "CSS", "JavaScript", "TypeScript", "NodeJS"}));
     newSkillBox.setBounds(306, 161, 94, 22);
     add(newSkillBox);
 

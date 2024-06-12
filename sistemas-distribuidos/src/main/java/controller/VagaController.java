@@ -26,15 +26,19 @@ public class VagaController {
   public List<Vaga> consultarTodos() {
     return dao.consultarTodos();
   }
-  
-  public List<Vaga> getVagasBySkills(List<Integer> skillsId, String filter) {
-      return dao.findBySkills(skillsId, filter);
+
+  public List<Vaga> getVagasBySkills(List<String> skills, String filter) {
+    return dao.findBySkills(skills, filter);
   }
 
-  
-  public List<Vaga> getBySkillAndExperience(List<Integer> skillsId, List<Integer> experiences, String filter) {
-      return dao.getBySkillsAndExperience(skillsId, experiences, filter);
+  public List<Vaga> getBySkillAndExperience(List<String> skills, Integer experience, String filter) {
+    return dao.getBySkillsAndExperience(skills, experience, filter);
   }
+
+  public List<Vaga> getByExperience (Integer experience, String filter) {
+    return dao.getByExperience(experience, filter);
+  }
+
 
   public Vaga consultarPorId(Integer id) {
     return dao.consultarPorId(Vaga.class, id);
@@ -47,14 +51,14 @@ public class VagaController {
   public void remover(Class<Vaga> clazz, Integer id) {
     dao.remover(Vaga.class, id);
   }
-//  public boolean inserirVagaCandidato(Vaga vaga, Candidato candidato) {
-//    try {
-//      dao.inserirVagaCandidato(vaga.getId(), candidato.getId());
-//      return true;
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//      return false;
-//    }
-//  }
+  //  public boolean inserirVagaCandidato(Vaga vaga, Candidato candidato) {
+  //    try {
+  //      dao.inserirVagaCandidato(vaga.getId(), candidato.getId());
+  //      return true;
+  //    } catch (Exception e) {
+  //      e.printStackTrace();
+  //      return false;
+  //    }
+  //  }
 
 }

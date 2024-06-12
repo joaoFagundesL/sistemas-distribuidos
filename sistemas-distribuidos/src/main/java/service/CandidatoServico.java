@@ -256,73 +256,78 @@ public class CandidatoServico {
 
   }
 
-  
   public void searchJob(JSONObject jsonMessage, JSONObject jsonResponse) {
-	    JwtUtility jwt = new JwtUtility();
-	    JSONObject data = jsonMessage.getJSONObject("data");
-	    String token = jsonMessage.getString("token");
+    JwtUtility jwt = new JwtUtility();
+    JSONObject data = jsonMessage.getJSONObject("data");
+    String token = jsonMessage.getString("token");
 
-	    try {
-	      DecodedJWT decodedJWT = jwt.verifyToken(token);
-	      Claim idClaim = decodedJWT.getClaim("id");
-	      String userIdAsString = idClaim.asString();
-	      Integer id = Integer.parseInt(userIdAsString);
-	      CandidatoController cController = new CandidatoController();
-	      Candidato c = cController.consultarPorId(id);
+    try {
+      DecodedJWT decodedJWT = jwt.verifyToken(token);
+      Claim idClaim = decodedJWT.getClaim("id");
+      String userIdAsString = idClaim.asString();
+      Integer id = Integer.parseInt(userIdAsString);
+      CandidatoController cController = new CandidatoController();
+      Candidato c = cController.consultarPorId(id);
 
-	      if (c == null) {
-	        buildJsonDeleteCandidate(jsonResponse, "USER_NOT_FOUND");
-	        return;
-	      }
+      if (c == null) {
+        buildJsonDeleteCandidate(jsonResponse, "USER_NOT_FOUND");
+        return;
+      }
 
-          JSONArray skillArray = (JSONArray) data.get("skill");
-          
-          List<String> skillList = new ArrayList<>();
-          for (Object skill : skillArray) {
-              skillList.add((String) skill);
+      List<Vaga> vagas;
+
+      VagaController vagaController = new VagaController();
+      String filter = data.getString("filter");
+
+      if (data.has("skill")) {
+        JSONArray skillArray = (JSONArray) data.get("skill");
+
+        List<String> skillList = new ArrayList<>();
+        for (Object skill : skillArray) {
+          skillList.add((String) skill);
+        }
+
+        CompetenciaController compController = new CompetenciaController();
+        List<Integer> skillsId = new ArrayList<>();
+
+        for (int i = 0; i < skillList.size(); i++) {
+          Competencia comp = compController.listarCompetenciaNome(skillList.get(i));
+          if (comp == null) {
+            buildJson(jsonResponse, "SEARCH_JOB", "SKILL_NOT_FOUND");
           }
-          
-          List<Integer> experienceList = new ArrayList<>();
-          if (data.has("experience")) {
-              JSONArray experienceArray = (JSONArray) data.get("experience");
-              for (Object experience : experienceArray) {
-            	  experienceList.add((Integer) experience);
-              }
-          }
-          
-          CompetenciaController compController = new CompetenciaController();
-          List<Integer> skillsId = new ArrayList<>();
-          
-          for (int i = 0; i < skillList.size(); i++) {
-        	  Competencia comp = compController.listarCompetenciaNome(skillList.get(i));
-        	  if (comp == null) {
-        		  buildJson(jsonResponse, "SEARCH_JOB", "SKILL_NOT_FOUND");
-        	  }
-        	  Integer skillId = comp.getId();
-        	  
-        	  skillsId.add(skillId);
-          }
-          
-          VagaController vagaController = new VagaController();
-          String filter = data.getString("filter");
-          
-          List<Vaga> vagas;
-          
-          if (!data.has("experience")) {        	  
-        	  vagas = vagaController.getVagasBySkills(skillsId, filter);
-          } else {
-        	  vagas = vagaController.getBySkillAndExperience(skillsId, experienceList, filter);        	  
-          }
-          
-          
+          Integer skillId = comp.getId();
+
+          skillsId.add(skillId);
+        }
+
+        if (data.has("experience")) {
+          String experienceString = data.getString("experience");
+          Integer experience = Integer.parseInt(experienceString);
+
+          vagas = vagaController.getBySkillAndExperience(skillList, experience, filter);        	  
           buildJsonSearch(jsonResponse, vagas);
+        } else {
+          vagas = vagaController.getVagasBySkills(skillList, filter);
+          buildJsonSearch(jsonResponse, vagas);
+        }
 
-	    } catch(JWTVerificationException e) {
-	      buildInvalidToken(jsonResponse, "SEARCH_JOB");
-	    }
-	  }
+      } else {
+        String experienceString = data.getString("experience");
+        Integer experience = Integer.parseInt(experienceString);
+        System.out.println("ENTROU AQUI!!!!!");
 
-  
+        vagas = vagaController.getByExperience(experience, filter);
+        buildJsonSearch(jsonResponse, vagas);
+
+      }
+
+
+    } catch(JWTVerificationException e) {
+      buildInvalidToken(jsonResponse, "SEARCH_JOB");
+    }
+  }
+
+
   public JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_CANDIDATE");
     res.put("status", status);
@@ -331,28 +336,28 @@ public class CandidatoServico {
     res.put("data", data);
     return res;
   }
-  
-  
+
   public  JSONObject buildJsonSearch(JSONObject res, List<Vaga> vagas) {
-	    res.put("operation", "SEARCH_JOB");
-	    res.put("status", "SUCCESS");
+    res.put("operation", "SEARCH_JOB");
+    res.put("status", "SUCCESS");
 
-	    JSONArray jobset = new JSONArray();
-	    for (Vaga v : vagas) {
-	      JSONObject job = new JSONObject();
-	      job.put("skill", v.getSkill().getSkill());
-	      job.put("experience", v.getExperience());
-	      job.put("id", v.getId()); 
-	      jobset.put(job);
-	    }
+    JSONArray jobset = new JSONArray();
+    for (Vaga v : vagas) {
+      JSONObject job = new JSONObject();
+      job.put("skill", v.getSkill().getSkill());
+      job.put("experience", v.getExperience().toString());
+      job.put("id", v.getId().toString()); 
+      jobset.put(job);
+    }
 
-	    JSONObject data = new JSONObject();
-	    data.put("jobset_size", vagas.size());
-	    data.put("jobset", jobset);
+    JSONObject data = new JSONObject();
+    Integer size = vagas.size();
+    data.put("jobset_size", size.toString());
+    data.put("jobset", jobset);
 
-	    res.put("data", data);
-	    return res;
-	  }
+    res.put("data", data);
+    return res;
+  }
 
   public JSONObject buildJsonDeleteCandidate(JSONObject res, String status) {
     res.put("operation", "DELETE_ACCOUNT_CANDIDATE");
@@ -377,13 +382,13 @@ public class CandidatoServico {
     json.put("data", data);
     return json;
   }
-  
+
   private JSONObject buildJson(JSONObject json, String operation, String status) {
-	    json.put("operation", operation);
-	    json.put("status", status);
-	    JSONObject data = new JSONObject();
-	    json.put("data", data);
-	    return json;
-	  }
+    json.put("operation", operation);
+    json.put("status", status);
+    JSONObject data = new JSONObject();
+    json.put("data", data);
+    return json;
+  }
 
 }
