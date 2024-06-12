@@ -288,7 +288,7 @@ public class CompetenciaServico {
       JSONObject skill = new JSONObject();
       skill.put("skill", competenciaGeneric.getCompetencia().getSkill());
       skill.put("experience", competenciaGeneric.getExperience().toString());
-      skill.put("id", competenciaGeneric.getCompetencia().getId().toString()); 
+      // skill.put("id", competenciaGeneric.getCompetencia().getId().toString()); 
       skillset.put(skill);
     }
 
@@ -310,7 +310,7 @@ public class CompetenciaServico {
 
     data.put("skill", competenciaGeneric.getCompetencia().getSkill());
     data.put("experience", competenciaGeneric.getExperience().toString());
-    data.put("id", competenciaGeneric.getCompetencia().getId().toString()); 
+    // data.put("id", competenciaGeneric.getCompetencia().getId().toString()); 
 
     res.put("data", data);
     return res;

@@ -51,7 +51,7 @@ public class CompetenciaView extends JPanel {
       new Object[][] {
       },
       new String[] {
-        "Id", "Skill", "Experience" 
+       "Skill", "Experience" 
       }
     ));
 
@@ -216,7 +216,6 @@ public class CompetenciaView extends JPanel {
           JSONObject response = Client.getInstance().sendRequest(request);
           JSONObject data = response.getJSONObject("data");
 
-
           if (response.getString("status").equals("SUCCESS")) {
             String sizeString = data.getString("skillset_size");
             Integer size = Integer.parseInt(sizeString);
@@ -228,9 +227,9 @@ public class CompetenciaView extends JPanel {
               String skill = skillObject.getString("skill");
               String experienceString = skillObject.getString("experience");
               Integer experience = Integer.parseInt(experienceString);
-              String idString = skillObject.getString("id");
-              Integer id = Integer.parseInt(idString);
-              popularTabelaCompetencia(skill, experience, id);
+              // String idString = skillObject.getString("id");
+              // Integer id = Integer.parseInt(idString);
+              popularTabelaCompetencia(skill, experience);
             }
 
           }
@@ -310,10 +309,10 @@ public class CompetenciaView extends JPanel {
             String skillUpdated = data.getString("skill");
             String experienceString = data.getString("experience");
             Integer experience = Integer.parseInt(experienceString);
-            String idCompString = data.getString("id");
-            Integer idComp = Integer.parseInt(idCompString);
+            // String idCompString = data.getString("id");
+            // Integer idComp = Integer.parseInt(idCompString);
 
-            popularTabelaCompetencia(skillUpdated, experience, idComp);
+            popularTabelaCompetencia(skillUpdated, experience);
           } else {
             JFrame frame = new JFrame("Mensagem");
             JOptionPane.showMessageDialog(frame, "Id nao existe!");
@@ -400,13 +399,12 @@ public class CompetenciaView extends JPanel {
     modelo.setNumRows(0);
   }
 
-  public void popularTabelaCompetencia(String skill, int experience, int id) {
+  public void popularTabelaCompetencia(String skill, int experience) {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 
-    Object[] arr = new Object[3];
-    arr[0] = id;
-    arr[1] = skill;
-    arr[2] = experience;
+    Object[] arr = new Object[2];
+    arr[0] = skill;
+    arr[1] = experience;
 
     modelo.addRow(arr);		
   }
