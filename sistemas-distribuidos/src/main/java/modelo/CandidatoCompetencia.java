@@ -21,6 +21,7 @@ import javax.persistence.NamedQuery;
     name = "CandidatoCompetencia.listarCompetenciaEspecifica",
     query = "SELECT c FROM CandidatoCompetencia c WHERE c.candidato.id = :candidatoId AND c.competencia.id = :competenciaId"
   )
+  
 })
 
 public class CandidatoCompetencia implements Entidade {

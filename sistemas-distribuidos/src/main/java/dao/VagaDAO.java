@@ -53,16 +53,9 @@ public class VagaDAO extends GenericoDAO<Vaga> {
     em.getTransaction().commit();
   }
 
-  public List<Vaga> findBySkills(List<String> competencias, String filter) {
+  public List<Vaga> findBySkills(List<String> competencias) {
     if (competencias == null || competencias.isEmpty()) {
       return new ArrayList<>();
-    }
-
-    if (filter.equals("E")) {
-      filter = "AND";
-
-    } else {
-      filter = "OR";
     }
 
     EntityManager em = getEM();
@@ -70,7 +63,7 @@ public class VagaDAO extends GenericoDAO<Vaga> {
     for (int i = 0; i < competencias.size(); i++) {
       jpql.append("c.skill = :competencia").append(i);
       if (i < competencias.size() - 1) {
-        jpql.append(" " + filter + " ");
+        jpql.append(" OR ");
       }
     }
 
@@ -83,87 +76,34 @@ public class VagaDAO extends GenericoDAO<Vaga> {
     return query.getResultList();
   }
 
-  //  public List<Vaga> getBySkillsAndExperience(List<String> competencias, Integer experiencia, String filter) {
-  //     if (competencias == null || competencias.isEmpty() || experiencia == null) {
-  //         return new ArrayList<>();
-  //     }
-  //     
-  //     if (filter.equals("E")) {
-  //         filter = "AND";
-  //     } else {
-  //         filter = "OR";
-  //     }
-  //
-  //     EntityManager em = getEM();
-  //     StringBuilder jpql = new StringBuilder("SELECT DISTINCT v FROM Vaga v ");
-  //     jpql.append("JOIN v.competencia c WHERE ");
-  //
-  //     jpql.append("(");
-  //     for (int i = 0; i < competencias.size(); i++) {
-  //         jpql.append("c.skill = :competenciaId").append(i);
-  //         if (i < competencias.size() - 1) {
-  //             jpql.append(" ").append(filter).append(" ");
-  //         }
-  //     }
-  //     jpql.append(") " + filter + " ");
-  //
-  //     jpql.append("v.experience <= :experiencia");
-  //
-  //     TypedQuery<Vaga> query = em.createQuery(jpql.toString(), Vaga.class);
-  //
-  //     for (int i = 0; i < competencias.size(); i++) {
-  //         query.setParameter("competenciaId" + i, competencias.get(i));
-  //     }
-  //
-  //     query.setParameter("experiencia", experiencia);
-  //
-  //     return query.getResultList();
-  // }
-  //
-
   public List<Vaga> getBySkillsAndExperience(List<String> competencias, Integer experiencia, String filter) {
-	    if (competencias == null || competencias.isEmpty() || experiencia == null) {
-	        return new ArrayList<>();
-	    }
-	    
-	    // Ajustando o valor do filtro
-	    if (filter.equals("E")) {
-	        filter = "AND";
-	    } else {
-	        filter = "OR";
-	    }
+    if (competencias == null || competencias.isEmpty() || experiencia == null) {
+      return new ArrayList<>();
+    }
+    EntityManager em = getEM();
+    StringBuilder jpql = new StringBuilder("SELECT DISTINCT v FROM Vaga v ");
+    jpql.append("JOIN v.competencia c WHERE ");
 
-	    EntityManager em = getEM();
-	    StringBuilder jpql = new StringBuilder("SELECT DISTINCT v FROM Vaga v ");
-	    jpql.append("JOIN v.competencia c WHERE ");
+    for (int i = 0; i < competencias.size(); i++) {
+      jpql.append("(c.skill = :competenciaId").append(i).append(" ").append(filter).append(" v.experience <= :experiencia").append(i).append(")");
+      if (i < competencias.size() - 1) {
+        jpql.append(" OR ");
+      }
+    }
 
-	    for (int i = 0; i < competencias.size(); i++) {
-	        jpql.append("(c.skill = :competenciaId").append(i).append(" ").append(filter).append(" v.experience <= :experiencia").append(i).append(")");
-	        if (i < competencias.size() - 1) {
-	            jpql.append(" OR ");
-	        }
-	    }
+    TypedQuery<Vaga> query = em.createQuery(jpql.toString(), Vaga.class);
 
-	    TypedQuery<Vaga> query = em.createQuery(jpql.toString(), Vaga.class);
+    for (int i = 0; i < competencias.size(); i++) {
+      query.setParameter("competenciaId" + i, competencias.get(i));
+      query.setParameter("experiencia" + i, experiencia);
+    }
 
-	    for (int i = 0; i < competencias.size(); i++) {
-	        query.setParameter("competenciaId" + i, competencias.get(i));
-	        query.setParameter("experiencia" + i, experiencia);
-	    }
+    return query.getResultList();
+  }
 
-	    return query.getResultList();
-	}
-
-  public List<Vaga> getByExperience(Integer experiencia, String filter) {
+  public List<Vaga> getByExperience(Integer experiencia) {
 
     EntityManager em = getEM();
-
-    if (filter.equals("E")) {
-      filter = "AND";
-
-    } else {
-      filter = "OR";
-    }
     System.out.println("experience = " + experiencia);
     StringBuilder jpql = new StringBuilder("SELECT DISTINCT v FROM Vaga v WHERE v.experience <= :experiencia");
 

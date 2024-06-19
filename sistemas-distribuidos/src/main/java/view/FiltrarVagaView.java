@@ -24,15 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cliente.Client;
-import javax.swing.JSeparator;
-import java.awt.Color;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
-import java.awt.Choice;
-import java.awt.Checkbox;
-import java.awt.CheckboxGroup;
-import java.awt.Label;
 
 public class FiltrarVagaView extends JPanel {
 
@@ -51,11 +43,11 @@ public class FiltrarVagaView extends JPanel {
 
     checkBoxList = new ArrayList<>(); 
     
-    JCheckBox eBox = new JCheckBox("E");
+    JCheckBox eBox = new JCheckBox("AND");
     eBox.setBounds(165, 85, 112, 25);
     add(eBox);
     
-    JCheckBox ouBox = new JCheckBox("OU");
+    JCheckBox ouBox = new JCheckBox("OR");
     ouBox.setBounds(49, 85, 112, 25);
     add(ouBox);
 
@@ -217,16 +209,23 @@ public class FiltrarVagaView extends JPanel {
 	  json.put("operation", "SEARCH_JOB");
 	  json.put("token", token);
 	  JSONObject data = new JSONObject();
+
+    int aux1 = 0, aux2 = 0;
 	  
 	  if (!langs.isEmpty()) {		  
 		  data.put("skill", langs);
+      aux1 = 1;
 	  }
 	  
 	  if (!experience.equals("")) {
 		  data.put("experience", experience);
+      aux2 = 1;
 	  }
 	  
-	  data.put("filter", filter);
+    if (aux1 == 1 && aux2 == 1) {
+	    data.put("filter", filter);
+    }
+
 	  json.put("data", data);
 	  return json;
   }

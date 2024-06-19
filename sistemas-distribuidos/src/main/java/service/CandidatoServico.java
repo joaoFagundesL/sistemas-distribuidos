@@ -277,7 +277,12 @@ public class CandidatoServico {
       List<Vaga> vagas;
 
       VagaController vagaController = new VagaController();
-      String filter = data.getString("filter");
+
+      String filter = "";
+
+      if (data.has("filter")) {
+        filter = data.getString("filter");
+      }
 
       if (data.has("skill")) {
         JSONArray skillArray = (JSONArray) data.get("skill");
@@ -307,16 +312,15 @@ public class CandidatoServico {
           vagas = vagaController.getBySkillAndExperience(skillList, experience, filter);        	  
           buildJsonSearch(jsonResponse, vagas);
         } else {
-          vagas = vagaController.getVagasBySkills(skillList, filter);
+          vagas = vagaController.getVagasBySkills(skillList);
           buildJsonSearch(jsonResponse, vagas);
         }
 
       } else {
         String experienceString = data.getString("experience");
         Integer experience = Integer.parseInt(experienceString);
-        System.out.println("ENTROU AQUI!!!!!");
 
-        vagas = vagaController.getByExperience(experience, filter);
+        vagas = vagaController.getByExperience(experience);
         buildJsonSearch(jsonResponse, vagas);
 
       }

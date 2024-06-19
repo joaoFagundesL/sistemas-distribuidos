@@ -29,16 +29,16 @@ public class VagaController {
     return dao.consultarTodos();
   }
 
-  public List<Vaga> getVagasBySkills(List<String> skills, String filter) {
-    return dao.findBySkills(skills, filter);
+  public List<Vaga> getVagasBySkills(List<String> skills) {
+    return dao.findBySkills(skills);
   }
 
   public List<Vaga> getBySkillAndExperience(List<String> skills, Integer experience, String filter) {
     return dao.getBySkillsAndExperience(skills, experience, filter);
   }
 
-  public List<Vaga> getByExperience (Integer experience, String filter) {
-    return dao.getByExperience(experience, filter);
+  public List<Vaga> getByExperience (Integer experience) {
+    return dao.getByExperience(experience);
   }
 
 
