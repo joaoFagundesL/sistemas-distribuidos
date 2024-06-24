@@ -33,6 +33,8 @@ public class Vaga implements Entidade {
   private Competencia competencia;
 
   private Integer experience;
+  private String available;
+  private String searchable;
 
   @Cascade(org.hibernate.annotations.CascadeType.DELETE)
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "vaga")
@@ -81,4 +83,20 @@ public List<VagaCandidato> getVagaCandidato() {
   public void setId(Integer id) {
     this.id = id;
   }
+
+public String getAvailable() {
+	return available;
+}
+
+public void setAvailable(String available) {
+	this.available = available;
+}
+
+public String getSearchable() {
+	return searchable;
+}
+
+public void setSearchable(String searchable) {
+	this.searchable = searchable;
+}
 }

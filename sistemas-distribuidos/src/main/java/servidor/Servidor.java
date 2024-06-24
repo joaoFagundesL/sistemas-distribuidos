@@ -268,7 +268,15 @@ public class Servidor extends JFrame {
       case "SEARCH_JOB":
       candidatoServico.searchJob(jsonMessage, jsonResponse);
       break;
-
+      
+      case "SET_JOB_AVAILABLE":
+    	  vagaServico.setJobAvailable(jsonMessage, jsonResponse);
+      break;
+      
+      case "SET_JOB_SEARCHABLE":
+    	  vagaServico.setJobSearchable(jsonMessage, jsonResponse);
+      break;
+      
       default:
       buildInvalidOperation(jsonResponse, operation);
     }

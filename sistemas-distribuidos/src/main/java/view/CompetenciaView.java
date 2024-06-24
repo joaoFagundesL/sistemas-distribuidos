@@ -71,12 +71,12 @@ public class CompetenciaView extends JPanel {
     add(skillLabel);
     
     JComboBox comboBox = new JComboBox();
-    comboBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby", "React", "ReactNative", "C", "HTML", "CSS", "JavaScript", "TypeScript", "NodeJS"}));
+    comboBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby", "React", "ReactNative", "C", "HTML", "CSS", "JavaScript", "TypeScript", "NodeJs"}));
     comboBox.setBounds(113, 159, 94, 22);
     add(comboBox);
     
     JComboBox comboBox_1 = new JComboBox();
-    comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby", "React", "ReactNative", "C", "HTML", "CSS", "JavaScript", "TypeScript", "NodeJS"}));
+    comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby", "React", "ReactNative", "C", "HTML", "CSS", "JavaScript", "TypeScript", "NodeJs"}));
     comboBox_1.setBounds(69, 76, 94, 22);
     add(comboBox_1);
 
@@ -336,7 +336,7 @@ public class CompetenciaView extends JPanel {
     separator.setBounds(0, 130, 649, 2);
     add(separator);
     
-    newSkillBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby", "React", "ReactNative", "C", "HTML", "CSS", "JavaScript", "TypeScript", "NodeJS"}));
+    newSkillBox.setModel(new DefaultComboBoxModel(new String[] {"Java", "Ruby", "React", "ReactNative", "C", "HTML", "CSS", "JavaScript", "TypeScript", "NodeJs"}));
     newSkillBox.setBounds(306, 161, 94, 22);
     add(newSkillBox);
     

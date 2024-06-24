@@ -17,14 +17,15 @@ public class VagaDAO extends GenericoDAO<Vaga> {
   public void insertWithQuery(Vaga vaga) throws Exception {
     EntityManager em = getEM();
 
-    Query query = em.createNativeQuery("INSERT INTO Vaga(experience, competencia_id, empresa_id)"
-      + " VALUES (?, ?, ?)");
+    Query query = em.createNativeQuery("INSERT INTO Vaga(experience, competencia_id, empresa_id, searchable, available)"
+      + " VALUES (?, ?, ?, ?, ?)");
 
     em.getTransaction().begin();
     query.setParameter(2, vaga.getSkill().getId());
     query.setParameter(3, vaga.getEmpresa().getId());
     query.setParameter(1, vaga.getExperience());
-
+    query.setParameter(4, vaga.getSearchable());
+    query.setParameter(5, vaga.getAvailable());
     query.executeUpdate();
     em.getTransaction().commit();
   }
@@ -52,6 +53,30 @@ public class VagaDAO extends GenericoDAO<Vaga> {
     em.merge(vaga);
     em.getTransaction().commit();
   }
+  
+  public void updateAvailable(Vaga vaga, String available) {
+	    EntityManager em = getEM();
+
+	    em.getTransaction().begin();
+
+	    if (available != null) {
+	      vaga.setAvailable(available);
+	    }
+	    em.merge(vaga);
+	    em.getTransaction().commit();
+	  }
+  
+  public void updateSearchable(Vaga vaga, String searchable) {
+	    EntityManager em = getEM();
+
+	    em.getTransaction().begin();
+
+	    if (searchable != null) {
+	      vaga.setSearchable(searchable);
+	    }
+	    em.merge(vaga);
+	    em.getTransaction().commit();
+	  }
 
   public List<Vaga> findBySkills(List<String> competencias) {
     if (competencias == null || competencias.isEmpty()) {

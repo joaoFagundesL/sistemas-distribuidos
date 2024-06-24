@@ -181,7 +181,7 @@ public class FiltrarVagaView extends JPanel {
     add(rubyBox_1_3);
     checkBoxList.add(rubyBox_1_3);
 
-    JCheckBox rubyBox_1_4 = new JCheckBox("NodeJS");
+    JCheckBox rubyBox_1_4 = new JCheckBox("NodeJs");
     rubyBox_1_4.setBounds(281, 114, 112, 25);
     add(rubyBox_1_4);
     checkBoxList.add(rubyBox_1_4);

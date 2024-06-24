@@ -10,9 +10,12 @@ import modelo.Vaga;
 public class VagaController {
   VagaDAO dao = new VagaDAO();
 
-  public Vaga insert(Competencia competencia, Integer experience, Empresa empresa) {
+  public Vaga insert(Competencia competencia, Integer experience, Empresa empresa, String available,
+		  			String searchable) {
     Vaga v = new Vaga();
     v.setSkill(competencia);
+    v.setSearchable(searchable);
+    v.setAvailable(available);
     v.setExperience(experience);
     v.setEmpresa(empresa);
 
@@ -27,6 +30,14 @@ public class VagaController {
 
   public List<Vaga> consultarTodos() {
     return dao.consultarTodos();
+  }
+  
+  public void setAvailable(Vaga vaga, String available) {
+	  dao.updateAvailable(vaga, available);
+  }
+  
+  public void setSearchable(Vaga vaga, String searchable) {
+	  dao.updateSearchable(vaga, searchable);
   }
 
   public List<Vaga> getVagasBySkills(List<String> skills) {

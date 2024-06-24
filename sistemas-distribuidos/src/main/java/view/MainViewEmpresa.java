@@ -43,6 +43,7 @@ public class MainViewEmpresa {
   public void initComponents(LoginView loginClass) {
     final EmpresaView empresaView = new EmpresaView();
     final VagaView vagaView = new VagaView();
+    final VagaViewSet vagaView2 = new VagaViewSet();
 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;
@@ -68,6 +69,7 @@ public class MainViewEmpresa {
     panel.setBackground(Color.RED);
     tabbedPane.addTab("New tab", null, empresaView, null);
     tabbedPane.addTab("New tab", null, vagaView, null);
+    tabbedPane.addTab("New tab", null, vagaView2, null);
     EmpresaView clienteView_1 = new EmpresaView();
     clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 
@@ -99,10 +101,11 @@ public class MainViewEmpresa {
     btnGerenciarCurso.setBounds(23, 148, 171, 27);
     panel_2.add(btnGerenciarCurso);
 
-    JButton btnGerenciarDisciplina = new JButton("CRUD3");
+    JButton btnGerenciarDisciplina = new JButton("Available/Searchable");
     btnGerenciarDisciplina.addActionListener(new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {			
+	        tabbedPane.setSelectedIndex(2);
 		}
 
     });

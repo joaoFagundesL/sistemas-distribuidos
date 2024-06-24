@@ -31,6 +31,8 @@ public class VagaServico {
 
     String skill = data.getString("skill");
     String experienceString = data.getString("experience");
+    String searchable = data.getString("searchable");
+    String available = data.getString("available");
 
     Integer experience = Integer.parseInt(experienceString);
 
@@ -56,7 +58,7 @@ public class VagaServico {
         return;
       }
 
-      Vaga vaga = vagaController.insert(competencia, experience, c);
+      Vaga vaga = vagaController.insert(competencia, experience, c, available, searchable);
 
       buildJson(jsonResponse, "SUCCESS", "INCLUDE_JOB");
     } catch(JWTVerificationException e) {
@@ -98,6 +100,81 @@ public class VagaServico {
     }
   }
 
+  public void setJobAvailable(JSONObject jsonMessage, JSONObject jsonResponse) {
+	  JwtUtility jwt = new JwtUtility();
+	  String token = jsonMessage.getString("token");
+
+	    JSONObject dataJson = jsonMessage.getJSONObject("data");
+
+	    try {
+	      DecodedJWT decodedJWT = jwt.verifyToken(token);
+	      Claim idClaim = decodedJWT.getClaim("id");
+	      String userIdAsString = idClaim.asString();
+	      Integer id = Integer.parseInt(userIdAsString);
+	      Empresa empresa = empresaController.consultarPorId(id);
+
+	      if (empresa == null) {
+	        buildLookupJob(jsonResponse, "USER_NOT_FOUND", "", null, null, null, null);    
+	        return;
+	      }
+
+	      String vagaIdString = dataJson.getString("id");
+	      Integer vagaId = Integer.parseInt(vagaIdString);
+
+	      Vaga vaga = empresaController.consultarVagaEmpresaPorId(vagaId, empresa.getId());
+
+	      if (vaga == null) {
+	        buildJson(jsonResponse, "JOB_NOT_FOUND", "SET_JOB_AVAILABLE");
+	        return;
+	      }
+
+	     String available = dataJson.getString("available");
+	     vagaController.setAvailable(vaga, available);
+
+	      buildJson(jsonResponse, "SUCCESS", "SET_JOB_AVAILABLE");    
+
+	    } catch(JWTVerificationException e) {
+	      buildJson(jsonResponse, "INVALID_TOKEN", "LOOKUP_JOB");
+	    }
+  }
+  
+  public void setJobSearchable(JSONObject jsonMessage, JSONObject jsonResponse) {
+	  JwtUtility jwt = new JwtUtility();
+	  String token = jsonMessage.getString("token");
+
+	    JSONObject dataJson = jsonMessage.getJSONObject("data");
+
+	    try {
+	      DecodedJWT decodedJWT = jwt.verifyToken(token);
+	      Claim idClaim = decodedJWT.getClaim("id");
+	      String userIdAsString = idClaim.asString();
+	      Integer id = Integer.parseInt(userIdAsString);
+	      Empresa empresa = empresaController.consultarPorId(id);
+
+	      if (empresa == null) {
+	        buildLookupJob(jsonResponse, "USER_NOT_FOUND", "", null, null, null, null);    
+	        return;
+	      }
+
+	      String vagaIdString = dataJson.getString("id");
+	      Integer vagaId = Integer.parseInt(vagaIdString);
+
+	      Vaga vaga = empresaController.consultarVagaEmpresaPorId(vagaId, empresa.getId());
+
+	      if (vaga == null) {
+	        buildJson(jsonResponse, "JOB_NOT_FOUND", "SET_JOB_SEARCHABLE");
+	        return;
+	      }
+
+	     String searchable = dataJson.getString("searchable");
+	     vagaController.setSearchable(vaga, searchable);
+
+	      buildJson(jsonResponse, "SUCCESS", "SET_JOB_SEARCHABLE");    
+
+	    } catch(JWTVerificationException e) {
+	      buildJson(jsonResponse, "INVALID_TOKEN", "LOOKUP_JOB");
+	    }
+  }
 
   public void lookupJob(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
@@ -113,7 +190,7 @@ public class VagaServico {
       Empresa empresa = empresaController.consultarPorId(id);
 
       if (empresa == null) {
-        buildLookupJob(jsonResponse, "USER_NOT_FOUND", "", null, null);    
+        buildLookupJob(jsonResponse, "USER_NOT_FOUND", "", null, null, null, null);    
         return;
       }
 
@@ -130,7 +207,7 @@ public class VagaServico {
       Competencia skill = vaga.getSkill();
       Integer experience = vaga.getExperience();
 
-      buildLookupJob(jsonResponse, "SUCCESS", skill.getSkill(), experience.toString(), vagaId.toString());    
+      buildLookupJob(jsonResponse, "SUCCESS", skill.getSkill(), experience.toString(), vagaId.toString(), vaga.getAvailable(), vaga.getSearchable());    
 
     } catch(JWTVerificationException e) {
       buildJson(jsonResponse, "INVALID_TOKEN", "LOOKUP_JOB");
@@ -153,12 +230,12 @@ public class VagaServico {
       buildJobset(jsonResponse, vagas);
 
     } catch(JWTVerificationException e) {
-      buildJson(jsonResponse, "INVALID_TOKEN", "LOOKUP_SKILLSET");
+      buildJson(jsonResponse, "INVALID_TOKEN", "LOOKUP_JOBSET");
     }
   }
 
  public  JSONObject buildJobset(JSONObject res, List<Vaga> vagas) {
-    res.put("operation", "LOOKUP_SKILLSET");
+    res.put("operation", "LOOKUP_JOBSET");
     res.put("status", "SUCCESS");
 
     JSONArray jobset = new JSONArray();
@@ -166,10 +243,13 @@ public class VagaServico {
       JSONObject skill = new JSONObject();
       skill.put("skill", vaga.getSkill().getSkill());
       skill.put("experience", vaga.getExperience().toString());
+      skill.put("available", vaga.getAvailable());
+      skill.put("searchable", vaga.getSearchable());
       skill.put("id", vaga.getId().toString()); 
       jobset.put(skill);
     }
 
+    
     Integer size = vagas.size();
 
     JSONObject data = new JSONObject();
@@ -179,6 +259,7 @@ public class VagaServico {
     res.put("data", data);
     return res;
   }
+
 
   public void updateJob(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
@@ -260,12 +341,15 @@ public class VagaServico {
     }
   }
 
-  public JSONObject buildLookupJob(JSONObject jsonResponse, String status, String skill, String experience, String id) { 
+  public JSONObject buildLookupJob(JSONObject jsonResponse, String status, String skill, String experience, String id,
+		  	                      String available, String searchable) { 
     jsonResponse.put("operation", "LOOKUP_JOB"); 
     jsonResponse.put("status", status);
     JSONObject data = new JSONObject();
     data.put("skill", skill);
     data.put("experience", experience);
+    data.put("searchable", searchable);
+    data.put("available", available);
     data.put("id", id);
     jsonResponse.put("data", data);
     return jsonResponse;
