@@ -1,7 +1,10 @@
 package controller;
+import java.util.List;
+
 import dao.CandidatoDAO;
 import modelo.Candidato;
 import modelo.Usuario;
+import modelo.Vaga;
 
 /* mudar para GenericoController e implementar com usuario */
 public class CandidatoController {
@@ -10,6 +13,11 @@ public class CandidatoController {
   public boolean isUserValid(String email) {
     Candidato candidato = dao.consultarPeloUsuarioIdEmail(email);
     return candidato != null; 
+  }
+  
+
+  public List<Candidato> getBySkills(List<String> skills) {
+    return dao.findBySkills(skills);
   }
 
   public Candidato consultarPorId(Integer id) {

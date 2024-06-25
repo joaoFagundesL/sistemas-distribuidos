@@ -44,6 +44,7 @@ public class MainViewEmpresa {
     final EmpresaView empresaView = new EmpresaView();
     final VagaView vagaView = new VagaView();
     final VagaViewSet vagaView2 = new VagaViewSet();
+    final SearchCandidateView searchCandidateView = new SearchCandidateView();
 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;
@@ -70,6 +71,7 @@ public class MainViewEmpresa {
     tabbedPane.addTab("New tab", null, empresaView, null);
     tabbedPane.addTab("New tab", null, vagaView, null);
     tabbedPane.addTab("New tab", null, vagaView2, null);
+    tabbedPane.addTab("New tab", null, searchCandidateView, null);
     EmpresaView clienteView_1 = new EmpresaView();
     clienteView_1.setBackground(SystemColor.inactiveCaptionBorder);
 
@@ -111,8 +113,21 @@ public class MainViewEmpresa {
     });
     btnGerenciarDisciplina.setForeground(Color.WHITE);
     btnGerenciarDisciplina.setBackground(Color.DARK_GRAY);
-    btnGerenciarDisciplina.setBounds(23, 187, 171, 27);
+    btnGerenciarDisciplina.setBounds(23, 235, 171, 27);
     panel_2.add(btnGerenciarDisciplina);
+    
+    JButton btnGerenciarSearch = new JButton("Available/Searchable");
+    btnGerenciarSearch.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {			
+	        tabbedPane.setSelectedIndex(3);
+		}
+
+    });
+    btnGerenciarSearch.setForeground(Color.WHITE);
+    btnGerenciarSearch.setBackground(Color.DARK_GRAY);
+    btnGerenciarSearch.setBounds(23, 187, 171, 27);
+    panel_2.add(btnGerenciarSearch);
 
     JLabel lblSistemaFaculdade = new JLabel("Recruiter");
     lblSistemaFaculdade.setFont(new Font("Dialog", Font.BOLD, 16));
