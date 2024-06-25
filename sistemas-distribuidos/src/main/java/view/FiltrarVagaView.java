@@ -58,7 +58,7 @@ public class FiltrarVagaView extends JPanel {
       new Object[][] {
       },
       new String[] {
-        "Id", "Skill", "Experience" 
+        "Id", "Skill", "Experience", "Available"
       }
     ));
 
@@ -113,16 +113,19 @@ public class FiltrarVagaView extends JPanel {
                 JSONArray jobset = data.getJSONArray("jobset");
                 
                 limparTable();
-                
-                for (int i = 0; i < size; i++) {
-                  JSONObject vagaObject = jobset.getJSONObject(i);
-                  String skill = vagaObject.getString("skill");
-                  String experienceVagaString = vagaObject.getString("experience");
-                  Integer experienceVaga = Integer.parseInt(experienceVagaString);
-                  String idString = vagaObject.getString("id");
-                  Integer id = Integer.parseInt(idString);
-                  popularTabelaVaga(skill, experienceVaga, id);
-                }
+                 if (jobset.length() > 0) {                	
+                	for (int i = 0; i < size; i++) {
+                		JSONObject vagaObject = jobset.getJSONObject(i);
+                		String skill = vagaObject.getString("skill");
+                		String experienceVagaString = vagaObject.getString("experience");
+                		Integer experienceVaga = Integer.parseInt(experienceVagaString);
+                		String idString = vagaObject.getString("id");
+                		Integer id = Integer.parseInt(idString);
+                		
+                		String available = vagaObject.getString("available");
+                		popularTabelaVaga(skill, experienceVaga, id, available);
+                	}
+                 }
               }
 
           } catch(IOException err) {
@@ -236,13 +239,14 @@ public class FiltrarVagaView extends JPanel {
     modelo.setNumRows(0);
   }
 
-  public void popularTabelaVaga(String skill, int experience, int id) {
+  public void popularTabelaVaga(String skill, int experience, int id, String available) {
     DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 
-    Object[] arr = new Object[3];
+    Object[] arr = new Object[4];
     arr[0] = id;
     arr[1] = skill;
     arr[2] = experience;
+    arr[3] = available;
 
     modelo.addRow(arr);    
   }

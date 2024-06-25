@@ -55,6 +55,7 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
     if (competencias == null || competencias.isEmpty() || experiencia == null) {
       return new ArrayList<>();
     }
+
     EntityManager em = getEM();
     StringBuilder jpql = new StringBuilder("SELECT c, co FROM Candidato c ");
     jpql.append("JOIN c.competencias co WHERE ");
@@ -77,9 +78,7 @@ public class CandidatoDAO extends GenericoDAO<Candidato> {
   }
 
   public List<Object []> getByExperience(Integer experiencia) {
-
     EntityManager em = getEM();
-    System.out.println("experience = " + experiencia);
     StringBuilder jpql = new StringBuilder("SELECT c, co FROM Candidato c JOIN c.competencias co WHERE co.experience <= :experiencia");
 
     TypedQuery<Object[]> query = em.createQuery(jpql.toString(), Object[].class);

@@ -113,10 +113,10 @@ public class MainViewEmpresa {
     });
     btnGerenciarDisciplina.setForeground(Color.WHITE);
     btnGerenciarDisciplina.setBackground(Color.DARK_GRAY);
-    btnGerenciarDisciplina.setBounds(23, 235, 171, 27);
+    btnGerenciarDisciplina.setBounds(23, 226, 171, 27);
     panel_2.add(btnGerenciarDisciplina);
     
-    JButton btnGerenciarSearch = new JButton("Available/Searchable");
+    JButton btnGerenciarSearch = new JButton("Search Candidate");
     btnGerenciarSearch.addActionListener(new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {			

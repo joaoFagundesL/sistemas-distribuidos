@@ -325,12 +325,10 @@ public class CandidatoServico {
 
       }
 
-
     } catch(JWTVerificationException e) {
       buildInvalidToken(jsonResponse, "SEARCH_JOB");
     }
   }
-
 
   public JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_CANDIDATE");
@@ -346,16 +344,21 @@ public class CandidatoServico {
     res.put("status", "SUCCESS");
 
     JSONArray jobset = new JSONArray();
+    Integer size = 0;
+
     for (Vaga v : vagas) {
-      JSONObject job = new JSONObject();
-      job.put("skill", v.getSkill().getSkill());
-      job.put("experience", v.getExperience().toString());
-      job.put("id", v.getId().toString()); 
-      jobset.put(job);
+      if (v.getSearchable().equals("YES")) {
+        size++;
+        JSONObject job = new JSONObject();
+        job.put("skill", v.getSkill().getSkill());
+        job.put("experience", v.getExperience().toString());
+        job.put("id", v.getId().toString()); 
+        job.put("available", v.getAvailable());
+        jobset.put(job);
+      }
     }
 
     JSONObject data = new JSONObject();
-    Integer size = vagas.size();
     data.put("jobset_size", size.toString());
     data.put("jobset", jobset);
 

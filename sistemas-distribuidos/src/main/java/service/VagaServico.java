@@ -239,7 +239,7 @@ public class VagaServico {
     res.put("status", "SUCCESS");
 
     JSONArray jobset = new JSONArray();
-    for (Vaga  vaga: vagas) {
+    for (Vaga vaga: vagas) {
       JSONObject skill = new JSONObject();
       skill.put("skill", vaga.getSkill().getSkill());
       skill.put("experience", vaga.getExperience().toString());
@@ -249,7 +249,6 @@ public class VagaServico {
       jobset.put(skill);
     }
 
-    
     Integer size = vagas.size();
 
     JSONObject data = new JSONObject();
