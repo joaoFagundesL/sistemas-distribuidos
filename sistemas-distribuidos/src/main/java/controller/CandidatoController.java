@@ -14,11 +14,20 @@ public class CandidatoController {
     Candidato candidato = dao.consultarPeloUsuarioIdEmail(email);
     return candidato != null; 
   }
-  
 
-  public List<Candidato> getBySkills(List<String> skills) {
+
+  public List<Object[]> getBySkills(List<String> skills) {
     return dao.findBySkills(skills);
   }
+
+  public List<Object[]> getBySkillsAndExperience(List<String> skills, Integer experience, String filter) {
+    return dao.getBySkillsAndExperience(skills, experience, filter);
+  }
+
+  public List<Object[]> getByExperience(Integer experience) {
+    return dao.getByExperience(experience);
+  }
+
 
   public Candidato consultarPorId(Integer id) {
     return dao.consultarPorId(Candidato.class, id);
