@@ -11,13 +11,14 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import controller.CandidatoController;
+import controller.CandidatoEmpresaController;
 import controller.CompetenciaController;
 import controller.UsuarioController;
 import controller.VagaController;
 import dao.CandidatoDAO;
 import dao.UsuarioDAO;
 import modelo.Candidato;
-import modelo.CandidatoCompetencia;
+import modelo.CandidatoEmpresa;
 import modelo.Competencia;
 import modelo.Usuario;
 import modelo.Vaga;
@@ -207,13 +208,11 @@ public class CandidatoServico {
     }
 
     if (!fController.isUserValid(email)) {
-      // buildJsonLoginCandidato(jsonResponse, "USER_NOT_FOUND", "", email, senha);
       buildJsonLoginCandidato(jsonResponse, "INVALID_LOGIN", "");
       return;
     }
 
     if (!fController.isPasswordValid(email, senha)) {
-      // buildJsonLoginCandidato(jsonResponse, "INVALID_PASSWORD", "", email, senha);
       buildJsonLoginCandidato(jsonResponse, "INVALID_LOGIN", "");
       return;
     } 
@@ -222,11 +221,12 @@ public class CandidatoServico {
     String idString = String.valueOf(id);
     String token = JwtUtility.generateToken(idString, "candidate");
     buildJsonLoginCandidato(jsonResponse, "SUCCESS", token);
+    
+   // getCompany(jsonResponse);
   }
 
   public void deleteAccount(JSONObject jsonMessage, JSONObject jsonResponse) {
     JwtUtility jwt = new JwtUtility();
-    // JSONObject data = jsonMessage.getJSONObject("data");
     String token = jsonMessage.getString("token");
 
     try {
@@ -329,6 +329,34 @@ public class CandidatoServico {
       buildInvalidToken(jsonResponse, "SEARCH_JOB");
     }
   }
+  
+  public void getCompany(JSONObject jsonMessage, JSONObject jsonResponse) {
+	  JwtUtility jwt = new JwtUtility();
+	    JSONObject data = jsonMessage.getJSONObject("data");
+	    String token = jsonMessage.getString("token");
+	
+	    try {
+	      DecodedJWT decodedJWT = jwt.verifyToken(token);
+	      Claim idClaim = decodedJWT.getClaim("id");
+	      String userIdAsString = idClaim.asString();
+	      Integer id = Integer.parseInt(userIdAsString);
+	      CandidatoController cController = new CandidatoController();
+	      Candidato c = cController.consultarPorId(id);
+	
+	      if (c == null) {
+	        buildJson(jsonResponse, "USER_NOT_FOUND", "GET_COMPANY");
+	        return;
+	      }
+	      
+	      CandidatoEmpresaController ceController = new CandidatoEmpresaController();
+	      List<CandidatoEmpresa> infos = ceController.consultarEmpresas(id);
+	      buildJsonGet(jsonResponse, infos);
+	      System.out.println("ID USER = " + id);
+	      
+	    } catch(JWTVerificationException e) {
+	      buildInvalidToken(jsonResponse, "GET_COMPANY");
+	    }
+  }
 
   public JSONObject buildJsonLoginCandidato(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_CANDIDATE");
@@ -365,6 +393,30 @@ public class CandidatoServico {
     res.put("data", data);
     return res;
   }
+  
+  public  JSONObject buildJsonGet(JSONObject res, List<CandidatoEmpresa> infos) {
+	    res.put("operation", "GET_COMPANY");
+	    res.put("status", "SUCCESS");
+
+	    JSONArray companyset = new JSONArray();
+
+	    for (CandidatoEmpresa ce : infos) {
+	        JSONObject company = new JSONObject();
+	        company.put("name", ce.getEmpresa().getUsuario().getNome());
+	        company.put("email", ce.getEmpresa().getUsuario().getEmail());
+	        company.put("industry", ce.getEmpresa().getIndustry()); 
+	        company.put("description", ce.getEmpresa().getDescricao());
+	        companyset.put(company);
+	      }
+	
+	    JSONObject data = new JSONObject();
+	    Integer size = infos.size();
+	    data.put("company_size", size.toString());
+	    data.put("company", companyset);
+
+	    res.put("data", data);
+	    return res;
+	  }
 
   public JSONObject buildJsonDeleteCandidate(JSONObject res, String status) {
     res.put("operation", "DELETE_ACCOUNT_CANDIDATE");

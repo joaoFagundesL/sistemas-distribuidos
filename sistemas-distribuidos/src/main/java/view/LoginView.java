@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,8 +15,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
 import org.json.JSONObject;
+
 import cliente.Client;
 
 public class LoginView {
@@ -26,6 +30,7 @@ public class LoginView {
   private JTextField textField;
   private static LoginView instance = null;
   private JPasswordField passwordField;
+  
 
   @SuppressWarnings("rawtypes")
   JComboBox comboBox = new JComboBox();
@@ -38,6 +43,7 @@ public class LoginView {
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.setVisible(true);
   }
+ 
   
   public static LoginView getInstance() {
 	    if (instance == null) {
@@ -169,6 +175,7 @@ public class LoginView {
       } else {
         frame.setVisible(false);
         MainViewEmpresa.getInstance().initComponents(this);
+       
       }
 
     } catch(IOException e) {

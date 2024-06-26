@@ -12,6 +12,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import controller.CandidatoCompetenciaController;
 import controller.CandidatoController;
+import controller.CandidatoEmpresaController;
 import controller.CompetenciaController;
 import controller.EmpresaController;
 import controller.UsuarioController;
@@ -278,7 +279,7 @@ public class RecruiterServico {
       Candidato c = (Candidato) obj[0];
       CandidatoCompetencia competencia = (CandidatoCompetencia) obj[1]; 
 
-      //if (skillsFilter.contains(competencia.getCompetencia().getSkill())) { -> a consulta ja faz isso
+      //if (skillsFilter.contains(competenciapetencia().getSkill())) { -> a consulta ja faz isso
       JSONObject candidato = new JSONObject();
       candidato.put("skill", competencia.getCompetencia().getSkill());
       candidato.put("experience", competencia.getExperience().toString());
@@ -297,6 +298,44 @@ public class RecruiterServico {
     return res;
   }
 
+  public void chooseCandidate(JSONObject jsonMessage, JSONObject jsonResponse) {
+	  JwtUtility jwt = new JwtUtility();
+	    JSONObject data = jsonMessage.getJSONObject("data");
+	    String token = jsonMessage.getString("token");
+
+	    try {
+	      DecodedJWT decodedJWT = jwt.verifyToken(token);
+	      Claim idClaim = decodedJWT.getClaim("id");
+	      String userIdAsString = idClaim.asString();
+	      Integer id = Integer.parseInt(userIdAsString);
+	      EmpresaController cController = new EmpresaController();
+	      Empresa e = cController.consultarPorId(id);
+
+	      if (e == null) {
+	        buildJson(jsonResponse, "USER_NOT_FOUND", "CHOOSE_CANDIDATE");
+	        return;
+	      }
+
+	      String idUserString = data.getString("id_user");
+	      Integer idUser = Integer.parseInt(idUserString);
+	      CandidatoController candidatoController = new CandidatoController();
+	      
+	      Candidato candidato = candidatoController.consultarPorId(idUser);
+	      
+	      if (candidato == null) {
+	    	  buildJson(jsonResponse, "CANDIDATE_NOT_FOUND", "CHOOSE_CANDIDATE");
+	    	  return;
+	      }
+	      
+	      CandidatoEmpresaController candidadoEmpresaController = new CandidatoEmpresaController();
+	      candidadoEmpresaController.inserirEmpresaCandidato(id, idUser);
+	      buildJson(jsonResponse, "SUCCESS", "CHOOSE_CANDIDATE");
+
+
+	    } catch(JWTVerificationException e) {
+	      buildInvalidToken(jsonResponse, "CHOOSE_CANDIDATE");
+	    }
+  }
 
   public JSONObject buildJsonLoginRecruiter(JSONObject res, String status, String token) {
     res.put("operation", "LOGIN_RECRUITER");

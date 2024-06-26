@@ -30,6 +30,7 @@ public class CandidatoCompetencia implements Entidade {
   private Integer id;
 
   private Integer experience;
+  
   @ManyToOne
   @JoinColumn(name = "competencia_id")
   private Competencia competencia;

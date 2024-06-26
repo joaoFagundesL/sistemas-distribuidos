@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.Cascade;
 
 @Entity
 
@@ -39,7 +42,11 @@ public class Empresa implements Entidade{
 
   private String industry;
   private String descricao;
-
+  
+  @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "empresa")
+  private List<CandidatoEmpresa> candidatos;
+  
   @OneToOne(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "usuario_id", referencedColumnName = "id")
   private Usuario usuario;
@@ -61,6 +68,15 @@ public void setVagas(List<Vaga> vagas) {
 public String getIndustry() {
     return industry;
   }
+
+public List<CandidatoEmpresa> getCandidatos() {
+	return candidatos;
+}
+
+public void setCandidatos(List<CandidatoEmpresa> candidatos) {
+	this.candidatos = candidatos;
+}
+
 
   public void setIndustry(String industry) {
     this.industry = industry;

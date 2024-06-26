@@ -176,9 +176,13 @@ public class Servidor extends JFrame {
     String operation = jsonMessage.getString("operation");
     JSONObject jsonResponse = new JSONObject();
 
-    switch (operation) {
+    JSONObject companyResponse = new JSONObject();
+    JSONObject getCompanyRequest = new JSONObject();
+    
+    switch (operation) {    
       case "LOGIN_CANDIDATE":
       candidatoServico.loginCandidato(jsonMessage, jsonResponse);
+     
       break;
 
       case "LOGOUT_CANDIDATE":
@@ -280,6 +284,14 @@ public class Servidor extends JFrame {
       case "SEARCH_CANDIDATE":
     	  recruiterServico.searchCandidate(jsonMessage, jsonResponse);
       break;
+      
+      case "CHOOSE_CANDIDATE":
+    	  recruiterServico.chooseCandidate(jsonMessage, jsonResponse);
+      break;
+      
+      case "GET_COMPANY":
+    	  candidatoServico.getCompany(jsonMessage, jsonResponse);
+      break;
     	  
       default:
       buildInvalidOperation(jsonResponse, operation);
@@ -290,6 +302,7 @@ public class Servidor extends JFrame {
     writer.println(messageToSend.toString());
     System.out.println("Message to client: " + messageToSend);
     writer.flush();
+   
   }
 
   private JSONObject buildInvalidOperation(JSONObject res, String operation) {

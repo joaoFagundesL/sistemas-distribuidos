@@ -49,7 +49,8 @@ public class MainViewCandidato {
     final CandidatoView clienteView = new CandidatoView();
     final CompetenciaView competenciaView = new CompetenciaView();
     final FiltrarVagaView filtrarView = new FiltrarVagaView(); 
-
+    GetCompanyView getCompanyView = new GetCompanyView();
+ 
     if (frame == null || !frame.isVisible()) {
       isLogout = false;
       frame = new JFrame("Sistema");
@@ -57,7 +58,7 @@ public class MainViewCandidato {
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setVisible(true);
     }
-
+    
     final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     panelFirst.setLayout(null);
     panelFirst.setBackground(Color.WHITE);
@@ -70,6 +71,9 @@ public class MainViewCandidato {
     tabbedPane.addTab("Candidato", clienteView);
     tabbedPane.addTab("Competencia", competenciaView);
     tabbedPane.addTab("Filtrar", filtrarView);
+    tabbedPane.addTab("Get Company", getCompanyView);
+    
+    getCompanyView.handleGetCompany();
 
     JPanel panel_2 = new JPanel();
     panel_2.setBackground(SystemColor.inactiveCaption);
@@ -110,6 +114,19 @@ public class MainViewCandidato {
     btnGerenciarFiltrar.setBackground(Color.DARK_GRAY);
     btnGerenciarFiltrar.setBounds(23, 187, 171, 27);
     panel_2.add(btnGerenciarFiltrar);
+    
+    JButton btnCompany = new JButton("My Companies");
+    btnCompany.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        tabbedPane.setSelectedIndex(3); 
+//        getCompanyView.handleGetCompany();
+      }
+    });
+        
+    btnCompany.setForeground(Color.WHITE);
+    btnCompany.setBackground(Color.DARK_GRAY);
+    btnCompany.setBounds(23, 236, 171, 27);
+    panel_2.add(btnCompany);
 
     JLabel lblSistemaFaculdade = new JLabel("Candidato");
     lblSistemaFaculdade.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -126,6 +143,7 @@ public class MainViewCandidato {
         buildLogoutJson(request, token);
         clienteView.limparTable();
         competenciaView.limparTable();
+        getCompanyView.limparTable();
         try {
           JSONObject response = Client.getInstance().sendRequest(request);
         }catch(IOException err) {
@@ -133,7 +151,11 @@ public class MainViewCandidato {
         }
 
         frame.dispose();
-        isLogout = true;
+        instance = null; 
+        // resetar singleton e fazer o load de novo, ao inves de usar a que ja existia,
+        // vai carregar tudo de novo e vai permitir que fique tudo certo para exibir as informacoes 
+        // do get company
+        
       }
     });
     btnLogout.setForeground(Color.WHITE);
@@ -142,6 +164,8 @@ public class MainViewCandidato {
     panel_2.add(btnLogout);
 
     frame.getContentPane().add(panelCont);
+    
+    getCompanyView.handleGetCompany();
   }
 
   private JSONObject buildLogoutJson(JSONObject json, String token) {

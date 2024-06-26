@@ -58,6 +58,10 @@ public class Candidato implements Entidade {
   
   @Cascade(org.hibernate.annotations.CascadeType.DELETE)
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "candidato")
+  private List<CandidatoEmpresa> empresas;
+  
+  @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "candidato")
   private List<VagaCandidato> vagas;
 
 

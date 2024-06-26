@@ -32,6 +32,7 @@ public class SearchCandidateView extends JPanel {
   private JTable table;
   private List<JCheckBox> checkBoxList; 
   private JTextField experienceField;
+  private JTextField idUserField;
 
   public SearchCandidateView() {
     initComponents();
@@ -204,8 +205,66 @@ public class SearchCandidateView extends JPanel {
     chckbxJavascript.setBounds(49, 201, 112, 25);
     add(chckbxJavascript);
     checkBoxList.add(chckbxJavascript);
+    
+    idUserField = new JTextField();
+    idUserField.setBounds(281, 248, 76, 21);
+    add(idUserField);
+    idUserField.setColumns(10);
+    
+    JLabel lblId = new JLabel("ID");
+    lblId.setBounds(260, 250, 58, 17);
+    add(lblId);
+    
+    JButton chooseButton = new JButton("Choose");
+    chooseButton.addActionListener(new ActionListener() {
+    	public void actionPerformed(ActionEvent e) {
+    		String idUser = idUserField.getText();
+    		
+    		if (idUser.equals("")) {
+    			JFrame frame = new JFrame("JOptionPane exemplo");
+                JOptionPane.showMessageDialog(frame, "Error");
+    		}
+    		
+    		  String token = Client.getInstance().getToken();
+    		  
+    		  JSONObject request = new JSONObject();
+    	      JSONObject response = new JSONObject();
+    	     
+    	        
+    	       request = buildChooseCandidate(request, idUser, token);
+    	        
+    	        try {
+    	            response = Client.getInstance().sendRequest(request);
+    	            
+    	            JSONObject data = response.getJSONObject("data");
 
+    	            String status = (String) response.get("status");
+    	            
+    	            if (response.getString("status").equals("SUCCESS")) {
+    	            	JFrame frame = new JFrame("JOptionPane exemplo");
+    	                JOptionPane.showMessageDialog(frame, "Success!");
+    	               
+    	              }
 
+    	          } catch(IOException err) {
+    	            err.printStackTrace();
+    	          
+    	      }
+    		
+    		
+    	}
+    });
+    chooseButton.setBounds(364, 245, 83, 25);
+    add(chooseButton);
+  }
+  
+  public JSONObject buildChooseCandidate(JSONObject json, String idUser, String token) {
+	json.put("operation", "CHOOSE_CANDIDATE");
+	json.put("token", token);
+	JSONObject data = new JSONObject();
+	data.put("id_user", idUser);
+	json.put("data", data);
+	return json;
   }
 
   public JSONObject buildJsonSearch(JSONObject json, List<String> langs, String experience, String filter
