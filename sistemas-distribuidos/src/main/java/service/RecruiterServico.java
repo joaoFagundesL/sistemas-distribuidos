@@ -285,6 +285,7 @@ public class RecruiterServico {
       candidato.put("experience", competencia.getExperience().toString());
       candidato.put("id", competencia.getId().toString());
       candidato.put("id_user", c.getId().toString());
+      candidato.put("name", c.getUsuario().getNome());
       profile.put(candidato);
       // }
     }

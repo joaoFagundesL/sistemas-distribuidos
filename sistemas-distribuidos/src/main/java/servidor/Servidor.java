@@ -175,9 +175,6 @@ public class Servidor extends JFrame {
     JSONObject jsonMessage = new JSONObject(clientMessage);
     String operation = jsonMessage.getString("operation");
     JSONObject jsonResponse = new JSONObject();
-
-    JSONObject companyResponse = new JSONObject();
-    JSONObject getCompanyRequest = new JSONObject();
     
     switch (operation) {    
       case "LOGIN_CANDIDATE":
